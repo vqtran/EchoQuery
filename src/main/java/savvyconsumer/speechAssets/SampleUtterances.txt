@@ -1,0 +1,34 @@
+TopSellers get top sellers for {Category}
+TopSellers get best sellers for {Category}
+TopSellers get me {Category}
+TopSellers top {Category}
+TopSellers top products in {Category}
+TopSellers {Category}
+
+HearMore yes
+HearMore yep
+HearMore yeah
+HearMore sure
+HearMore yes please
+HearMore affirmative
+
+DontHearMore no
+DontHearMore nope
+DontHearMore no thank you
+DontHearMore not now
+DontHearMore negative
+
+HelpIntent help
+HelpIntent help me
+HelpIntent what can I ask you
+HelpIntent get help
+HelpIntent what commands can I ask
+HelpIntent what commands can I say
+HelpIntent what can I do
+HelpIntent what can I use this for
+HelpIntent what questions can I ask
+HelpIntent what can you do
+HelpIntent what do you do
+HelpIntent how do I use you
+HelpIntent how can I use you
+HelpIntent what can you tell me

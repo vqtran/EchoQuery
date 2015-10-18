@@ -1,0 +1,19 @@
+Copyright 2004-2015 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+
+
+
+These materials are licensed as "Program Materials" under the Program Materials License
+ Agreement (the "License") of the Amazon App Distribution and Services program, which is available 
+at https://developer.amazon.com/public/support/pml.html.  See the License for the specific language 
+governing permissions and limitations under the License.
+
+
+
+These materials may include third party software that is copyrighted by other parties and 
+is subject to separate license terms.  Information on that software and the applicable copyright 
+notices and license terms are included in files accompanying these materials.
+
+
+
+These materials are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+OF ANY KIND, either express or implied.

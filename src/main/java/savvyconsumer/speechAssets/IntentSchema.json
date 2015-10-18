@@ -1,0 +1,25 @@
+{
+  "intents": [
+    {
+      "intent": "TopSellers",
+      "slots": [
+        {
+          "name": "Category",
+          "type": "LIST_OF_CATEGORIES"
+        }
+      ]
+    },
+    {
+      "intent": "HearMore",
+      "slots": [ ]
+    },
+    {
+      "intent": "HelpIntent",
+      "slots": [ ]
+    },
+    {
+      "intent": "DontHearMore",
+      "slots": [ ]
+    }
+  ]
+}
