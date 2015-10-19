@@ -1,0 +1,33 @@
+{
+  "intents": [
+    {
+      "intent": "TableAggregateIntent",
+      "slots": [
+        {
+          "name": "table_name",
+          "type": "AMAZON.LITERAL"
+        },
+        {
+          "name": "column_name",
+          "type": "AMAZON.LITERAL"
+        },
+        {
+          "name": "column_name",
+          "type": "AMAZON.LITERAL"
+        },
+      ]
+    },
+    {
+      "intent": "GetNextEventIntent",
+      "slots": []
+    },
+    {
+      "intent": "HelpIntent",
+      "slots": []
+    },
+    {
+      "intent": "FinishIntent",
+      "slots": []
+    }
+  ]
+}
