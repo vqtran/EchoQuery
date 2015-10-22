@@ -1,0 +1,12 @@
+target/
+META-INF/
+node_modules/
+.settings/
+
+.classpath
+.project
+.DS_Store
+.DS_Store?
+
+*.swp
+*.swo
