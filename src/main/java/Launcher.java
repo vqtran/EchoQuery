@@ -14,7 +14,7 @@ import com.amazon.speech.Sdk;
 import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.servlet.SpeechletServlet;
 
-import speakql.SpeakQLSpeechlet;
+import echoquery.EchoQuerySpeechlet;
 
 /**
  * Shared launcher for executing all sample skills within a single servlet
@@ -71,7 +71,7 @@ public final class Launcher {
     context.setContextPath("/");
     server.setHandler(context);
     context.addServlet(
-        new ServletHolder(createServlet(new SpeakQLSpeechlet())), "/speakql");
+        new ServletHolder(createServlet(new EchoQuerySpeechlet())), "/speakql");
     server.start();
     server.join();
   }

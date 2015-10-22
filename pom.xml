@@ -3,11 +3,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.brown.cs</groupId>
-  <artifactId>speakql</artifactId>
+  <artifactId>echoquery</artifactId>
   <packaging>jar</packaging>
   <version>1.1</version>
-  <name>SpeakQL</name>
-  <url>https://github.com/vqtran/SpeakQL</url>
+  <name>EchoQuery</name>
+  <url>https://github.com/vqtran/EchoQuery</url>
 
   <repositories>
     <repository>

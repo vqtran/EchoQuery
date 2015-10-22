@@ -1,4 +1,4 @@
-package speakql;
+package echoquery;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,9 +37,9 @@ import com.amazon.speech.ui.SimpleCard;
  * Ask for certain pieces of information and SpeakQL will translate it into an
  * SQL query.
  */
-public class SpeakQLSpeechlet implements Speechlet {
+public class EchoQuerySpeechlet implements Speechlet {
   private static final Logger log =
-      LoggerFactory.getLogger(SpeakQLSpeechlet.class);
+      LoggerFactory.getLogger(EchoQuerySpeechlet.class);
 
   /**
    * URL prefix to download history content from Wikipedia.

@@ -1,4 +1,4 @@
-package speakql;
+package echoquery;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,7 +9,7 @@ import com.amazon.speech.speechlet.lambda.SpeechletRequestStreamHandler;
 /**
  * Request handler for AWS Lambda deployment.
  */
-public class SpeakQLSpeechletRequestStreamHandler
+public class EchoQuerySpeechletRequestStreamHandler
   extends SpeechletRequestStreamHandler {
 
   private static final Set<String> supportedApplicationIds;
@@ -22,11 +22,11 @@ public class SpeakQLSpeechletRequestStreamHandler
         "amzn1.echo-sdk-ams.app.f705b0c1-42a2-4c94-9e48-50aed83b2310");
   }
 
-  public SpeakQLSpeechletRequestStreamHandler() {
-    super(new SpeakQLSpeechlet(), supportedApplicationIds);
+  public EchoQuerySpeechletRequestStreamHandler() {
+    super(new EchoQuerySpeechlet(), supportedApplicationIds);
   }
 
-  public SpeakQLSpeechletRequestStreamHandler(
+  public EchoQuerySpeechletRequestStreamHandler(
       Speechlet speechlet, Set<String> supportedApplicationIds) {
     super(speechlet, supportedApplicationIds);
   }
