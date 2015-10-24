@@ -12,5 +12,3 @@ node_modules/
 
 *.swp
 *.swo
-
-src/main/java/echoquery/EchoQueryCredentials.java
