@@ -1,6 +1,20 @@
-TableAggregateIntent how many {table_name} are there
-TableAggregateIntent how many {table_name} are there with {column_name} as {col_value}
-TableAggregateIntent how many {table_name} are there where {column_name} is {col_value}
+CountIntent how many {big sales|table} are there
+CountIntent how much {big sales|table} are there
+CountIntent What's the number of {big sales|table}
+CountIntent What's the size of {big sales|table}
+CountIntent What's the length of {big sales|table}
+CountIntent What's the cardinality of {big sales|table}
+CountIntent Count the number of {big sales|table}
+CountIntent how many {big sales|table}
+CountIntent how many {big sales|table} do we have
+CountIntent how many entries in {big sales|table}
+CountIntent how many rows in {big sales|table}
+CountIntent how many rows in {big sales|table}
+CountIntent how many rows in {big sales|table} do we have
+CountIntent find the size of {big sales|table}
+CountIntent find the number of {big sales|table}
+CountIntent find the length of {big sales|table}
+CountIntent find the number of {big sales|table}
 
 FinishIntent no
 FinishIntent nope

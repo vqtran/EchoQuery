@@ -3,6 +3,8 @@ META-INF/
 node_modules/
 .settings/
 
+.metadata/
+
 .classpath
 .project
 .DS_Store
