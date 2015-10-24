@@ -1,20 +1,12 @@
 {
   "intents": [
     {
-      "intent": "TableAggregateIntent",
+      "intent": "CountIntent",
       "slots": [
         {
-          "name": "table_name",
+          "name": "table",
           "type": "AMAZON.LITERAL"
-        },
-        {
-          "name": "column_name",
-          "type": "AMAZON.LITERAL"
-        },
-        {
-          "name": "column_name",
-          "type": "AMAZON.LITERAL"
-        },
+        }
       ]
     },
     {
