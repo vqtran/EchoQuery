@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Rebuild the jar and push to Lambda, pass the Lambda function name as the
+# first arg.
+
+echo "-----------------------------------------"
+echo " ASSEMBLING THE JAR"
+echo "-----------------------------------------"
+mvn assembly:assembly -DdescriptorId=jar-with-dependencies package
+
+echo "-----------------------------------------"
+echo " PUSHING TO AWS LAMBDA FUNCTION:" $1
+echo "-----------------------------------------"
+aws lambda update-function-code \
+  --function-name $1 \
+  --zip-file fileb://target/echoquery-1.1-jar-with-dependencies.jar

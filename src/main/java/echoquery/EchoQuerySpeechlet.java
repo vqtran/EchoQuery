@@ -28,14 +28,35 @@ import com.amazon.speech.ui.Reprompt;
 public class EchoQuerySpeechlet implements Speechlet {
   private static final Logger log =
       LoggerFactory.getLogger(EchoQuerySpeechlet.class);
-  
-  private static final Connection conn = getConnection();
 
   /**
-   * Constant defining session attribute key for the intent slot key for the
-   * date of events.
+   * Constant defining session attribute key for the intent slot key table
+   * names.
    */
   private static final String SLOT_TABLE = "TableName";
+
+  /**
+   * Statically initialize database connection.
+   */
+  private static final Connection conn = getConnection();
+
+  private static Connection getConnection() {
+    String connectionUri =
+        "jdbc:mysql://speechql.cutq0x5qwogl.us-east-1.rds.amazonaws.com:3306/";
+    String database = "bestbuy";
+
+    Connection conn = null;
+    try {
+      conn = (Connection) DriverManager.getConnection(connectionUri + database,
+          EchoQueryCredentials.dbUser, EchoQueryCredentials.dbPwd);
+    } catch (SQLException e) {
+      log.error(e.toString());
+      System.exit(1);
+    }
+    log.info("EchoQuery successfully connected to " + connectionUri
+        + database + ".");
+    return conn;
+  }
 
   @Override
   public void onSessionStarted(
@@ -55,23 +76,6 @@ public class EchoQuerySpeechlet implements Speechlet {
     return getWelcomeResponse();
   }
 
-  public static Connection getConnection(){
-    String connectionUrl = "jdbc:mysql://speechql.cutq0x5qwogl.us-east-1.rds.amazonaws.com:3306/bestbuy";
-    String dbUser = EchoQueryCredentials.dbUser;
-    String dbPwd = EchoQueryCredentials.dbPwd;
-    Connection conn = null;
-
-    try {
-      conn = (Connection) DriverManager.getConnection(connectionUrl, dbUser, dbPwd);
-      log.info("conn Available");
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      log.info("fetch motion error"+e.getLocalizedMessage());
-    }
-
-    return conn;
-  }   
 
   @Override
   public SpeechletResponse onIntent(
@@ -133,11 +137,7 @@ public class EchoQuerySpeechlet implements Speechlet {
   }
 
   /**
-   * Prepares the speech to reply to the user. Obtain events from Wikipedia for
-   * the date specified by the user (or for today's date, if no date is
-   * specified), and return those events in both speech and SimpleCard format.
-   * 
-   * @param intent The intent object which contains the date slot
+   * @param intent The intent object
    * @param session The session object
    * @return SpeechletResponse object with voice/card response to return to the
    *     user.
@@ -147,15 +147,19 @@ public class EchoQuerySpeechlet implements Speechlet {
     try {
       Statement statement = conn.createStatement();
       String table = intent.getSlot(SLOT_TABLE).getValue();
-      ResultSet result = statement.executeQuery("select count(*) from " + table);
+      ResultSet result =
+          statement.executeQuery("select count(*) from " + table);
 
       // Create the plain text output
       result.first();
-      String speechOutput = "There are " + TranslationUtils.convert(result.getInt(1)) + " rows in table " + table;
+      String speechOutput =
+          "There are " + TranslationUtils.convert(result.getInt(1))
+          + " rows in table " + table;
       outputSpeech.setSsml("<speak>" + speechOutput + "</speak>");
     } catch (SQLException e) {
       log.info("StatementCreationError: " + e.getMessage());
-      outputSpeech.setSsml("<speak> There was an error querying the database </speak>");
+      outputSpeech.setSsml(
+          "<speak> There was an error querying the database </speak>");
     }
 
     return SpeechletResponse.newTellResponse(outputSpeech);
