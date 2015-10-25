@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazon.speech.slu.Intent;
+import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.IntentRequest;
 import com.amazon.speech.speechlet.LaunchRequest;
 import com.amazon.speech.speechlet.Session;
@@ -35,7 +36,7 @@ public class EchoQuerySpeechlet implements Speechlet {
    * Constant defining session attribute key for the intent slot key for the
    * date of events.
    */
-  private static final String SLOT_TABLE = "table";
+  private static final String SLOT_TABLE = "TableName";
 
   @Override
   public void onSessionStarted(
@@ -88,7 +89,7 @@ public class EchoQuerySpeechlet implements Speechlet {
     } else if ("HelpIntent".equals(intentName)) {
       // Create the plain text output.
       String speechOutput =
-        "With EchoQuery, you can query"
+        "With EchoQuery you can query"
             + " your database for aggreagtes, group bys, and order bys"
             + " For example, you could say,"
             + " How many sales did we have?";
@@ -146,7 +147,9 @@ public class EchoQuerySpeechlet implements Speechlet {
     SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
     try {
       Statement statement = conn.createStatement();
-      String table = intent.getSlot(SLOT_TABLE).getValue();
+      Slot tempSlot = intent.getSlot(SLOT_TABLE);
+      log.info("Got Slot = {}", tempSlot.toString());
+      String table = tempSlot.getValue();
       ResultSet result = statement.executeQuery("select count(*) from " + table);
 
       // Create the plain text output
