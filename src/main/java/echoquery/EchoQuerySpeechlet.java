@@ -35,7 +35,7 @@ public class EchoQuerySpeechlet implements Speechlet {
    * Constant defining session attribute key for the intent slot key for the
    * date of events.
    */
-  private static final String SLOT_TABLE = "table";
+  private static final String SLOT_TABLE = "TableName";
 
   @Override
   public void onSessionStarted(

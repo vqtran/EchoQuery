@@ -4,8 +4,8 @@
       "intent": "CountIntent",
       "slots": [
         {
-          "name": "table",
-          "type": "AMAZON.LITERAL"
+          "name": "TableName",
+          "type": "TABLE_NAME"
         }
       ]
     },
