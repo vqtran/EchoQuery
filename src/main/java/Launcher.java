@@ -70,8 +70,8 @@ public final class Launcher {
         new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/");
     server.setHandler(context);
-    context.addServlet(
-        new ServletHolder(createServlet(new EchoQuerySpeechlet())), "/speakql");
+    context.addServlet(new ServletHolder(
+        createServlet(new EchoQuerySpeechlet())), "/echoquery");
     server.start();
     server.join();
   }
