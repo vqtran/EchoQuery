@@ -2,9 +2,7 @@ package echoquery;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,22 +16,26 @@ import com.amazon.speech.speechlet.SessionStartedRequest;
 import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.amazon.speech.ui.SsmlOutputSpeech;
-import com.amazon.speech.ui.Reprompt;
+
+import echoquery.intents.CountHandler;
+import echoquery.intents.HelpHandler;
+import echoquery.intents.IntentHandler;
+import echoquery.utils.EchoQueryCredentials;
+import echoquery.utils.Response;
 
 /**
  * Ask for certain pieces of information and SpeakQL will translate it into an
  * SQL query.
  */
 public class EchoQuerySpeechlet implements Speechlet {
+  /**
+   * Statically initialize the logger, this goes to S3.
+   */
   private static final Logger log =
       LoggerFactory.getLogger(EchoQuerySpeechlet.class);
 
-  /**
-   * Constant defining session attribute key for the intent slot key table
-   * names.
-   */
-  private static final String SLOT_TABLE = "TableName";
+  private IntentHandler countHandler;
+  private IntentHandler helpHandler;
 
   /**
    * Statically initialize database connection.
@@ -57,6 +59,12 @@ public class EchoQuerySpeechlet implements Speechlet {
         + database + ".");
     return conn;
   }
+  
+  public EchoQuerySpeechlet() {
+    super();
+    countHandler = new CountHandler(conn, log);
+    helpHandler = new HelpHandler();
+  }
 
   @Override
   public void onSessionStarted(
@@ -73,9 +81,8 @@ public class EchoQuerySpeechlet implements Speechlet {
     log.info("onLaunch requestId={}, sessionId={}", request.getRequestId(),
         session.getSessionId());
 
-    return getWelcomeResponse();
+    return Response.welcome();
   }
-
 
   @Override
   public SpeechletResponse onIntent(
@@ -87,27 +94,16 @@ public class EchoQuerySpeechlet implements Speechlet {
     Intent intent = request.getIntent();
     String intentName = intent.getName();
 
-    if ("CountIntent".equals(intentName)) {
-      return CountIntent(intent, session);
-    } else if ("HelpIntent".equals(intentName)) {
-      // Create the plain text output.
-      String speechOutput =
-        "With EchoQuery, you can query"
-            + " your database for aggreagtes, group bys, and order bys"
-            + " For example, you could say,"
-            + " How many sales did we have?";
-
-      String repromptText = "What do you want to ask?";
-
-      return newAskResponse(
-          "<speak>" + speechOutput + "</speak>",
-          "<speak>" + repromptText + "</speak>");
-    } else if ("FinishIntent".equals(intentName)) {
-      SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-      outputSpeech.setSsml("<speak> Goodbye </speak>");
-      return SpeechletResponse.newTellResponse(outputSpeech);
-    } else {
-      throw new SpeechletException("Invalid Intent");
+    // Route the intent to the proper handlers.
+    switch(intentName) {
+      case "CountIntent":
+        return countHandler.respond(intent, session);
+      case "HelpIntent":
+        return helpHandler.respond(intent, session);
+      case "FinishIntent":
+        return Response.bye();
+      default:
+        throw new SpeechletException("Invalid Intent");
     }
   }
 
@@ -117,70 +113,5 @@ public class EchoQuerySpeechlet implements Speechlet {
       throws SpeechletException {
     log.info("onSessionEnded requestId={}, sessionId={}",
         request.getRequestId(), session.getSessionId());
-  }
-
-  /**
-   * Function to handle the onLaunch skill behavior.
-   * 
-   * @return SpeechletResponse object with voice/card response to return to the
-   *     user
-   */
-  private SpeechletResponse getWelcomeResponse() {
-    String speechOutput = "Echo Query. What do you want?";
-    // If the user either does not reply to the welcome message or says
-    // something that is not understood, they will be prompted again with this 
-    // text.
-    String repromptText = "With Echo Query, the world is your oyster";
-
-    return newAskResponse("<speak>" + speechOutput + "</speak>",
-        "<speak>" + repromptText + "</speak>");
-  }
-
-  /**
-   * @param intent The intent object
-   * @param session The session object
-   * @return SpeechletResponse object with voice/card response to return to the
-   *     user.
-   */
-  private SpeechletResponse CountIntent(Intent intent, Session session) {
-    SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-    try {
-      Statement statement = conn.createStatement();
-      String table = intent.getSlot(SLOT_TABLE).getValue();
-      ResultSet result =
-          statement.executeQuery("select count(*) from " + table);
-
-      // Create the plain text output
-      result.first();
-      String speechOutput =
-          "There are " + TranslationUtils.convert(result.getInt(1))
-          + " rows in table " + table;
-      outputSpeech.setSsml("<speak>" + speechOutput + "</speak>");
-    } catch (SQLException e) {
-      log.info("StatementCreationError: " + e.getMessage());
-      outputSpeech.setSsml(
-          "<speak> There was an error querying the database </speak>");
-    }
-
-    return SpeechletResponse.newTellResponse(outputSpeech);
-  }
-
-  /**
-   * Wrapper for creating the Ask response from the input strings.
-   * 
-   * @param stringOutput The output to be spoken
-   * @param repromptText The reprompt for if the user doesn't reply or is
-   *     misunderstood.
-   * @return SpeechletResponse the speechlet response
-   */
-  private SpeechletResponse newAskResponse(
-      String stringOutput, String repromptText) {
-    SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-    outputSpeech.setSsml(stringOutput);
-    SsmlOutputSpeech repromptOutputSpeech = new SsmlOutputSpeech();
-    repromptOutputSpeech.setSsml(repromptText);
-    Reprompt reprompt = new Reprompt();
-    reprompt.setOutputSpeech(repromptOutputSpeech);
-    return SpeechletResponse.newAskResponse(outputSpeech, reprompt);
   }
 }

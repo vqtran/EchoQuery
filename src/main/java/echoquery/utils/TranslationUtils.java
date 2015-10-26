@@ -1,4 +1,4 @@
-package echoquery;
+package echoquery.utils;
 
 import java.text.DecimalFormat;
 

@@ -13,9 +13,6 @@ public class EchoQuerySpeechletRequestStreamHandler
   extends SpeechletRequestStreamHandler {
 
   private static final Set<String> supportedApplicationIds;
-
-  // TODO(vqtran): Make application id a system property because developers
-  // probably should not share volatile development instances of Alexa skills.
   static {
     supportedApplicationIds = new HashSet<String>();
     // Gabe's
