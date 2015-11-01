@@ -1,0 +1,99 @@
+GetNextEventIntent yes
+GetNextEventIntent yup
+GetNextEventIntent sure
+GetNextEventIntent yes please
+GetNextEventIntent yup please
+GetNextEventIntent sure please
+GetNextEventIntent ok
+GetNextEventIntent okay
+
+FinishIntent nope
+FinishIntent exit
+FinishIntent stop
+FinishIntent quit
+FinishIntent nope thanks
+FinishIntent nope thank you
+FinishIntent exit thanks
+FinishIntent exit thank you
+FinishIntent stop thanks
+FinishIntent stop thank you
+FinishIntent quit thanks
+FinishIntent quit thank you
+
+HelpIntent help
+HelpIntent help me
+HelpIntent get help
+HelpIntent what can I ask
+HelpIntent what can I ask you
+HelpIntent what can I say
+HelpIntent what can I do
+HelpIntent what can I use
+HelpIntent what can I use this for
+HelpIntent what commands can I ask
+HelpIntent what commands can I ask you
+HelpIntent what commands can I say
+HelpIntent what commands can I do
+HelpIntent what commands can I use
+HelpIntent what commands can I use this for
+HelpIntent what questions can I ask
+HelpIntent what questions can I ask you
+HelpIntent what questions can I say
+HelpIntent what questions can I do
+HelpIntent what questions can I use
+HelpIntent what questions can I use this for
+HelpIntent what things can I ask
+HelpIntent what things can I ask you
+HelpIntent what things can I say
+HelpIntent what things can I do
+HelpIntent what things can I use
+HelpIntent what things can I use this for
+HelpIntent what stuff can I ask
+HelpIntent what stuff can I ask you
+HelpIntent what stuff can I say
+HelpIntent what stuff can I do
+HelpIntent what stuff can I use
+HelpIntent what stuff can I use this for
+HelpIntent what can you do
+HelpIntent what can you tell me
+HelpIntent what do you do
+HelpIntent what do you tell me
+HelpIntent how can I use you
+HelpIntent how can I use this
+HelpIntent how do I use you
+HelpIntent how do I use this
+
+CountIntent How many {TableName}
+CountIntent How much {TableName}
+CountIntent How many entries in {TableName}
+CountIntent How many rows in {TableName}
+CountIntent How much entries in {TableName}
+CountIntent How much rows in {TableName}
+CountIntent How many {TableName} are there
+CountIntent How many {TableName} do we have
+CountIntent How much {TableName} are there
+CountIntent How much {TableName} do we have
+CountIntent How many entries in {TableName} are there
+CountIntent How many entries in {TableName} do we have
+CountIntent How many rows in {TableName} are there
+CountIntent How many rows in {TableName} do we have
+CountIntent How much entries in {TableName} are there
+CountIntent How much entries in {TableName} do we have
+CountIntent How much rows in {TableName} are there
+CountIntent How much rows in {TableName} do we have
+CountIntent What's the number of {TableName}
+CountIntent What's the size of {TableName}
+CountIntent What's the length of {TableName}
+CountIntent What's the cardinality of {TableName}
+CountIntent What is the number of {TableName}
+CountIntent What is the size of {TableName}
+CountIntent What is the length of {TableName}
+CountIntent What is the cardinality of {TableName}
+CountIntent Count the number of {TableName}
+CountIntent Count the size of {TableName}
+CountIntent Count the length of {TableName}
+CountIntent Count the cardinality of {TableName}
+CountIntent Find the number of {TableName}
+CountIntent Find the size of {TableName}
+CountIntent Find the length of {TableName}
+CountIntent Find the cardinality of {TableName}
+
