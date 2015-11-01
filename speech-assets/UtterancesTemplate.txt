@@ -1,0 +1,16 @@
+GetNextEventIntent [yes|yup|sure] (please)
+GetNextEventIntent ok(ay)
+
+FinishIntent [nope|exit|stop|quit] (thanks|thank you)
+
+HelpIntent help (me)
+HelpIntent get help
+HelpIntent what [can|do] you [do|tell me]
+HelpIntent how [can|do] I use [you|this]
+HelpIntent what (commands|questions|things|stuff) can I \
+  [ask|ask you|say|do|use|use this for]
+
+CountIntent How [many|much] (entries in|rows in) {TableName} \
+  (are there|do we have)
+CountIntent [What's|What is|Count|Find] the [number|size|length|cardinality] \
+  of {TableName}
