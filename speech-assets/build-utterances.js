@@ -9,7 +9,7 @@ buildTemplate('UtterancesTemplate.txt', 'built/SampleUtterances.txt');
  * it's pretty cumbersome, has a lot of unnecessary features, weird syntax, and
  * above all else, syntax that doesn't play nicely with custom slots.
  *
- * Here's the only two things this thing does:
+ * Here's the two major thing this thing does.
  *
  * [a|b|c] - Definite variation. An utterance will be made for each version
  *           listed here.
@@ -21,6 +21,8 @@ buildTemplate('UtterancesTemplate.txt', 'built/SampleUtterances.txt');
  *
  * Ex: "Hi [Gabe|Vinh]" => ["Hi", "Hi Gabe", "Hi Vinh"]
  *
+ * Additionally, supports, '\' Bash-like character used for line continuations.
+ *
  * TODO(vqtran): Split this out into it's own NPM package and give it a cute
  *    name once we battle test this a bit.
  */
@@ -31,6 +33,9 @@ function buildTemplate(input, output) {
     if (err) {
       return console.log(err);
     }
+
+    // Respect line continuations.
+    data = data.replace(/\\\n/g, ' ');
 
     // Expand each line out into its combinations.
     var expandedUtterances = '';

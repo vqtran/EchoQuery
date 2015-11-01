@@ -23,6 +23,14 @@ FinishIntent quit thank you
 HelpIntent help
 HelpIntent help me
 HelpIntent get help
+HelpIntent what can you do
+HelpIntent what can you tell me
+HelpIntent what do you do
+HelpIntent what do you tell me
+HelpIntent how can I use you
+HelpIntent how can I use this
+HelpIntent how do I use you
+HelpIntent how do I use this
 HelpIntent what can I ask
 HelpIntent what can I ask you
 HelpIntent what can I say
@@ -53,14 +61,6 @@ HelpIntent what stuff can I say
 HelpIntent what stuff can I do
 HelpIntent what stuff can I use
 HelpIntent what stuff can I use this for
-HelpIntent what can you do
-HelpIntent what can you tell me
-HelpIntent what do you do
-HelpIntent what do you tell me
-HelpIntent how can I use you
-HelpIntent how can I use this
-HelpIntent how do I use you
-HelpIntent how do I use this
 
 CountIntent How many {TableName}
 CountIntent How much {TableName}
