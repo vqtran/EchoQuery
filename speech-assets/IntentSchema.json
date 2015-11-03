@@ -6,6 +6,30 @@
         {
           "name": "TableName",
           "type": "TABLE_NAME"
+        },
+        {
+          "name": "ColumnName",
+          "type": "COLUMN_NAME"
+        },
+        {
+          "name": "ColumnValue",
+          "type": "COLUMN_VALUE"
+        },
+	{
+          "name": "ColumnNumber",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "Equals",
+          "type": "BOOLEAN_EQUALS"
+        },
+        {
+          "name": "GreaterThan",
+          "type": "BOOLEAN_GREATER"
+        },
+        {
+          "name": "LessThan",
+          "type": "BOOLEAN_LESS"
         }
       ]
     },

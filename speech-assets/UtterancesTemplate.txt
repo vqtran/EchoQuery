@@ -14,3 +14,10 @@ CountIntent How [many|much] (entries in|rows in) {TableName} \
   (are there|do we have)
 CountIntent [What's|What is|Count|Find] the [number|size|length|cardinality] \
   of {TableName}
+
+CountIntent How [many|much] (entries in|rows in) {TableName} \
+  (are there|do we have) where (the) {ColumnName} \
+  [{Equals}|{GreaterThan}|{LessThan}] [{ColumnValue}|{ColumnNumber}]
+CountIntent [What's|What is|Count|Find] the [number|size|length|cardinality] \
+  of {TableName} where (the) {ColumnName} [{Equals}|{GreaterThan}|{LessThan}] \
+  [{ColumnValue}|{ColumnNumber}]
