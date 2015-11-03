@@ -1,9 +1,5 @@
 package echoquery;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +16,6 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import echoquery.intents.CountHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
-import echoquery.utils.EchoQueryCredentials;
 import echoquery.utils.Response;
 
 /**
@@ -37,32 +32,9 @@ public class EchoQuerySpeechlet implements Speechlet {
   private IntentHandler countHandler;
   private IntentHandler helpHandler;
 
-  /**
-   * Statically initialize database connection.
-   */
-  private static final Connection conn = getConnection();
-
-  private static Connection getConnection() {
-    String connectionUri =
-        "jdbc:mysql://speechql.cutq0x5qwogl.us-east-1.rds.amazonaws.com:3306/";
-    String database = "bestbuy";
-
-    Connection conn = null;
-    try {
-      conn = (Connection) DriverManager.getConnection(connectionUri + database,
-          EchoQueryCredentials.dbUser, EchoQueryCredentials.dbPwd);
-    } catch (SQLException e) {
-      log.error(e.toString());
-      System.exit(1);
-    }
-    log.info("EchoQuery successfully connected to " + connectionUri
-        + database + ".");
-    return conn;
-  }
-  
   public EchoQuerySpeechlet() {
     super();
-    countHandler = new CountHandler(conn, log);
+    countHandler = new CountHandler();
     helpHandler = new HelpHandler();
   }
 

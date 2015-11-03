@@ -1,40 +1,35 @@
 package echoquery.intents;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
+import echoquery.sql.StarSchemaQuerier;
 import echoquery.utils.Response;
 import echoquery.utils.SlotNames;
 import echoquery.utils.TranslationUtils;
 
 public class CountHandler implements IntentHandler {
 
-  private final Connection conn;
-  private final Logger log;
+  private static final Logger log =
+      LoggerFactory.getLogger(CountHandler.class);
+  private static final StarSchemaQuerier querier = StarSchemaQuerier.getInstance();
 
-  public CountHandler(Connection conn, Logger log) {
-    this.conn = conn;
-    this.log = log;
+  public CountHandler() {
   }
 
   @Override
   public SpeechletResponse respond(Intent intent, Session session) {
     try {
-      Statement statement = conn.createStatement();
       String table = intent.getSlot(SlotNames.TABLE_NAME).getValue();
-      ResultSet result =
-          statement.executeQuery("select count(*) from " + table);
-      result.first();
+      int count = querier.count(table);
       return Response.say(
-          "There are " + TranslationUtils.convert(result.getInt(1))
+          "There are " + TranslationUtils.convert(count)
           + " rows in the " + table + " table.");
 
     } catch (SQLException e) {
