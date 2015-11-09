@@ -19,7 +19,7 @@ public class ForeignKey {
     return this.sourceColumn;
   }
 
-  public String destinationColumn() {
+  public String getDestinationColumn() {
     return this.destinationColumn;
   }
   
