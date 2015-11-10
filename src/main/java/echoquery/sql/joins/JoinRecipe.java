@@ -1,4 +1,4 @@
-package echoquery.sql;
+package echoquery.sql.joins;
 
 public interface JoinRecipe {
   public boolean isValid();

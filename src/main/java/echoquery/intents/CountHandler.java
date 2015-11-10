@@ -1,6 +1,8 @@
 package echoquery.intents;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +11,7 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
-import echoquery.sql.StarSchemaQuerier;
+import echoquery.sql.SingletonConnection;
 import echoquery.utils.Response;
 import echoquery.utils.SlotNames;
 import echoquery.utils.TranslationUtils;
@@ -18,10 +20,6 @@ public class CountHandler implements IntentHandler {
 
   private static final Logger log =
       LoggerFactory.getLogger(CountHandler.class);
-  private static final StarSchemaQuerier querier = StarSchemaQuerier.getInstance();
-
-  public CountHandler() {
-  }
 
   @Override
   public SpeechletResponse respond(Intent intent, Session session) {
@@ -53,7 +51,7 @@ public class CountHandler implements IntentHandler {
         query += " WHERE " + column + " " + comparison + " '" + match + "'";
       }
 
-      Statement statement = conn.createStatement();
+      Statement statement = SingletonConnection.getInstance().createStatement();
       ResultSet result = statement.executeQuery(query);
       result.first();
 

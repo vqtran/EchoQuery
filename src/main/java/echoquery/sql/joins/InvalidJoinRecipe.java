@@ -1,19 +1,14 @@
-package echoquery.sql;
+package echoquery.sql.joins;
 
 public class InvalidJoinRecipe implements JoinRecipe {
 
-  public InvalidJoinRecipe() {
-    
-  }
-  
   @Override
   public boolean isValid() {
     return false;
   }
-  
+
   @Override
   public String render() {
     return "";
   }
-
 }

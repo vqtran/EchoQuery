@@ -1,4 +1,6 @@
-package echoquery.sql;
+package echoquery.sql.joins;
+
+import echoquery.sql.model.ForeignKey;
 
 public class TwoTableJoinRecipe implements JoinRecipe {
   private String sourceColumn;

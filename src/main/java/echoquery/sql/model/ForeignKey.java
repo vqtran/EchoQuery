@@ -1,34 +1,32 @@
-package echoquery.sql;
+package echoquery.sql.model;
 
 public class ForeignKey {
   private String sourceColumn;
   private String sourceTable;
   private String destinationColumn;
   private String destinationTable;
-  
-  
-  public ForeignKey(String sourceColumn, String sourceTable, 
-      String destinationColumn, String destinationTable) {
+
+  public ForeignKey(String sourceColumn,
+      String sourceTable, String destinationColumn, String destinationTable) {
     this.sourceColumn = sourceColumn;
     this.sourceTable = sourceTable;
     this.destinationColumn = destinationColumn;
     this.destinationTable = destinationTable;
   }
-  
+
   public String getSourceColumn() {
-    return this.sourceColumn;
+    return sourceColumn;
   }
 
   public String getDestinationColumn() {
-    return this.destinationColumn;
-  }
-  
-  public String getDestinationTable() {
-    return this.destinationTable;
-  }
-  
-  public String getSourceTable() {
-    return this.sourceTable;
+    return destinationColumn;
   }
 
+  public String getDestinationTable() {
+    return destinationTable;
+  }
+
+  public String getSourceTable() {
+    return sourceTable;
+  }
 }

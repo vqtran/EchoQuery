@@ -13,13 +13,20 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import echoquery.sql.joins.InvalidJoinRecipe;
+import echoquery.sql.joins.JoinRecipe;
+import echoquery.sql.joins.OneTableJoinRecipe;
+import echoquery.sql.joins.TwoTableJoinRecipe;
+import echoquery.sql.model.ForeignKey;
+
 /**
- * 
- * @author gabe
  * Knows the different columns on each table and the connections between tables
- *
  */
-public class StarSchemaStore {
+public class SchemaInferrer {
+
+  private static final Logger log =
+      LoggerFactory.getLogger(SchemaInferrer.class);
+
   // column name maps to set of table names that contain a column with that name
   private final Map<String, HashSet<String>> columnToTable;
 
@@ -27,10 +34,7 @@ public class StarSchemaStore {
   // and the primary keys that they map to
   private final Map<String, List<ForeignKey>> tableToForeignKeys;
 
-  private static final Logger log =
-      LoggerFactory.getLogger(StarSchemaQuerier.class);
-
-  public StarSchemaStore(Connection conn) {
+  public SchemaInferrer(Connection conn) {
     columnToTable = new HashMap<>();
     tableToForeignKeys = new HashMap<>();
 
@@ -49,51 +53,60 @@ public class StarSchemaStore {
       e.printStackTrace();
     }
   }
-  
-  private void adjustTableToForeignKeys(String table, DatabaseMetaData md) throws SQLException {
+
+  private void adjustTableToForeignKeys(String table, DatabaseMetaData md)
+      throws SQLException {
     ResultSet foreignKeys = md.getImportedKeys(null, null, table);
     while (foreignKeys.next()) {
       String fkTableName = foreignKeys.getString("FKTABLE_NAME");
       String fkColumnName = foreignKeys.getString("FKCOLUMN_NAME");
       String pkTableName = foreignKeys.getString("PKTABLE_NAME");
       String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
-      System.out.println(fkTableName + "." + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
-      List<ForeignKey> previousList = tableToForeignKeys.getOrDefault(fkTableName, new ArrayList<ForeignKey>());
-      previousList.add(new ForeignKey(fkTableName, fkColumnName, pkTableName, pkColumnName));
+      System.out.println(fkTableName + "." 
+          + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
+      List<ForeignKey> previousList = tableToForeignKeys.getOrDefault(
+          fkTableName, new ArrayList<ForeignKey>());
+      previousList.add(
+          new ForeignKey(fkTableName, fkColumnName, pkTableName, pkColumnName));
       tableToForeignKeys.put(fkTableName, previousList);
     }
   }
-  
-  private void adjustColumnToTable(String table, DatabaseMetaData md) throws SQLException {  
+
+  private void adjustColumnToTable(String table, DatabaseMetaData md)
+      throws SQLException {
     ResultSet columns = md.getColumns(null, null, table, null);
     while (columns.next()) {
       String col = columns.getString("COLUMN_NAME"); 
-      HashSet<String> previousSet = columnToTable.getOrDefault(col, new HashSet<String>());
+      HashSet<String> previousSet =
+          columnToTable.getOrDefault(col, new HashSet<String>());
       previousSet.add(table);
       columnToTable.put(col, previousSet);
     }
   }
-  
-  private List<String> findColumnNames(DatabaseMetaData md) throws SQLException {
-      List<String> tables = new ArrayList<>();
-      ResultSet rs = md.getTables(null, null, "%", null);
-      while (rs.next()) {
-        tables.add(rs.getString(3));
-      }
-      return tables;
+
+  private List<String> findColumnNames(DatabaseMetaData md)
+      throws SQLException {
+    List<String> tables = new ArrayList<>();
+    ResultSet rs = md.getTables(null, null, "%", null);
+    while (rs.next()) {
+      tables.add(rs.getString(3));
+    }
+    return tables;
   }
   
   /**
    * 
    * @param table the table that we want to aggregate over / select from
    * @param column the column that were filtering on
-   * @return a JoinRecipe that can create the table to filter one and select from
+   * @return a JoinRecipe that can create the table to filter one and select
+   *    from
    */
   public JoinRecipe infer(String table, String column) {
     // if the inputted table is the center table
-      // find which table has the specific column in columnToTable
-      // find the foreign key to the center table
-    // otherwise, if the column is not in the table give up! if it is you're good
+    // find which table has the specific column in columnToTable
+    // find the foreign key to the center table
+    // otherwise, if the column is not in the table give up! if it is you're
+    // good
     HashSet<String> criteriaTables = columnToTable.get(column);
 
     // if the column could be in the table we're querying on
@@ -116,5 +129,4 @@ public class StarSchemaStore {
       return new InvalidJoinRecipe();
     }
   }
-
 }
