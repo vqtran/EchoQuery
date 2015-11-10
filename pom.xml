@@ -88,6 +88,11 @@
       <artifactId>aws-java-sdk-dynamodb</artifactId>
       <version>1.9.40</version>
     </dependency>
+    <dependency>
+      <groupId>com.facebook.presto</groupId>
+      <artifactId>presto-parser</artifactId>
+      <version>0.125</version>
+    </dependency>
   </dependencies>
 
   <properties>
