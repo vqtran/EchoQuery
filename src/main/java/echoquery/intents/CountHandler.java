@@ -28,37 +28,10 @@ public class CountHandler implements IntentHandler {
       Query query = QueryBuilder.from(intent).build();
       int result = querier.execute(query);
 
-      // TODO(vqtran): Pull this out into a response generator class that takes
-      // the result and the Parser's abstract syntax object.
-//      String response = "There ";
-//      if (result.getInt(1) == 1) {
-//        response +=
-//            "is " + TranslationUtils.convert(result.getInt(1)) + " row";
-//      } else {
-//        response +=
-//            "are " + TranslationUtils.convert(result.getInt(1)) + " rows";
-//      }
-//      response += " in the " + table + " table";
-//      if (column != null) {
-//        response += " where the value in the " + column + " column is ";
-//        if (equals != null) {
-//          response += "equal to ";
-//        }
-//        if (greater != null) {
-//          response += "greater than ";
-//        }
-//        if (less != null) {
-//          response += "less than ";
-//        }
-//        if (colVal == null) {
-//          response += TranslationUtils.convert(Integer.parseInt(match));
-//        } else {
-//          response += colVal;
-//        }
-//      }
-//      response += ".";
+      // TODO(vqtran): Next steps, make this return a comprehensive QueryResult
+      // object instead and write a translator for that back into natural lang.
 
-      return Response.say(result + "");
+      return Response.say(Integer.toString(result));
 
     } catch (SQLException e) {
       log.info("StatementCreationError: " + e.getMessage());
