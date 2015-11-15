@@ -19,13 +19,17 @@ public class QueryBuilder {
   private Select select;
   private Relation from;
   private Optional<Expression> where;
-  
+
   public QueryBuilder() {}
 
   public QueryBuilder(Select select, Relation from) {
     this.select = select;
     this.from = from;
     this.where = Optional.empty();
+  }
+
+  public QueryBuilder(Intent intent) {
+
   }
 
   public QueryBuilder select(Select select) {
@@ -51,7 +55,7 @@ public class QueryBuilder {
     }
   }
 
-  public static QueryBuilder from(Intent intent) {
+  public static QueryBuilder of(Intent intent) {
     String table = intent.getSlot(SlotNames.TABLE_NAME).getValue();
 
     QueryBuilder builder = new QueryBuilder()

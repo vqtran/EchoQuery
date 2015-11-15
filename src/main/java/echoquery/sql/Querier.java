@@ -24,13 +24,10 @@ public class Querier {
     this.inferrer = new SchemaInferrer(conn);
   }
 
-  public int execute(Query query) throws SQLException {
+  public QueryResult execute(Query query) throws SQLException {
       String sql = SqlFormatter.formatSql(query);
-      System.out.println(sql);
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(sql);
-      result.first();
-      return result.getInt(1);
+      return new QueryResult(query, result);
   }
-  
 }

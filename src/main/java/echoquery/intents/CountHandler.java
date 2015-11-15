@@ -12,6 +12,7 @@ import com.facebook.presto.sql.tree.Query;
 
 import echoquery.sql.Querier;
 import echoquery.sql.QueryBuilder;
+import echoquery.sql.QueryResult;
 import echoquery.sql.SingletonConnection;
 import echoquery.utils.Response;
 
@@ -25,13 +26,10 @@ public class CountHandler implements IntentHandler {
   @Override
   public SpeechletResponse respond(Intent intent, Session session) {
     try {
-      Query query = QueryBuilder.from(intent).build();
-      int result = querier.execute(query);
+      Query query = QueryBuilder.of(intent).build();
+      QueryResult result = querier.execute(query);
 
-      // TODO(vqtran): Next steps, make this return a comprehensive QueryResult
-      // object instead and write a translator for that back into natural lang.
-
-      return Response.say(Integer.toString(result));
+      return Response.say(result.toEnglish());
 
     } catch (SQLException e) {
       log.info("StatementCreationError: " + e.getMessage());
