@@ -12,7 +12,7 @@ import com.facebook.presto.sql.tree.Relation;
 import com.facebook.presto.sql.tree.Select;
 import com.facebook.presto.sql.tree.StringLiteral;
 
-import echoquery.utils.SlotNames;
+import echoquery.utils.SlotUtil;
 
 public class QueryBuilder {
 
@@ -56,18 +56,18 @@ public class QueryBuilder {
   }
 
   public static QueryBuilder of(Intent intent) {
-    String table = intent.getSlot(SlotNames.TABLE_NAME).getValue();
+    String table = intent.getSlot(SlotUtil.TABLE_NAME).getValue();
 
     QueryBuilder builder = new QueryBuilder()
         .select(QueryUtil.selectList(QueryUtil.functionCall("COUNT")))
         .from(QueryUtil.table(new QualifiedName(table)));
 
-    String column = intent.getSlot(SlotNames.COLUMN_NAME).getValue();
-    String colVal= intent.getSlot(SlotNames.COLUMN_VALUE).getValue();
-    String colNum = intent.getSlot(SlotNames.COLUMN_NUMBER).getValue();
-    String equals = intent.getSlot(SlotNames.EQUALS).getValue();
-    String greater = intent.getSlot(SlotNames.GREATER_THAN).getValue();
-    String less = intent.getSlot(SlotNames.LESS_THAN).getValue();
+    String column = intent.getSlot(SlotUtil.COLUMN_NAME).getValue();
+    String colVal= intent.getSlot(SlotUtil.COLUMN_VALUE).getValue();
+    String colNum = intent.getSlot(SlotUtil.COLUMN_NUMBER).getValue();
+    String equals = intent.getSlot(SlotUtil.EQUALS).getValue();
+    String greater = intent.getSlot(SlotUtil.GREATER_THAN).getValue();
+    String less = intent.getSlot(SlotUtil.LESS_THAN).getValue();
 
     String match = null;
     if (column != null) {
