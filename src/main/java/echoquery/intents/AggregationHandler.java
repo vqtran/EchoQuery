@@ -16,10 +16,10 @@ import echoquery.sql.QueryResult;
 import echoquery.sql.SingletonConnection;
 import echoquery.utils.Response;
 
-public class CountHandler implements IntentHandler {
+public class AggregationHandler implements IntentHandler {
 
   private static final Logger log =
-      LoggerFactory.getLogger(CountHandler.class);
+      LoggerFactory.getLogger(AggregationHandler.class);
   private static final Querier querier =
       new Querier(SingletonConnection.getInstance());
 

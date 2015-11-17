@@ -17,11 +17,9 @@ public class Querier {
   private static final Logger log = LoggerFactory.getLogger(Querier.class);
 
   private Connection conn;
-  private SchemaInferrer inferrer;
 
   public Querier(Connection conn) {
     this.conn = conn;
-    this.inferrer = new SchemaInferrer(conn);
   }
 
   public QueryResult execute(Query query) throws SQLException {

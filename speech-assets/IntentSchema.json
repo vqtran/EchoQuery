@@ -1,7 +1,7 @@
 {
   "intents": [
     {
-      "intent": "AggregateIntent",
+      "intent": "AggregationIntent",
       "slots": [
         {
           "name": "Aggregate",
