@@ -34,7 +34,14 @@ public class SchemaInferrer {
   // and the primary keys that they map to
   private final Map<String, List<ForeignKey>> tableToForeignKeys;
 
-  public SchemaInferrer(Connection conn) {
+  private static SchemaInferrer inferrer = new SchemaInferrer();
+
+  public static SchemaInferrer getInstance() {
+    return inferrer;
+  }
+
+  private SchemaInferrer() {
+    Connection conn = SingletonConnection.getInstance();
     columnToTable = new HashMap<>();
     tableToForeignKeys = new HashMap<>();
 
@@ -62,12 +69,10 @@ public class SchemaInferrer {
       String fkColumnName = foreignKeys.getString("FKCOLUMN_NAME");
       String pkTableName = foreignKeys.getString("PKTABLE_NAME");
       String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
-      System.out.println(fkTableName + "." 
-          + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
       List<ForeignKey> previousList = tableToForeignKeys.getOrDefault(
           fkTableName, new ArrayList<ForeignKey>());
       previousList.add(
-          new ForeignKey(fkTableName, fkColumnName, pkTableName, pkColumnName));
+          new ForeignKey(fkColumnName, fkTableName, pkColumnName, pkTableName));
       tableToForeignKeys.put(fkTableName, previousList);
     }
   }
@@ -107,20 +112,18 @@ public class SchemaInferrer {
     // find the foreign key to the center table
     // otherwise, if the column is not in the table give up! if it is you're
     // good
-    HashSet<String> criteriaTables = columnToTable.get(column);
-
+    HashSet<String> criteriaTables = columnToTable.getOrDefault(column, new HashSet<String>());
     // if the column could be in the table we're querying on
     if (criteriaTables.contains(table)) {
       // we don't need to join
       return new OneTableJoinRecipe(table);
-    } else if (criteriaTables.size() > 1) {
+    } else if (criteriaTables.size() >= 1) {
       // choose the first one that connects to our table
-      for (String criteriaTable : criteriaTables) {
-        List<ForeignKey> foreignKeys = tableToForeignKeys.get(criteriaTable);
-        for (ForeignKey foreignKey : foreignKeys) {
-          if (foreignKey.getDestinationTable().equals(table)) {
-            return new TwoTableJoinRecipe(foreignKey);
-          }
+      List<ForeignKey> foreignKeys = tableToForeignKeys.getOrDefault(table, new ArrayList<ForeignKey>());
+      for (ForeignKey foreignKey : foreignKeys) {
+        String destinationTable = foreignKey.getDestinationTable();
+        if (criteriaTables.contains(destinationTable)) {
+         return new TwoTableJoinRecipe(foreignKey);
         }
       }
       return new InvalidJoinRecipe();
