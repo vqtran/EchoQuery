@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class SchemaInferrer {
       LoggerFactory.getLogger(SchemaInferrer.class);
 
   // column name maps to set of table names that contain a column with that name
-  private final Map<String, HashSet<String>> columnToTable;
+  private final Map<String, Set<String>> columnToTable;
 
   // table name maps to list of foreign keys that exist in the table
   // and the primary keys that they map to
@@ -81,8 +82,8 @@ public class SchemaInferrer {
       throws SQLException {
     ResultSet columns = md.getColumns(null, null, table, null);
     while (columns.next()) {
-      String col = columns.getString("COLUMN_NAME"); 
-      HashSet<String> previousSet =
+      String col = columns.getString("COLUMN_NAME");
+      Set<String> previousSet =
           columnToTable.getOrDefault(col, new HashSet<String>());
       previousSet.add(table);
       columnToTable.put(col, previousSet);
@@ -98,9 +99,9 @@ public class SchemaInferrer {
     }
     return tables;
   }
-  
+
   /**
-   * 
+   *
    * @param table the table that we want to aggregate over / select from
    * @param column the column that were filtering on
    * @return a JoinRecipe that can create the table to filter one and select
@@ -112,14 +113,16 @@ public class SchemaInferrer {
     // find the foreign key to the center table
     // otherwise, if the column is not in the table give up! if it is you're
     // good
-    HashSet<String> criteriaTables = columnToTable.getOrDefault(column, new HashSet<String>());
+    Set<String> criteriaTables =
+        columnToTable.getOrDefault(column, new HashSet<String>());
     // if the column could be in the table we're querying on
     if (criteriaTables.contains(table)) {
       // we don't need to join
       return new OneTableJoinRecipe(table);
     } else if (criteriaTables.size() >= 1) {
       // choose the first one that connects to our table
-      List<ForeignKey> foreignKeys = tableToForeignKeys.getOrDefault(table, new ArrayList<ForeignKey>());
+      List<ForeignKey> foreignKeys =
+          tableToForeignKeys.getOrDefault(table, new ArrayList<ForeignKey>());
       for (ForeignKey foreignKey : foreignKeys) {
         String destinationTable = foreignKey.getDestinationTable();
         if (criteriaTables.contains(destinationTable)) {

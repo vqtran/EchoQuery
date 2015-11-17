@@ -19,9 +19,9 @@ public class TwoTableJoinRecipe implements JoinRecipe {
   private String sourceTable;
   private String destinationColumn;
   private String destinationTable;
-  
-  
-  public TwoTableJoinRecipe(String sourceColumn, String sourceTable, 
+
+
+  public TwoTableJoinRecipe(String sourceColumn, String sourceTable,
       String destinationColumn, String destinationTable) {
     this.sourceColumn = sourceColumn;
     this.sourceTable = sourceTable;
@@ -35,21 +35,24 @@ public class TwoTableJoinRecipe implements JoinRecipe {
     this.destinationColumn = foreignKey.getDestinationColumn();
     this.destinationTable = foreignKey.getDestinationTable();
   }
-  
+
   @Override
   public boolean isValid() {
     return true;
   }
-  
+
   @Override
   public Relation render() {
     Relation left = QueryUtil.table(new QualifiedName(this.sourceTable));
     Relation right = QueryUtil.table(new QualifiedName(this.destinationTable));
-    
-    Expression leftColumn = new QualifiedNameReference((QualifiedName.of(this.sourceTable, this.sourceColumn)));
-    Expression rightColumn = new QualifiedNameReference((QualifiedName.of(this.destinationTable, this.destinationColumn)));
-    Optional<JoinCriteria> on = Optional.of(new JoinOn(new ComparisonExpression(
-        ComparisonExpression.Type.EQUAL, leftColumn, rightColumn)));
+
+    Expression leftColumn = new QualifiedNameReference(
+        QualifiedName.of(this.sourceTable, this.sourceColumn));
+    Expression rightColumn = new QualifiedNameReference(
+        QualifiedName.of(this.destinationTable, this.destinationColumn));
+    Optional<JoinCriteria> on = Optional.of(
+        new JoinOn(new ComparisonExpression(
+            ComparisonExpression.Type.EQUAL, leftColumn, rightColumn)));
     return new Join(Join.Type.INNER, left, right, on);
   }
 
@@ -57,5 +60,4 @@ public class TwoTableJoinRecipe implements JoinRecipe {
   public String wherePrefix() {
     return destinationTable;
   }
-
 }

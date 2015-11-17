@@ -99,8 +99,8 @@ public class QueryBuilder {
         comparison = ComparisonExpression.Type.LESS_THAN;
       }
       builder.where(new ComparisonExpression(comparison,
-          new QualifiedNameReference(QualifiedName.of(
-              from.wherePrefix(), column)),
+          new QualifiedNameReference(
+              QualifiedName.of(from.wherePrefix(), column)),
           new StringLiteral(match)));
     }
 
