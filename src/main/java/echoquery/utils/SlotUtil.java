@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.facebook.presto.sql.tree.ComparisonExpression;
+
 public final class SlotUtil {
   public final static String AGGREGATE = "Aggregate";
   public final static String TABLE_NAME = "TableName";
@@ -19,6 +21,7 @@ public final class SlotUtil {
   private static Set<String> maxExpr = new HashSet<>();
 
   private static Set<String> equalsExpr = new HashSet<>();
+  private static Set<String> notEqualsExpr = new HashSet<>();
   private static Set<String> greaterExpr = new HashSet<>();
   private static Set<String> lessExpr = new HashSet<>();
   private static Set<String> greaterEqualExpr = new HashSet<>();
@@ -81,6 +84,24 @@ public final class SlotUtil {
         "were same as",
         "were the same as"
     }));
+    notEqualsExpr.addAll(Arrays.asList(new String[]{
+        "is not",
+        "are not",
+        "were not",
+        "not equals",
+        "is not equal to",
+        "is not same as",
+        "is not the same as",
+        "was not equal to",
+        "was not same as",
+        "was not the same as",
+        "are not equal to",
+        "are not same as",
+        "are not the same as",
+        "were not equal to",
+        "were not same as",
+        "were not the same as"
+    }));
     greaterExpr.addAll(Arrays.asList(new String[]{
         "greater",
         "above",
@@ -115,6 +136,46 @@ public final class SlotUtil {
     }));
   }
 
-  private SlotUtil() {}
+  public static String getAggregateFunction(String expression) {
+    if (countExpr.contains(expression)) {
+      return "COUNT";
+    }
+    if (averageExpr.contains(expression)) {
+      return "AVG";
+    }
+    if (sumExpr.contains(expression)) {
+      return "SUM";
+    }
+    if (minExpr.contains(expression)) {
+      return "MIN";
+    }
+    if (maxExpr.contains(expression)) {
+      return "MAX";
+    }
+    return null;
+  }
 
+  public static ComparisonExpression.Type getComparisonType(String expression) {
+    if (equalsExpr.contains(expression)) {
+      return ComparisonExpression.Type.EQUAL;
+    }
+    if (notEqualsExpr.contains(expression)) {
+      return ComparisonExpression.Type.NOT_EQUAL;
+    }
+    if (greaterExpr.contains(expression)) {
+      return ComparisonExpression.Type.GREATER_THAN;
+    }
+    if (lessExpr.contains(expression)) {
+      return ComparisonExpression.Type.LESS_THAN;
+    }
+    if (greaterEqualExpr.contains(expression)) {
+      return ComparisonExpression.Type.GREATER_THAN_OR_EQUAL;
+    }
+    if (lessEqualExpr.contains(expression)) {
+      return ComparisonExpression.Type.LESS_THAN_OR_EQUAL;
+    }
+    return null;
+  }
+
+  private SlotUtil() {}
 }
