@@ -3,3 +3,7 @@ product
 count
 name
 size
+id
+job
+title
+salary

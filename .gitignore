@@ -5,6 +5,8 @@ node_modules/
 
 .metadata/
 
+airportdata/
+
 .classpath
 .project
 .DS_Store

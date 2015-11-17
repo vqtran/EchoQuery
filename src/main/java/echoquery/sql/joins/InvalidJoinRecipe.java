@@ -1,5 +1,7 @@
 package echoquery.sql.joins;
 
+import com.facebook.presto.sql.tree.Relation;
+
 public class InvalidJoinRecipe implements JoinRecipe {
 
   @Override
@@ -8,7 +10,12 @@ public class InvalidJoinRecipe implements JoinRecipe {
   }
 
   @Override
-  public String render() {
-    return "";
+  public Relation render() {
+    return null;
+  }
+
+  @Override
+  public String wherePrefix() {
+    return null;
   }
 }
