@@ -62,447 +62,116 @@ HelpIntent what stuff can I do
 HelpIntent what stuff can I use
 HelpIntent what stuff can I use this for
 
-CountIntent How many {TableName}
-CountIntent How much {TableName}
-CountIntent How many entries in {TableName}
-CountIntent How many rows in {TableName}
-CountIntent How much entries in {TableName}
-CountIntent How much rows in {TableName}
-CountIntent How many {TableName} are there
-CountIntent How many {TableName} do we have
-CountIntent How much {TableName} are there
-CountIntent How much {TableName} do we have
-CountIntent How many entries in {TableName} are there
-CountIntent How many entries in {TableName} do we have
-CountIntent How many rows in {TableName} are there
-CountIntent How many rows in {TableName} do we have
-CountIntent How much entries in {TableName} are there
-CountIntent How much entries in {TableName} do we have
-CountIntent How much rows in {TableName} are there
-CountIntent How much rows in {TableName} do we have
-CountIntent What's the number of {TableName}
-CountIntent What's the size of {TableName}
-CountIntent What's the length of {TableName}
-CountIntent What's the cardinality of {TableName}
-CountIntent What is the number of {TableName}
-CountIntent What is the size of {TableName}
-CountIntent What is the length of {TableName}
-CountIntent What is the cardinality of {TableName}
-CountIntent Count the number of {TableName}
-CountIntent Count the size of {TableName}
-CountIntent Count the length of {TableName}
-CountIntent Count the cardinality of {TableName}
-CountIntent Find the number of {TableName}
-CountIntent Find the size of {TableName}
-CountIntent Find the length of {TableName}
-CountIntent Find the cardinality of {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} column in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of column in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} column in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} column in {TableName}
+AggregationIntent {Aggregate} {TableName}
+AggregationIntent {Aggregate} entries in {TableName}
+AggregationIntent {Aggregate} rows in {TableName}
+AggregationIntent {Aggregate} {TableName} are there
+AggregationIntent {Aggregate} {TableName} do we have
+AggregationIntent {Aggregate} entries in {TableName} are there
+AggregationIntent {Aggregate} entries in {TableName} do we have
+AggregationIntent {Aggregate} rows in {TableName} are there
+AggregationIntent {Aggregate} rows in {TableName} do we have
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName}
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName}
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName} table
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} table
 
-CountIntent How many {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent How many {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent How much {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many entries in {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent How many entries in {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many entries in {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many entries in {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many entries in {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many entries in {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many rows in {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent How many rows in {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many rows in {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many rows in {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many rows in {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many rows in {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much entries in {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent How much entries in {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much entries in {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much entries in {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much entries in {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much entries in {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much rows in {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent How much rows in {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much rows in {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much rows in {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much rows in {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much rows in {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many {TableName} are there where {ColumnName} {Equals} {ColumnValue}
-CountIntent How many {TableName} are there where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many {TableName} are there where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many {TableName} are there where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many {TableName} are there where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many {TableName} are there where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many {TableName} do we have where {ColumnName} {Equals} {ColumnValue}
-CountIntent How many {TableName} do we have where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many {TableName} do we have where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many {TableName} do we have where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many {TableName} do we have where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many {TableName} do we have where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much {TableName} are there where {ColumnName} {Equals} {ColumnValue}
-CountIntent How much {TableName} are there where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much {TableName} are there where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much {TableName} are there where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much {TableName} are there where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much {TableName} are there where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much {TableName} do we have where {ColumnName} {Equals} {ColumnValue}
-CountIntent How much {TableName} do we have where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much {TableName} do we have where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much {TableName} do we have where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much {TableName} do we have where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much {TableName} do we have where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many entries in {TableName} are there where {ColumnName} {Equals} {ColumnValue}
-CountIntent How many entries in {TableName} are there where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many entries in {TableName} are there where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many entries in {TableName} are there where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many entries in {TableName} are there where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many entries in {TableName} are there where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many entries in {TableName} do we have where {ColumnName} {Equals} {ColumnValue}
-CountIntent How many entries in {TableName} do we have where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many entries in {TableName} do we have where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many entries in {TableName} do we have where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many entries in {TableName} do we have where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many entries in {TableName} do we have where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many rows in {TableName} are there where {ColumnName} {Equals} {ColumnValue}
-CountIntent How many rows in {TableName} are there where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many rows in {TableName} are there where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many rows in {TableName} are there where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many rows in {TableName} are there where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many rows in {TableName} are there where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many rows in {TableName} do we have where {ColumnName} {Equals} {ColumnValue}
-CountIntent How many rows in {TableName} do we have where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many rows in {TableName} do we have where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many rows in {TableName} do we have where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many rows in {TableName} do we have where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many rows in {TableName} do we have where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much entries in {TableName} are there where {ColumnName} {Equals} {ColumnValue}
-CountIntent How much entries in {TableName} are there where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much entries in {TableName} are there where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much entries in {TableName} are there where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much entries in {TableName} are there where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much entries in {TableName} are there where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much entries in {TableName} do we have where {ColumnName} {Equals} {ColumnValue}
-CountIntent How much entries in {TableName} do we have where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much entries in {TableName} do we have where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much entries in {TableName} do we have where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much entries in {TableName} do we have where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much entries in {TableName} do we have where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much rows in {TableName} are there where {ColumnName} {Equals} {ColumnValue}
-CountIntent How much rows in {TableName} are there where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much rows in {TableName} are there where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much rows in {TableName} are there where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much rows in {TableName} are there where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much rows in {TableName} are there where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much rows in {TableName} do we have where {ColumnName} {Equals} {ColumnValue}
-CountIntent How much rows in {TableName} do we have where {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much rows in {TableName} do we have where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much rows in {TableName} do we have where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much rows in {TableName} do we have where {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much rows in {TableName} do we have where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How many {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How much {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many entries in {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How many entries in {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many entries in {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many entries in {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many entries in {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many entries in {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many rows in {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How many rows in {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many rows in {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many rows in {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many rows in {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many rows in {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much entries in {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How much entries in {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much entries in {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much entries in {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much entries in {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much entries in {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much rows in {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How much rows in {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much rows in {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much rows in {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much rows in {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much rows in {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many {TableName} are there where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How many {TableName} are there where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many {TableName} are there where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many {TableName} are there where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many {TableName} are there where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many {TableName} are there where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many {TableName} do we have where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How many {TableName} do we have where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many {TableName} do we have where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many {TableName} do we have where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much {TableName} are there where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How much {TableName} are there where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much {TableName} are there where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much {TableName} are there where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much {TableName} are there where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much {TableName} are there where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much {TableName} do we have where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How much {TableName} do we have where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much {TableName} do we have where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much {TableName} do we have where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many entries in {TableName} are there where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How many entries in {TableName} are there where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many entries in {TableName} are there where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many entries in {TableName} are there where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many entries in {TableName} are there where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many entries in {TableName} are there where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many entries in {TableName} do we have where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How many entries in {TableName} do we have where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many entries in {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many entries in {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many entries in {TableName} do we have where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many entries in {TableName} do we have where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many rows in {TableName} are there where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How many rows in {TableName} are there where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many rows in {TableName} are there where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many rows in {TableName} are there where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many rows in {TableName} are there where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many rows in {TableName} are there where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How many rows in {TableName} do we have where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How many rows in {TableName} do we have where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How many rows in {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How many rows in {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How many rows in {TableName} do we have where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How many rows in {TableName} do we have where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much entries in {TableName} are there where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How much entries in {TableName} are there where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much entries in {TableName} are there where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much entries in {TableName} are there where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much entries in {TableName} are there where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much entries in {TableName} are there where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much entries in {TableName} do we have where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How much entries in {TableName} do we have where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much entries in {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much entries in {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much entries in {TableName} do we have where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much entries in {TableName} do we have where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much rows in {TableName} are there where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How much rows in {TableName} are there where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much rows in {TableName} are there where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much rows in {TableName} are there where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much rows in {TableName} are there where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much rows in {TableName} are there where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent How much rows in {TableName} do we have where the {ColumnName} {Equals} {ColumnValue}
-CountIntent How much rows in {TableName} do we have where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent How much rows in {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent How much rows in {TableName} do we have where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent How much rows in {TableName} do we have where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent How much rows in {TableName} do we have where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What's the number of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent What's the number of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent What's the number of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What's the number of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What's the number of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent What's the number of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What's the size of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent What's the size of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent What's the size of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What's the size of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What's the size of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent What's the size of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What's the length of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent What's the length of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent What's the length of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What's the length of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What's the length of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent What's the length of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What's the cardinality of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent What's the cardinality of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent What's the cardinality of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What's the cardinality of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What's the cardinality of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent What's the cardinality of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What is the number of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent What is the number of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent What is the number of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What is the number of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What is the number of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent What is the number of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What is the size of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent What is the size of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent What is the size of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What is the size of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What is the size of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent What is the size of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What is the length of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent What is the length of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent What is the length of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What is the length of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What is the length of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent What is the length of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What is the cardinality of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent What is the cardinality of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent What is the cardinality of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What is the cardinality of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What is the cardinality of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent What is the cardinality of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Count the number of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent Count the number of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent Count the number of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Count the number of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Count the number of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent Count the number of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Count the size of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent Count the size of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent Count the size of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Count the size of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Count the size of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent Count the size of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Count the length of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent Count the length of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent Count the length of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Count the length of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Count the length of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent Count the length of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Count the cardinality of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent Count the cardinality of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent Count the cardinality of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Count the cardinality of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Count the cardinality of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent Count the cardinality of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Find the number of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent Find the number of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent Find the number of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Find the number of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Find the number of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent Find the number of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Find the size of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent Find the size of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent Find the size of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Find the size of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Find the size of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent Find the size of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Find the length of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent Find the length of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent Find the length of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Find the length of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Find the length of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent Find the length of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Find the cardinality of {TableName} where {ColumnName} {Equals} {ColumnValue}
-CountIntent Find the cardinality of {TableName} where {ColumnName} {Equals} {ColumnNumber}
-CountIntent Find the cardinality of {TableName} where {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Find the cardinality of {TableName} where {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Find the cardinality of {TableName} where {ColumnName} {LessThan} {ColumnValue}
-CountIntent Find the cardinality of {TableName} where {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What's the number of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent What's the number of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent What's the number of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What's the number of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What's the number of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent What's the number of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What's the size of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent What's the size of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent What's the size of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What's the size of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What's the size of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent What's the size of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What's the length of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent What's the length of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent What's the length of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What's the length of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What's the length of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent What's the length of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What's the cardinality of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent What's the cardinality of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent What's the cardinality of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What's the cardinality of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What's the cardinality of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent What's the cardinality of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What is the number of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent What is the number of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent What is the number of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What is the number of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What is the number of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent What is the number of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What is the size of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent What is the size of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent What is the size of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What is the size of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What is the size of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent What is the size of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What is the length of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent What is the length of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent What is the length of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What is the length of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What is the length of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent What is the length of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent What is the cardinality of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent What is the cardinality of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent What is the cardinality of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent What is the cardinality of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent What is the cardinality of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent What is the cardinality of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Count the number of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent Count the number of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent Count the number of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Count the number of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Count the number of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent Count the number of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Count the size of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent Count the size of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent Count the size of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Count the size of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Count the size of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent Count the size of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Count the length of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent Count the length of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent Count the length of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Count the length of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Count the length of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent Count the length of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Count the cardinality of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent Count the cardinality of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent Count the cardinality of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Count the cardinality of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Count the cardinality of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent Count the cardinality of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Find the number of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent Find the number of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent Find the number of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Find the number of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Find the number of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent Find the number of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Find the size of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent Find the size of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent Find the size of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Find the size of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Find the size of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent Find the size of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Find the length of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent Find the length of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent Find the length of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Find the length of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Find the length of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent Find the length of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
-CountIntent Find the cardinality of {TableName} where the {ColumnName} {Equals} {ColumnValue}
-CountIntent Find the cardinality of {TableName} where the {ColumnName} {Equals} {ColumnNumber}
-CountIntent Find the cardinality of {TableName} where the {ColumnName} {GreaterThan} {ColumnValue}
-CountIntent Find the cardinality of {TableName} where the {ColumnName} {GreaterThan} {ColumnNumber}
-CountIntent Find the cardinality of {TableName} where the {ColumnName} {LessThan} {ColumnValue}
-CountIntent Find the cardinality of {TableName} where the {ColumnName} {LessThan} {ColumnNumber}
+AggregationIntent For {TableName} {CommandPhrase} the {Aggregate}
+AggregationIntent For {TableName} {CommandPhrase} the {Aggregate} of {AggregationColumn}
+AggregationIntent For {TableName} {CommandPhrase} the {Aggregate} column
+AggregationIntent For {TableName} {CommandPhrase} the {Aggregate} of {AggregationColumn} column
+AggregationIntent For {TableName} {Aggregate}
+AggregationIntent For {TableName} {Aggregate} rows
+AggregationIntent For {TableName} {Aggregate} entries
+AggregationIntent For {TableName} {Aggregate} are there
+AggregationIntent For {TableName} {Aggregate} do we have
+AggregationIntent For {TableName} {Aggregate} rows are there
+AggregationIntent For {TableName} {Aggregate} rows do we have
+AggregationIntent For {TableName} {Aggregate} entries are there
+AggregationIntent For {TableName} {Aggregate} entries do we have
+AggregationIntent For {TableName} {Aggregate} the {AggregationColumn}
+AggregationIntent For {TableName} {Aggregate} the {AggregationColumn} column
+
+AggregationIntent {CommandPhrase} the {Aggregate} in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} of in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} of in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} of column in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} of column in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} entries in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} entries in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} rows in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} rows in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} {TableName} are there where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} {TableName} are there where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} entries in {TableName} are there where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} entries in {TableName} are there where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} entries in {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} entries in {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} rows in {TableName} are there where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} rows in {TableName} are there where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName} table where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName} table where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} table where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} table where {ComparisonColumn} {Comparator} {ColumnNumber}
+
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {CommandPhrase} the {Aggregate}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {CommandPhrase} the {Aggregate}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {CommandPhrase} the {Aggregate} of {AggregationColumn}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {CommandPhrase} the {Aggregate} of {AggregationColumn}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {CommandPhrase} the {Aggregate} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {CommandPhrase} the {Aggregate} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {CommandPhrase} the {Aggregate} of {AggregationColumn} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {CommandPhrase} the {Aggregate} of {AggregationColumn} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} rows
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} entries
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} rows
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} entries
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} rows are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} rows do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} entries are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} entries do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} rows are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} rows do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} entries are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} entries do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} the {AggregationColumn}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} the {AggregationColumn}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} the {AggregationColumn} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} the {AggregationColumn} column
+
 

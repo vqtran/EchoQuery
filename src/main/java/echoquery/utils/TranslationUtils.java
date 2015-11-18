@@ -133,4 +133,23 @@ public class TranslationUtils {
     return result.replaceAll("^\\s+", "").replaceAll("\\b\\s{2,}\\b", " ");
   }
 
+  public static String convert(Double d) {
+    String result = "";
+
+    long whole = d.longValue();
+    result += convert(whole);
+
+    double remainder = d - whole;
+    if (remainder > 0.00001) {
+      int decimals = (int) (remainder * 1000);
+      String decs = "";
+      while (decimals > 0) {
+        decs = numNames[decimals % 10] + decs;
+        decimals /= 10;
+      }
+      return result + " point" + decs;
+    } else {
+      return result;
+    }
+  }
 }

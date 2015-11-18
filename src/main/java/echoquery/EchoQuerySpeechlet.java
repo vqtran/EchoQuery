@@ -13,7 +13,7 @@ import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
-import echoquery.intents.CountHandler;
+import echoquery.intents.AggregationHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
 import echoquery.utils.Response;
@@ -29,12 +29,12 @@ public class EchoQuerySpeechlet implements Speechlet {
   private static final Logger log =
       LoggerFactory.getLogger(EchoQuerySpeechlet.class);
 
-  private IntentHandler countHandler;
+  private IntentHandler aggregationHandler;
   private IntentHandler helpHandler;
 
   public EchoQuerySpeechlet() {
     super();
-    countHandler = new CountHandler();
+    aggregationHandler = new AggregationHandler();
     helpHandler = new HelpHandler();
   }
 
@@ -68,8 +68,8 @@ public class EchoQuerySpeechlet implements Speechlet {
 
     // Route the intent to the proper handlers.
     switch(intentName) {
-      case "CountIntent":
-        return countHandler.respond(intent, session);
+      case "AggregationIntent":
+        return aggregationHandler.respond(intent, session);
       case "HelpIntent":
         return helpHandler.respond(intent, session);
       case "FinishIntent":

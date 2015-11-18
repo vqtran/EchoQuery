@@ -18,12 +18,11 @@ import com.facebook.presto.sql.tree.StringLiteral;
 
 import echoquery.sql.joins.JoinRecipe;
 import echoquery.sql.joins.OneTableJoinRecipe;
-import echoquery.utils.SlotNames;
+import echoquery.utils.SlotUtil;
 
 public class QueryBuilder {
 
-  private static final Logger log =
-      LoggerFactory.getLogger(QueryBuilder.class);
+  private static final Logger log = LoggerFactory.getLogger(QueryBuilder.class);
   private Select select;
   private Relation from;
   private Optional<Expression> where;
@@ -64,43 +63,46 @@ public class QueryBuilder {
   }
 
   public static QueryBuilder of(Intent intent) {
-    String table = intent.getSlot(SlotNames.TABLE_NAME).getValue();
+    String table = intent.getSlot(SlotUtil.TABLE_NAME).getValue();
     SchemaInferrer inferrer = SchemaInferrer.getInstance();
 
-    String column = intent.getSlot(SlotNames.COLUMN_NAME).getValue();
-    String colVal= intent.getSlot(SlotNames.COLUMN_VALUE).getValue();
-    String colNum = intent.getSlot(SlotNames.COLUMN_NUMBER).getValue();
-    String equals = intent.getSlot(SlotNames.EQUALS).getValue();
-    String greater = intent.getSlot(SlotNames.GREATER_THAN).getValue();
-    String less = intent.getSlot(SlotNames.LESS_THAN).getValue();
+    String aggregate = intent.getSlot(SlotUtil.AGGREGATE).getValue();
+    String aggregationColumn =
+        intent.getSlot(SlotUtil.AGGREGATION_COLUMN).getValue();
+    String comparisonColumn =
+        intent.getSlot(SlotUtil.COMPARISON_COLUMN).getValue();
+    String comparator = intent.getSlot(SlotUtil.COMPARATOR).getValue();
+    String colVal= intent.getSlot(SlotUtil.COLUMN_VALUE).getValue();
+    String colNum = intent.getSlot(SlotUtil.COLUMN_NUMBER).getValue();
+
+    QueryBuilder builder = new QueryBuilder();
+
+    Expression aggregationFunc;
+    if (aggregationColumn == null) {
+      aggregationFunc = QueryUtil.functionCall(
+          SlotUtil.getAggregateFunction(aggregate));
+    } else {
+      aggregationFunc = QueryUtil.functionCall(
+          SlotUtil.getAggregateFunction(aggregate),
+          QueryUtil.nameReference(aggregationColumn));
+    }
+    builder.select(QueryUtil.selectList(aggregationFunc));
 
     JoinRecipe from;
-    if (column != null) {
-      from = inferrer.infer(table, column != null ? column : "");
-    } else {
+    if (comparisonColumn == null) {
       from = new OneTableJoinRecipe(table);
+    } else {
+      from = inferrer.infer(table, comparisonColumn);
     }
-
-    QueryBuilder builder = new QueryBuilder()
-        .select(QueryUtil.selectList(QueryUtil.functionCall("COUNT")))
-        .from(from.render());
+    builder.from(from.render());
 
     String match = null;
-    if (column != null) {
+    if (comparisonColumn != null) {
       match = (colVal == null) ? colNum : colVal;
-      ComparisonExpression.Type comparison = null;
-      if (equals != null) {
-        comparison = ComparisonExpression.Type.EQUAL;
-      }
-      if (greater != null) {
-        comparison = ComparisonExpression.Type.GREATER_THAN;
-      }
-      if (less != null) {
-        comparison = ComparisonExpression.Type.LESS_THAN;
-      }
-      builder.where(new ComparisonExpression(comparison,
+      builder.where(new ComparisonExpression(
+          SlotUtil.getComparisonType(comparator),
           new QualifiedNameReference(
-              QualifiedName.of(from.wherePrefix(), column)),
+              QualifiedName.of(from.wherePrefix(), comparisonColumn)),
           new StringLiteral(match)));
     }
 

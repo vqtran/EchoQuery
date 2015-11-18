@@ -1,35 +1,39 @@
 {
   "intents": [
     {
-      "intent": "CountIntent",
+      "intent": "AggregationIntent",
       "slots": [
+        {
+          "name": "Aggregate",
+          "type": "AGGREGATE"
+        },
+        {
+          "name": "AggregationColumn",
+          "type": "COLUMN_NAME"
+        },
         {
           "name": "TableName",
           "type": "TABLE_NAME"
         },
         {
-          "name": "ColumnName",
+          "name": "ComparisonColumn",
           "type": "COLUMN_NAME"
         },
         {
           "name": "ColumnValue",
           "type": "COLUMN_VALUE"
         },
-	{
+        {
           "name": "ColumnNumber",
           "type": "AMAZON.NUMBER"
         },
         {
-          "name": "Equals",
-          "type": "BOOLEAN_EQUALS"
+          "name": "Comparator",
+          "type": "COMPARATORS"
         },
         {
-          "name": "GreaterThan",
-          "type": "BOOLEAN_GREATER"
-        },
-        {
-          "name": "LessThan",
-          "type": "BOOLEAN_LESS"
+          "name": "CommandPhrase",
+          "type": "COMMAND_PHRASE"
         }
       ]
     },
