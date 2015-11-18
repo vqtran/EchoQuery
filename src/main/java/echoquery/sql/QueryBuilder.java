@@ -89,11 +89,10 @@ public class QueryBuilder {
     builder.select(QueryUtil.selectList(aggregationFunc));
 
     JoinRecipe from;
-    if (comparisonColumn != null) {
-      from = inferrer.infer(
-          table, comparisonColumn != null ? comparisonColumn : "");
-    } else {
+    if (comparisonColumn == null) {
       from = new OneTableJoinRecipe(table);
+    } else {
+      from = inferrer.infer(table, comparisonColumn);
     }
     builder.from(from.render());
 
