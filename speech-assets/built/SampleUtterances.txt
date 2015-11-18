@@ -64,12 +64,12 @@ HelpIntent what stuff can I use this for
 
 AggregationIntent {CommandPhrase} the {Aggregate} in {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} of in {TableName}
-AggregationIntent {CommandPhrase} the {Aggregate} {ColumnName} in {TableName}
-AggregationIntent {CommandPhrase} the {Aggregate} of {ColumnName} in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} in {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} column in {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} of column in {TableName}
-AggregationIntent {CommandPhrase} the {Aggregate} {ColumnName} column in {TableName}
-AggregationIntent {CommandPhrase} the {Aggregate} of {ColumnName} column in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} column in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} column in {TableName}
 AggregationIntent {Aggregate} {TableName}
 AggregationIntent {Aggregate} entries in {TableName}
 AggregationIntent {Aggregate} rows in {TableName}
@@ -79,99 +79,99 @@ AggregationIntent {Aggregate} entries in {TableName} are there
 AggregationIntent {Aggregate} entries in {TableName} do we have
 AggregationIntent {Aggregate} rows in {TableName} are there
 AggregationIntent {Aggregate} rows in {TableName} do we have
-AggregationIntent {Aggregate} the {ColumnName} in {Table}
-AggregationIntent {Aggregate} the {ColumnName} column in {Table}
-AggregationIntent {Aggregate} the {ColumnName} in {Table} table
-AggregationIntent {Aggregate} the {ColumnName} column in {Table} table
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName}
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName}
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName} table
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} table
 
-AggregationIntent For {TableName}, {CommandPhrase} the {Aggregate}
-AggregationIntent For {TableName}, {CommandPhrase} the {Aggregate} of {ColumnName}
-AggregationIntent For {TableName}, {CommandPhrase} the {Aggregate} column
-AggregationIntent For {TableName}, {CommandPhrase} the {Aggregate} of {ColumnName} column
-AggregationIntent For {TableName}, {Aggregate}
-AggregationIntent For {TableName}, {Aggregate} rows
-AggregationIntent For {TableName}, {Aggregate} entries
-AggregationIntent For {TableName}, {Aggregate} are there
-AggregationIntent For {TableName}, {Aggregate} do we have
-AggregationIntent For {TableName}, {Aggregate} rows are there
-AggregationIntent For {TableName}, {Aggregate} rows do we have
-AggregationIntent For {TableName}, {Aggregate} entries are there
-AggregationIntent For {TableName}, {Aggregate} entries do we have
-AggregationIntent For {TableName}, {Aggregate} the {ColumnName}
-AggregationIntent For {TableName}, {Aggregate} the {ColumnName} column
+AggregationIntent For {TableName} {CommandPhrase} the {Aggregate}
+AggregationIntent For {TableName} {CommandPhrase} the {Aggregate} of {AggregationColumn}
+AggregationIntent For {TableName} {CommandPhrase} the {Aggregate} column
+AggregationIntent For {TableName} {CommandPhrase} the {Aggregate} of {AggregationColumn} column
+AggregationIntent For {TableName} {Aggregate}
+AggregationIntent For {TableName} {Aggregate} rows
+AggregationIntent For {TableName} {Aggregate} entries
+AggregationIntent For {TableName} {Aggregate} are there
+AggregationIntent For {TableName} {Aggregate} do we have
+AggregationIntent For {TableName} {Aggregate} rows are there
+AggregationIntent For {TableName} {Aggregate} rows do we have
+AggregationIntent For {TableName} {Aggregate} entries are there
+AggregationIntent For {TableName} {Aggregate} entries do we have
+AggregationIntent For {TableName} {Aggregate} the {AggregationColumn}
+AggregationIntent For {TableName} {Aggregate} the {AggregationColumn} column
 
-AggregationIntent {CommandPhrase} the {Aggregate} in {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {CommandPhrase} the {Aggregate} in {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {CommandPhrase} the {Aggregate} of in {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {CommandPhrase} the {Aggregate} of in {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {CommandPhrase} the {Aggregate} {ColumnName} in {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {CommandPhrase} the {Aggregate} {ColumnName} in {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {CommandPhrase} the {Aggregate} of {ColumnName} in {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {CommandPhrase} the {Aggregate} of {ColumnName} in {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {CommandPhrase} the {Aggregate} column in {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {CommandPhrase} the {Aggregate} column in {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {CommandPhrase} the {Aggregate} of column in {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {CommandPhrase} the {Aggregate} of column in {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {CommandPhrase} the {Aggregate} {ColumnName} column in {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {CommandPhrase} the {Aggregate} {ColumnName} column in {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {CommandPhrase} the {Aggregate} of {ColumnName} column in {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {CommandPhrase} the {Aggregate} of {ColumnName} column in {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} entries in {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} entries in {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} rows in {TableName} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} rows in {TableName} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} {TableName} are there where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} {TableName} are there where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} {TableName} do we have where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} {TableName} do we have where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} entries in {TableName} are there where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} entries in {TableName} are there where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} entries in {TableName} do we have where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} entries in {TableName} do we have where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} rows in {TableName} are there where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} rows in {TableName} are there where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} rows in {TableName} do we have where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} rows in {TableName} do we have where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} the {ColumnName} in {Table} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} the {ColumnName} in {Table} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} the {ColumnName} column in {Table} where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} the {ColumnName} column in {Table} where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} the {ColumnName} in {Table} table where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} the {ColumnName} in {Table} table where {ColumnName} {Comparator} {ColumnNumber}
-AggregationIntent {Aggregate} the {ColumnName} column in {Table} table where {ColumnName} {Comparator} {ColumnValue}
-AggregationIntent {Aggregate} the {ColumnName} column in {Table} table where {ColumnName} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} of in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} of in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} of column in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} of column in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} entries in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} entries in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} rows in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} rows in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} {TableName} are there where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} {TableName} are there where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} entries in {TableName} are there where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} entries in {TableName} are there where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} entries in {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} entries in {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} rows in {TableName} are there where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} rows in {TableName} are there where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName} table where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} the {AggregationColumn} in {TableName} table where {ComparisonColumn} {Comparator} {ColumnNumber}
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} table where {ComparisonColumn} {Comparator} {ColumnValue}
+AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} table where {ComparisonColumn} {Comparator} {ColumnNumber}
 
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue}, {CommandPhrase} the {Aggregate}
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber}, {CommandPhrase} the {Aggregate}
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue}, {CommandPhrase} the {Aggregate} of {ColumnName}
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber}, {CommandPhrase} the {Aggregate} of {ColumnName}
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue}, {CommandPhrase} the {Aggregate} column
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber}, {CommandPhrase} the {Aggregate} column
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue}, {CommandPhrase} the {Aggregate} of {ColumnName} column
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber}, {CommandPhrase} the {Aggregate} of {ColumnName} column
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue} {Aggregate}
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber} {Aggregate}
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue} {Aggregate} rows
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue} {Aggregate} entries
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber} {Aggregate} rows
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber} {Aggregate} entries
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue} {Aggregate} are there
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue} {Aggregate} do we have
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber} {Aggregate} are there
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber} {Aggregate} do we have
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue} {Aggregate} rows are there
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue} {Aggregate} rows do we have
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue} {Aggregate} entries are there
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue} {Aggregate} entries do we have
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber} {Aggregate} rows are there
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber} {Aggregate} rows do we have
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber} {Aggregate} entries are there
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber} {Aggregate} entries do we have
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue}, {Aggregate} the {ColumnName}
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber}, {Aggregate} the {ColumnName}
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnValue}, {Aggregate} the {ColumnName} column
-AggregationIntent For {TableName} where {ColumnName} {Comparator} {ColumnNumber}, {Aggregate} the {ColumnName} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {CommandPhrase} the {Aggregate}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {CommandPhrase} the {Aggregate}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {CommandPhrase} the {Aggregate} of {AggregationColumn}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {CommandPhrase} the {Aggregate} of {AggregationColumn}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {CommandPhrase} the {Aggregate} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {CommandPhrase} the {Aggregate} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {CommandPhrase} the {Aggregate} of {AggregationColumn} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {CommandPhrase} the {Aggregate} of {AggregationColumn} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} rows
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} entries
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} rows
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} entries
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} rows are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} rows do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} entries are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} entries do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} rows are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} rows do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} entries are there
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} entries do we have
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} the {AggregationColumn}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} the {AggregationColumn}
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnValue} {Aggregate} the {AggregationColumn} column
+AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} {ColumnNumber} {Aggregate} the {AggregationColumn} column
 
 

@@ -8,11 +8,15 @@
           "type": "AGGREGATE"
         },
         {
+          "name": "AggregationColumn",
+          "type": "COLUMN_NAME"
+        },
+        {
           "name": "TableName",
           "type": "TABLE_NAME"
         },
         {
-          "name": "ColumnName",
+          "name": "ComparisonColumn",
           "type": "COLUMN_NAME"
         },
         {

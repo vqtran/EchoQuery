@@ -2,6 +2,7 @@ package echoquery.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import com.facebook.presto.sql.tree.AstVisitor;
 import com.facebook.presto.sql.tree.ComparisonExpression;
@@ -33,35 +34,55 @@ public class QueryResult {
   }
 
   public String toEnglish() {
+    double value;
+    try {
+      result.first();
+      value = result.getDouble(1);
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+
+    StringBuilder aggregation = new StringBuilder();
     StringBuilder translation = new StringBuilder();
     AstVisitor<Void, Boolean> translator =
         new DefaultTraversalVisitor<Void, Boolean>() {
 
       @Override
       public Void visitFunctionCall(FunctionCall node, Boolean capture) {
-        int value;
-        try {
-          result.first();
-          value = result.getInt(1);
-        } catch (SQLException e) {
-          e.printStackTrace();
+        aggregation.append(node.getName().toString());
+        if (aggregation.toString().equals("count")) {
+          if (value == 1) {
+            translation.append("There is ")
+              .append(TranslationUtils.convert(value))
+              .append(" row ");
+          } else {
+            translation.append("There are ")
+              .append(TranslationUtils.convert(value))
+              .append(" rows ");
+          }
           return null;
         }
-        switch (node.getName().toString()) {
-          case "count":
-            if (value == 1) {
-              translation.append("There is ")
-                .append(TranslationUtils.convert(value))
-                .append(" row ");
-            } else {
-              translation.append("There are ")
-                .append(TranslationUtils.convert(value))
-                .append(" rows ");
-            }
+
+        String longForm = "";
+        switch (aggregation.toString()) {
+          case "avg":
+            longForm = "average";
             break;
-          default:
+          case "sum":
+            longForm = "total";
+            break;
+          case "min":
+            longForm = "minimum value";
+            break;
+          case "max":
+            longForm = "maximum value";
             break;
         }
+        translation.append("The ").append(longForm).append(" of the ");
+        process(node.getArguments().get(0), true);
+        translation.append(" column ");
+
         return null;
       }
 
@@ -111,7 +132,7 @@ public class QueryResult {
       public Void visitQualifiedNameReference(
           QualifiedNameReference node, Boolean capture) {
         if (capture) {
-          translation.append(node.getName().toString());
+          translation.append(node.getSuffix());
         }
         return null;
       }
@@ -125,7 +146,11 @@ public class QueryResult {
       }
     };
     translator.process(query, false);
+    if (!aggregation.toString().equals("count")) {
+      translation.append(" is ").append(TranslationUtils.convert(value));
+    }
     translation.append(".");
     return translation.toString();
   }
 }
+

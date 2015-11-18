@@ -67,30 +67,43 @@ public class QueryBuilder {
     SchemaInferrer inferrer = SchemaInferrer.getInstance();
 
     String aggregate = intent.getSlot(SlotUtil.AGGREGATE).getValue();
-    String column = intent.getSlot(SlotUtil.COLUMN_NAME).getValue();
+    String aggregationColumn =
+        intent.getSlot(SlotUtil.AGGREGATION_COLUMN).getValue();
+    String comparisonColumn =
+        intent.getSlot(SlotUtil.COMPARISON_COLUMN).getValue();
     String comparator = intent.getSlot(SlotUtil.COMPARATOR).getValue();
     String colVal= intent.getSlot(SlotUtil.COLUMN_VALUE).getValue();
     String colNum = intent.getSlot(SlotUtil.COLUMN_NUMBER).getValue();
 
+    QueryBuilder builder = new QueryBuilder();
+
+    Expression aggregationFunc;
+    if (aggregationColumn == null) {
+      aggregationFunc = QueryUtil.functionCall(
+          SlotUtil.getAggregateFunction(aggregate));
+    } else {
+      aggregationFunc = QueryUtil.functionCall(
+          SlotUtil.getAggregateFunction(aggregate),
+          QueryUtil.nameReference(aggregationColumn));
+    }
+    builder.select(QueryUtil.selectList(aggregationFunc));
+
     JoinRecipe from;
-    if (column != null) {
-      from = inferrer.infer(table, column != null ? column : "");
+    if (comparisonColumn != null) {
+      from = inferrer.infer(
+          table, comparisonColumn != null ? comparisonColumn : "");
     } else {
       from = new OneTableJoinRecipe(table);
     }
-
-    QueryBuilder builder = new QueryBuilder()
-        .select(QueryUtil.selectList(
-            QueryUtil.functionCall(SlotUtil.getAggregateFunction(aggregate))))
-        .from(from.render());
+    builder.from(from.render());
 
     String match = null;
-    if (column != null) {
+    if (comparisonColumn != null) {
       match = (colVal == null) ? colNum : colVal;
       builder.where(new ComparisonExpression(
           SlotUtil.getComparisonType(comparator),
           new QualifiedNameReference(
-              QualifiedName.of(from.wherePrefix(), column)),
+              QualifiedName.of(from.wherePrefix(), comparisonColumn)),
           new StringLiteral(match)));
     }
 

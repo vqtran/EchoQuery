@@ -8,8 +8,9 @@ import com.facebook.presto.sql.tree.ComparisonExpression;
 
 public final class SlotUtil {
   public final static String AGGREGATE = "Aggregate";
+  public final static String AGGREGATION_COLUMN = "AggregationColumn";
   public final static String TABLE_NAME = "TableName";
-  public final static String COLUMN_NAME = "ColumnName";
+  public final static String COMPARISON_COLUMN = "ComparisonColumn";
   public final static String COLUMN_VALUE = "ColumnValue";
   public final static String COLUMN_NUMBER = "ColumnNumber";
   public final static String COMPARATOR = "Comparator";
