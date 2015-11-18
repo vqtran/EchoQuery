@@ -23,7 +23,7 @@ public class OneTableJoinRecipe implements JoinRecipe {
   }
 
   @Override
-  public String wherePrefix() {
+  public String wherePrefix(int index) {
     return table;
   }
 }

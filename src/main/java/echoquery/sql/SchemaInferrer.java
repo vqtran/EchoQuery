@@ -35,6 +35,8 @@ public class SchemaInferrer {
   // and the primary keys that they map to
   private final Map<String, List<ForeignKey>> tableToForeignKeys;
 
+  private final List<String> tables;
+
   private static SchemaInferrer inferrer = new SchemaInferrer();
 
   public static SchemaInferrer getInstance() {
@@ -45,11 +47,12 @@ public class SchemaInferrer {
     Connection conn = SingletonConnection.getInstance();
     columnToTable = new HashMap<>();
     tableToForeignKeys = new HashMap<>();
+    tables = new ArrayList<>();
 
     try {
       DatabaseMetaData md = conn.getMetaData();
       // find all the table names
-      List<String> tables = findColumnNames(md);
+      tables.addAll(findColumnNames(md));
       for (String table : tables) {
         // fill in columnToTable
         adjustColumnToTable(table, md);
@@ -102,20 +105,44 @@ public class SchemaInferrer {
 
   /**
    *
+   * @param columns the columns of interest
+   * @param sourceTable the table of interest
+   * @param destinationTable the table being joined
+   * @return an ordered list of which table each column belongs to. the ith
+   *         table in prefixes corresponds to the ith column in columns.
+   */
+  private String[] inferPrefixes(String[] columns, String sourceTable, String destinationTable) {
+    String[] prefixes = new String[columns.length];
+    for (int i = 0; i < columns.length; i++) {
+      String column = columns[i];
+      Set<String> tables = columnToTable.get(column);
+      if (tables.contains(sourceTable)) {
+        prefixes[i] = sourceTable;
+      } else {
+        prefixes[i] = destinationTable;
+      }
+    }
+    return prefixes;
+  }
+
+  /**
+   *
    * @param table the table that we want to aggregate over / select from
    * @param column the column that were filtering on
    * @return a JoinRecipe that can create the table to filter one and select
    *    from
    */
-  public JoinRecipe infer(String table, String column) {
-    // if the inputted table is the center table
-    // find which table has the specific column in columnToTable
-    // find the foreign key to the center table
-    // otherwise, if the column is not in the table give up! if it is you're
-    // good
-    Set<String> criteriaTables =
-        columnToTable.getOrDefault(column, new HashSet<String>());
-    // if the column could be in the table we're querying on
+  public JoinRecipe infer(String table, String... columns) {
+    // initially we can join with any table
+    Set<String> criteriaTables = new HashSet<>(tables);
+    // for each column we are interested, we need to filter down only tables 
+    // that contain it (ignoring columns that already exist in our base table)
+    for (String column : columns) {
+      Set<String> newCriteria = columnToTable.getOrDefault(column, new HashSet<String>());
+      if (newCriteria.contains(table)) continue;
+      criteriaTables.retainAll(newCriteria);
+    }
+    // if all the columns could be in our base table
     if (criteriaTables.contains(table)) {
       // we don't need to join
       return new OneTableJoinRecipe(table);
@@ -126,7 +153,7 @@ public class SchemaInferrer {
       for (ForeignKey foreignKey : foreignKeys) {
         String destinationTable = foreignKey.getDestinationTable();
         if (criteriaTables.contains(destinationTable)) {
-         return new TwoTableJoinRecipe(foreignKey);
+         return new TwoTableJoinRecipe(foreignKey, inferPrefixes(columns, table, destinationTable));
         }
       }
       return new InvalidJoinRecipe();

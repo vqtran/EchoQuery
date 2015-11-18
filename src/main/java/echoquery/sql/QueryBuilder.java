@@ -77,6 +77,14 @@ public class QueryBuilder {
 
     QueryBuilder builder = new QueryBuilder();
 
+    JoinRecipe from;
+    if (comparisonColumn == null) {
+      from = new OneTableJoinRecipe(table);
+    } else {
+      from = inferrer.infer(table, comparisonColumn, aggregationColumn);
+    }
+    builder.from(from.render());
+
     Expression aggregationFunc;
     if (aggregationColumn == null) {
       aggregationFunc = QueryUtil.functionCall(
@@ -84,17 +92,11 @@ public class QueryBuilder {
     } else {
       aggregationFunc = QueryUtil.functionCall(
           SlotUtil.getAggregateFunction(aggregate),
-          QueryUtil.nameReference(aggregationColumn));
+          new QualifiedNameReference(
+              QualifiedName.of(from.wherePrefix(1), aggregationColumn)));
     }
     builder.select(QueryUtil.selectList(aggregationFunc));
 
-    JoinRecipe from;
-    if (comparisonColumn == null) {
-      from = new OneTableJoinRecipe(table);
-    } else {
-      from = inferrer.infer(table, comparisonColumn);
-    }
-    builder.from(from.render());
 
     String match = null;
     if (comparisonColumn != null) {
@@ -102,7 +104,7 @@ public class QueryBuilder {
       builder.where(new ComparisonExpression(
           SlotUtil.getComparisonType(comparator),
           new QualifiedNameReference(
-              QualifiedName.of(from.wherePrefix(), comparisonColumn)),
+              QualifiedName.of(from.wherePrefix(0), comparisonColumn)),
           new StringLiteral(match)));
     }
 

@@ -19,21 +19,24 @@ public class TwoTableJoinRecipe implements JoinRecipe {
   private String sourceTable;
   private String destinationColumn;
   private String destinationTable;
+  private String[] prefixes;
 
 
   public TwoTableJoinRecipe(String sourceColumn, String sourceTable,
-      String destinationColumn, String destinationTable) {
+      String destinationColumn, String destinationTable, String[] prefixes) {
     this.sourceColumn = sourceColumn;
     this.sourceTable = sourceTable;
     this.destinationColumn = destinationColumn;
     this.destinationTable = destinationTable;
+    this.prefixes = prefixes;
   }
 
-  public TwoTableJoinRecipe(ForeignKey foreignKey) {
+  public TwoTableJoinRecipe(ForeignKey foreignKey, String[] prefixes) {
     this.sourceColumn = foreignKey.getSourceColumn();
     this.sourceTable = foreignKey.getSourceTable();
     this.destinationColumn = foreignKey.getDestinationColumn();
     this.destinationTable = foreignKey.getDestinationTable();
+    this.prefixes = prefixes;
   }
 
   @Override
@@ -57,7 +60,7 @@ public class TwoTableJoinRecipe implements JoinRecipe {
   }
 
   @Override
-  public String wherePrefix() {
-    return destinationTable;
+  public String wherePrefix(int index) {
+    return prefixes[index];
   }
 }
