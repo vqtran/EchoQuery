@@ -1,5 +1,6 @@
 package echoquery.sql;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -81,8 +82,9 @@ public class QueryBuilder {
     if (comparisonColumn == null) {
       from = new OneTableJoinRecipe(table);
     } else {
-      from = inferrer.infer(table, comparisonColumn, aggregationColumn);
+      from = inferrer.infer(table, aggregationColumn, Arrays.asList(comparisonColumn));
     }
+
     builder.from(from.render());
 
     Expression aggregationFunc;
@@ -93,7 +95,7 @@ public class QueryBuilder {
       aggregationFunc = QueryUtil.functionCall(
           SlotUtil.getAggregateFunction(aggregate),
           new QualifiedNameReference(
-              QualifiedName.of(from.wherePrefix(1), aggregationColumn)));
+              QualifiedName.of(from.getAggregationPrefix(), aggregationColumn)));
     }
     builder.select(QueryUtil.selectList(aggregationFunc));
 
@@ -104,7 +106,7 @@ public class QueryBuilder {
       builder.where(new ComparisonExpression(
           SlotUtil.getComparisonType(comparator),
           new QualifiedNameReference(
-              QualifiedName.of(from.wherePrefix(0), comparisonColumn)),
+              QualifiedName.of(from.getComparisonPrefix(0), comparisonColumn)),
           new StringLiteral(match)));
     }
 

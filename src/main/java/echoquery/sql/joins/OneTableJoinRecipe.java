@@ -23,7 +23,12 @@ public class OneTableJoinRecipe implements JoinRecipe {
   }
 
   @Override
-  public String wherePrefix(int index) {
+  public String getComparisonPrefix(int index) {
+    return table;
+  }
+
+  @Override
+  public String getAggregationPrefix() {
     return table;
   }
 }
