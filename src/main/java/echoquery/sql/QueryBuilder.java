@@ -82,7 +82,8 @@ public class QueryBuilder {
     if (comparisonColumn == null) {
       from = new OneTableJoinRecipe(table);
     } else {
-      from = inferrer.infer(table, aggregationColumn, Arrays.asList(comparisonColumn));
+      from = inferrer.infer(
+          table, aggregationColumn, Arrays.asList(comparisonColumn));
     }
 
     builder.from(from.render());
@@ -94,8 +95,8 @@ public class QueryBuilder {
     } else {
       aggregationFunc = QueryUtil.functionCall(
           SlotUtil.getAggregateFunction(aggregate),
-          new QualifiedNameReference(
-              QualifiedName.of(from.getAggregationPrefix(), aggregationColumn)));
+          new QualifiedNameReference(QualifiedName.of(
+              from.getAggregationPrefix(), aggregationColumn)));
     }
     builder.select(QueryUtil.selectList(aggregationFunc));
 

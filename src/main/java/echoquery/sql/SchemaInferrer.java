@@ -107,39 +107,31 @@ public class SchemaInferrer {
   }
 
   /**
-   *
-   * @param columns the columns of interest
+   * @param column the column of interest
    * @param sourceTable the table of interest
    * @param destinationTable the table being joined
-   * @return an ordered list of which table each column belongs to. the ith
-   *         table in prefixes corresponds to the ith column in columns.
+   * @return which table the column belongs to.
    */
-  private List<String> inferPrefixesForList(List<String> columns,
-      String sourceTable, String destinationTable) {
-    List<String> prefixes = new ArrayList<>();
-    for (int i = 0; i < columns.size(); i++) {
-      String column = columns.get(i);
-      Set<String> tables = columnToTable.get(column);
-      if (tables.contains(sourceTable)) {
-        prefixes.add(sourceTable);
-      } else {
-        prefixes.add(destinationTable);
-      }
+  private String inferPrefix(
+      String column, String sourceTable, String destinationTable) {
+    if (column == null) {
+      return null;
     }
-    return prefixes;
+    Set<String> tables = columnToTable.get(column);
+    return (tables.contains(sourceTable)) ? sourceTable : destinationTable;
   }
 
-  private String inferPrefixForSingle(String column, String sourceTable, String destinationTable) {
-    return inferPrefixesForList(Arrays.asList(column), sourceTable, destinationTable).get(0);
-  }
-
-  private InferredContext inferPrefixes(String aggregation, List<String> comparisons,
-      String table, String destinationTable) {
-    List<String> comparisonPrefixes = inferPrefixesForList(comparisons, table, destinationTable);
-    String aggregationPrefix = aggregation != null ?
-        inferPrefixForSingle(aggregation, table, destinationTable) :
-        null;
-    return new InferredContext(aggregationPrefix, comparisonPrefixes);
+  private InferredContext inferPrefixes(
+      String aggregation,
+      List<String> comparisons,
+      String table,
+      String destinationTable) {
+    InferredContext ctx = new InferredContext();
+    ctx.setAggregationPrefix(inferPrefix(aggregation, table, destinationTable));
+    for (String comparison : comparisons) {
+      ctx.addComparisonPrefix(inferPrefix(comparison, table, destinationTable));
+    }
+    return ctx;
   }
 
   /**
@@ -149,7 +141,8 @@ public class SchemaInferrer {
    * @return a JoinRecipe that can create the table to filter one and select
    *    from
    */
-  public JoinRecipe infer(String table, String aggregation, List<String> comparisons) {
+  public JoinRecipe infer(
+      String table, String aggregation, List<String> comparisons) {
     // initially we can join with any table
     Set<String> criteriaTables = new HashSet<>(tables);
 
@@ -158,10 +151,11 @@ public class SchemaInferrer {
     columns.add(aggregation);
     columns.removeAll(Collections.singleton(null));
 
-    // for each column we are interested, we need to filter down only tables 
+    // for each column we are interested, we need to filter down only tables
     // that contain it (ignoring columns that already exist in our base table)
     for (String column : columns) {
-      Set<String> newCriteria = columnToTable.getOrDefault(column, new HashSet<String>());
+      Set<String> newCriteria =
+          columnToTable.getOrDefault(column, new HashSet<String>());
       if (newCriteria.contains(table)) continue;
       criteriaTables.retainAll(newCriteria);
     }
@@ -176,7 +170,8 @@ public class SchemaInferrer {
       for (ForeignKey foreignKey : foreignKeys) {
         String destinationTable = foreignKey.getDestinationTable();
         if (criteriaTables.contains(destinationTable)) {
-         return new TwoTableJoinRecipe(foreignKey, inferPrefixes(aggregation, comparisons, table, destinationTable));
+         return new TwoTableJoinRecipe(foreignKey,
+             inferPrefixes(aggregation, comparisons, table, destinationTable));
         }
       }
       return new InvalidJoinRecipe();
