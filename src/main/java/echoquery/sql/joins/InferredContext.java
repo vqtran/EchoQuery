@@ -2,11 +2,16 @@ package echoquery.sql.joins;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class InferredContext {
 
   private String aggregation;
   
   private List<String> comparisons;
+
+  private static final Logger log = LoggerFactory.getLogger(InferredContext.class);
   
   public InferredContext (String aggregation, List<String> comparisons) {
     this.aggregation = aggregation;

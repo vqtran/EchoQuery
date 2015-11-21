@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -135,7 +136,9 @@ public class SchemaInferrer {
   private InferredContext inferPrefixes(String aggregation, List<String> comparisons,
       String table, String destinationTable) {
     List<String> comparisonPrefixes = inferPrefixesForList(comparisons, table, destinationTable);
-    String aggregationPrefix = inferPrefixForSingle(aggregation, table, destinationTable);
+    String aggregationPrefix = aggregation != null ?
+        inferPrefixForSingle(aggregation, table, destinationTable) :
+        null;
     return new InferredContext(aggregationPrefix, comparisonPrefixes);
   }
 
@@ -153,6 +156,7 @@ public class SchemaInferrer {
     // aggregate all the columns we are interested in
     List<String> columns = new ArrayList<>(comparisons);
     columns.add(aggregation);
+    columns.removeAll(Collections.singleton(null));
 
     // for each column we are interested, we need to filter down only tables 
     // that contain it (ignoring columns that already exist in our base table)
