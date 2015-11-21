@@ -78,13 +78,8 @@ public class QueryBuilder {
 
     QueryBuilder builder = new QueryBuilder();
 
-    JoinRecipe from;
-    if (comparisonColumn == null) {
-      from = new OneTableJoinRecipe(table);
-    } else {
-      from = inferrer.infer(
-          table, aggregationColumn, Arrays.asList(comparisonColumn));
-    }
+    JoinRecipe from = inferrer.infer(
+        table, aggregationColumn, Arrays.asList(comparisonColumn));
 
     builder.from(from.render());
 
