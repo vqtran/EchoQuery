@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.facebook.presto.sql.tree.ComparisonExpression;
+import com.facebook.presto.sql.tree.LogicalBinaryExpression;
 
 public final class SlotUtil {
   public final static String AGGREGATE = "Aggregate";
@@ -174,6 +175,17 @@ public final class SlotUtil {
     }
     if (lessEqualExpr.contains(expression)) {
       return ComparisonExpression.Type.LESS_THAN_OR_EQUAL;
+    }
+    return null;
+  }
+
+  public static LogicalBinaryExpression.Type getComparisonBinaryOperatorType(
+      String op) {
+    if (op.equals("and")) {
+      return LogicalBinaryExpression.Type.AND;
+    }
+    if (op.equals("or")) {
+      return LogicalBinaryExpression.Type.OR;
     }
     return null;
   }

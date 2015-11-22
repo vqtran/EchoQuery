@@ -8,10 +8,9 @@ import org.slf4j.LoggerFactory;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
-import com.facebook.presto.sql.tree.Query;
 
 import echoquery.sql.Querier;
-import echoquery.sql.QueryBuilder;
+import echoquery.sql.QueryRequest;
 import echoquery.sql.QueryResult;
 import echoquery.sql.SingletonConnection;
 import echoquery.utils.Response;
@@ -25,15 +24,19 @@ public class AggregationHandler implements IntentHandler {
 
   @Override
   public SpeechletResponse respond(Intent intent, Session session) {
+    return Response.say(getResponseInEnglish(intent, session));
+  }
+
+  /**
+   * Exposed for testing purposes - SpeechletResponse is impossible to inspect.
+   */
+  public String getResponseInEnglish(Intent intent, Session session) {
     try {
-      Query query = QueryBuilder.of(intent).build();
-      QueryResult result = querier.execute(query);
-
-      return Response.say(result.toEnglish());
-
+      QueryResult result = querier.execute(QueryRequest.of(intent));
+      return result.toEnglish();
     } catch (SQLException e) {
       log.info("StatementCreationError: " + e.getMessage());
-      return Response.say("There was an error querying the database.");
+      return "There was an error querying the database.";
     }
   }
 }
