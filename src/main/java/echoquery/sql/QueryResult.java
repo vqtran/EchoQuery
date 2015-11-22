@@ -51,10 +51,8 @@ public class QueryResult {
     StringBuilder translation = new StringBuilder();
 
     /**
-     * Visit each node in the tree and convert it to natural language.
-     * The capture boolean signifies whether or not certain components of the
-     * query will be included in the final output. Currently used to not render
-     * joins.
+     * Visit each node in the tree and convert it to natural language. Results
+     * in a sentence form of the query.
      */
     AstVisitor<Void, Void> translator =
         new DefaultTraversalVisitor<Void, Void>() {
@@ -64,6 +62,8 @@ public class QueryResult {
         process(node.getSelect(), null);
 
         if (node.getFrom().isPresent()) {
+          // Use what the user referenced, ignoring any complicated join
+          // inference we did to get it to work.
           translation.append("in the ")
               .append(request.getFromTable())
               .append(" table");
