@@ -5,6 +5,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import echoquery.sql.joins.InferredContext;
 import echoquery.sql.joins.InvalidJoinRecipe;
 import echoquery.sql.joins.JoinRecipe;
 import echoquery.sql.joins.OneTableJoinRecipe;
@@ -35,6 +38,8 @@ public class SchemaInferrer {
   // and the primary keys that they map to
   private final Map<String, List<ForeignKey>> tableToForeignKeys;
 
+  private final List<String> tables;
+
   private static SchemaInferrer inferrer = new SchemaInferrer();
 
   public static SchemaInferrer getInstance() {
@@ -45,11 +50,12 @@ public class SchemaInferrer {
     Connection conn = SingletonConnection.getInstance();
     columnToTable = new HashMap<>();
     tableToForeignKeys = new HashMap<>();
+    tables = new ArrayList<>();
 
     try {
       DatabaseMetaData md = conn.getMetaData();
       // find all the table names
-      List<String> tables = findColumnNames(md);
+      tables.addAll(findColumnNames(md));
       for (String table : tables) {
         // fill in columnToTable
         adjustColumnToTable(table, md);
@@ -101,21 +107,59 @@ public class SchemaInferrer {
   }
 
   /**
+   * @param column the column of interest
+   * @param sourceTable the table of interest
+   * @param destinationTable the table being joined
+   * @return which table the column belongs to.
+   */
+  private String inferPrefix(
+      String column, String sourceTable, String destinationTable) {
+    if (column == null) {
+      return null;
+    }
+    Set<String> tables = columnToTable.get(column);
+    return (tables.contains(sourceTable)) ? sourceTable : destinationTable;
+  }
+
+  private InferredContext inferPrefixes(
+      String aggregation,
+      List<String> comparisons,
+      String table,
+      String destinationTable) {
+    InferredContext ctx = new InferredContext();
+    ctx.setAggregationPrefix(inferPrefix(aggregation, table, destinationTable));
+    for (String comparison : comparisons) {
+      ctx.addComparisonPrefix(inferPrefix(comparison, table, destinationTable));
+    }
+    return ctx;
+  }
+
+  /**
    *
    * @param table the table that we want to aggregate over / select from
    * @param column the column that were filtering on
    * @return a JoinRecipe that can create the table to filter one and select
    *    from
    */
-  public JoinRecipe infer(String table, String column) {
-    // if the inputted table is the center table
-    // find which table has the specific column in columnToTable
-    // find the foreign key to the center table
-    // otherwise, if the column is not in the table give up! if it is you're
-    // good
-    Set<String> criteriaTables =
-        columnToTable.getOrDefault(column, new HashSet<String>());
-    // if the column could be in the table we're querying on
+  public JoinRecipe infer(
+      String table, String aggregation, List<String> comparisons) {
+    // initially we can join with any table
+    Set<String> criteriaTables = new HashSet<>(tables);
+
+    // aggregate all the columns we are interested in
+    List<String> columns = new ArrayList<>(comparisons);
+    columns.add(aggregation);
+    columns.removeAll(Collections.singleton(null));
+
+    // for each column we are interested, we need to filter down only tables
+    // that contain it (ignoring columns that already exist in our base table)
+    for (String column : columns) {
+      Set<String> newCriteria =
+          columnToTable.getOrDefault(column, new HashSet<String>());
+      if (newCriteria.contains(table)) continue;
+      criteriaTables.retainAll(newCriteria);
+    }
+    // if all the columns could be in our base table
     if (criteriaTables.contains(table)) {
       // we don't need to join
       return new OneTableJoinRecipe(table);
@@ -126,7 +170,8 @@ public class SchemaInferrer {
       for (ForeignKey foreignKey : foreignKeys) {
         String destinationTable = foreignKey.getDestinationTable();
         if (criteriaTables.contains(destinationTable)) {
-         return new TwoTableJoinRecipe(foreignKey);
+         return new TwoTableJoinRecipe(foreignKey,
+             inferPrefixes(aggregation, comparisons, table, destinationTable));
         }
       }
       return new InvalidJoinRecipe();
