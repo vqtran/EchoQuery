@@ -22,10 +22,10 @@ public class Querier {
     this.conn = conn;
   }
 
-  public QueryResult execute(Query query) throws SQLException {
-      String sql = SqlFormatter.formatSql(query);
+  public QueryResult execute(QueryRequest request) throws SQLException {
+      String sql = SqlFormatter.formatSql(request.getQuery());
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(sql);
-      return new QueryResult(query, result);
+      return new QueryResult(request, result);
   }
 }

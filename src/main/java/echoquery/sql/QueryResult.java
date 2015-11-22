@@ -3,29 +3,35 @@ package echoquery.sql;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.facebook.presto.sql.tree.AstVisitor;
 import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.DefaultTraversalVisitor;
+import com.facebook.presto.sql.tree.Expression;
 import com.facebook.presto.sql.tree.FunctionCall;
+import com.facebook.presto.sql.tree.LongLiteral;
 import com.facebook.presto.sql.tree.QualifiedNameReference;
-import com.facebook.presto.sql.tree.Query;
+import com.facebook.presto.sql.tree.QuerySpecification;
+import com.facebook.presto.sql.tree.SortItem;
 import com.facebook.presto.sql.tree.StringLiteral;
-import com.facebook.presto.sql.tree.Table;
 
 import echoquery.utils.TranslationUtils;
 
 public class QueryResult {
+  private static final Logger log = LoggerFactory.getLogger(QueryResult.class);
 
-  private final Query query;
+  private final QueryRequest request;
   private final ResultSet result;
 
-  public QueryResult(Query query, ResultSet result) {
-    this.query = query;
+  public QueryResult(QueryRequest request, ResultSet result) {
+    this.request = request;
     this.result = result;
   }
 
-  public Query getQuery() {
-    return query;
+  public QueryRequest getQueryRequest() {
+    return request;
   }
 
   public ResultSet getResult() {
@@ -42,15 +48,45 @@ public class QueryResult {
       return null;
     }
 
-    StringBuilder aggregation = new StringBuilder();
     StringBuilder translation = new StringBuilder();
-    AstVisitor<Void, Boolean> translator =
-        new DefaultTraversalVisitor<Void, Boolean>() {
+
+    /**
+     * Visit each node in the tree and convert it to natural language.
+     * The capture boolean signifies whether or not certain components of the
+     * query will be included in the final output. Currently used to not render
+     * joins.
+     */
+    AstVisitor<Void, Void> translator =
+        new DefaultTraversalVisitor<Void, Void>() {
 
       @Override
-      public Void visitFunctionCall(FunctionCall node, Boolean capture) {
-        aggregation.append(node.getName().toString());
-        if (aggregation.toString().equals("count")) {
+      protected Void visitQuerySpecification(QuerySpecification node, Void v) {
+        process(node.getSelect(), null);
+
+        if (node.getFrom().isPresent()) {
+          translation.append("in the ")
+              .append(request.getFromTable())
+              .append(" table");
+        }
+        if (node.getWhere().isPresent()) {
+            process(node.getWhere().get(), null);
+        }
+        for (Expression groupingElement : node.getGroupBy()) {
+            process(groupingElement, null);
+        }
+        if (node.getHaving().isPresent()) {
+            process(node.getHaving().get(), null);
+        }
+        for (SortItem sortItem : node.getOrderBy()) {
+            process(sortItem, null);
+        }
+        return null;
+      }
+
+      @Override
+      public Void visitFunctionCall(FunctionCall node, Void v) {
+        String aggregation = request.getAggregationFunc();
+        if (aggregation.equals("COUNT")) {
           if (value == 1) {
             translation.append("There is ")
               .append(TranslationUtils.convert(value))
@@ -64,40 +100,31 @@ public class QueryResult {
         }
 
         String longForm = "";
-        switch (aggregation.toString()) {
-          case "avg":
+        switch (aggregation) {
+          case "AVG":
             longForm = "average";
             break;
-          case "sum":
+          case "SUM":
             longForm = "total";
             break;
-          case "min":
+          case "MIN":
             longForm = "minimum value";
             break;
-          case "max":
+          case "MAX":
             longForm = "maximum value";
             break;
         }
         translation.append("The ").append(longForm).append(" of the ");
-        process(node.getArguments().get(0), true);
+        process(node.getArguments().get(0), null);
         translation.append(" column ");
 
         return null;
       }
 
       @Override
-      public Void visitTable(Table node, Boolean capture) {
-        translation.append("in the ")
-            .append(node.getName().toString())
-            .append(" table");
-        return null;
-      }
-
-      @Override
-      public Void visitComparisonExpression(
-          ComparisonExpression node, Boolean capture) {
+      public Void visitComparisonExpression(ComparisonExpression node, Void v) {
         translation.append(" where the value in the ");
-        process(node.getLeft(), true);
+        process(node.getLeft(), null);
         translation.append(" column is");
 
         switch (node.getType()) {
@@ -123,29 +150,32 @@ public class QueryResult {
             translation.append(" is distinct from ");
             break;
         }
-        process(node.getRight(), true);
+        process(node.getRight(), null);
         return null;
       }
 
       @Override
       public Void visitQualifiedNameReference(
-          QualifiedNameReference node, Boolean capture) {
-        if (capture) {
-          translation.append(node.getSuffix());
-        }
+          QualifiedNameReference node, Void v) {
+        translation.append(node.getSuffix());
         return null;
       }
 
       @Override
-      public Void visitStringLiteral(StringLiteral node, Boolean capture) {
-        if (capture) {
-          translation.append(node.getValue());
-        }
+      public Void visitStringLiteral(StringLiteral node, Void v) {
+        translation.append(node.getValue());
+        return null;
+      }
+
+      @Override
+      public Void visitLongLiteral(LongLiteral node, Void v) {
+        translation.append(TranslationUtils.convert(node.getValue()));
         return null;
       }
     };
-    translator.process(query, false);
-    if (!aggregation.toString().equals("count")) {
+    translator.process(request.getQuery(), null);
+
+    if (!request.getAggregationFunc().equals("COUNT")) {
       translation.append(" is ").append(TranslationUtils.convert(value));
     }
     translation.append(".");
