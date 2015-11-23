@@ -10,34 +10,164 @@ HelpIntent how [can|do] I use [you|this]
 HelpIntent what (commands|questions|things|stuff) can I \
   [ask|ask you|say|do|use|use this for]
 
+#-------------------------------------------------------------------------------
+# Different ways of doing an aggregation query.
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# 1. Specifying aggregation before table.
+#-------------------------------------------------------------------------------
+
 AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
   (column) in {TableName}
+
 AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
   (are there|do we have)
+
 AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
   (table)
 
+#-------------------------------------------------------------------------------
+# 2. Specifying table before aggregation.
+#-------------------------------------------------------------------------------
+
 AggregationIntent For {TableName} {CommandPhrase} the {Aggregate} \
   (of {AggregationColumn}) (column)
+
 AggregationIntent For {TableName} {Aggregate} (rows|entries) \
   (are there|do we have)
+
 AggregationIntent For {TableName} {Aggregate} the {AggregationColumn} (column)
 
-AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
-  (column) in {TableName} where {ComparisonColumn} {Comparator} \
-  [{ColumnValue}|{ColumnNumber}]
-AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
-  (are there|do we have) where {ComparisonColumn} {Comparator} \
-  [{ColumnValue}|{ColumnNumber}]
-AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
-  (table) where {ComparisonColumn} {Comparator} [{ColumnValue}|{ColumnNumber}]
+#-------------------------------------------------------------------------------
+# 3. Specifying aggregation before table with ONE where condition.
+#-------------------------------------------------------------------------------
 
-AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} \
-  [{ColumnValue}|{ColumnNumber}] {CommandPhrase} the {Aggregate} \
-  (of {AggregationColumn}) (column)
-AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} \
-  [{ColumnValue}|{ColumnNumber}] {Aggregate} (rows|entries) \
-  (are there|do we have)
-AggregationIntent For {TableName} where {ComparisonColumn} {Comparator} \
-  [{ColumnValue}|{ColumnNumber}] {Aggregate} the {AggregationColumn} (column)
+AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
+  (column) in {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}]
+
+AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
+  (are there|do we have) \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}]
+
+AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
+  (table) \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}]
+
+#-------------------------------------------------------------------------------
+# 4. Specifying table before aggregation with ONE where condition.
+#-------------------------------------------------------------------------------
+
+AggregationIntent For {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {CommandPhrase} the {Aggregate} (of {AggregationColumn}) (column)
+
+AggregationIntent For {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {Aggregate} (rows|entries) (are there|do we have)
+
+AggregationIntent For {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {Aggregate} the {AggregationColumn} (column)
+
+#-------------------------------------------------------------------------------
+# 5. Specifying aggregation before table with TWO where conditions.
+#-------------------------------------------------------------------------------
+
+AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
+  (column) in {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}]
+
+AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
+  (are there|do we have) \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}]
+
+AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
+  (table) \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}]
+
+#-------------------------------------------------------------------------------
+# 6. Specifying table before aggregation with TWO where conditions.
+#-------------------------------------------------------------------------------
+
+AggregationIntent For {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}] \
+  {CommandPhrase} the {Aggregate} (of {AggregationColumn}) (column)
+
+AggregationIntent For {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}] \
+  {Aggregate} (rows|entries) (are there|do we have)
+
+AggregationIntent For {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}] \
+  {Aggregate} the {AggregationColumn} (column)
+
+#-------------------------------------------------------------------------------
+# 7. Specifying aggregation before table with THREE where conditions.
+#-------------------------------------------------------------------------------
+
+AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
+  (column) in {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}] \
+  {BinaryLogicOp2} \
+  {ComparisonColumn3} {Comparator3} [{ColumnValue3}|{ColumnNumber3}]
+
+AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
+  (are there|do we have) \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}] \
+  {BinaryLogicOp2} \
+  {ComparisonColumn3} {Comparator3} [{ColumnValue3}|{ColumnNumber3}]
+
+AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
+  (table) \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}] \
+  {BinaryLogicOp2} \
+  {ComparisonColumn3} {Comparator3} [{ColumnValue3}|{ColumnNumber3}]
+
+#-------------------------------------------------------------------------------
+# 8. Specifying table before aggregation with THREE where conditions.
+#-------------------------------------------------------------------------------
+
+AggregationIntent For {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}] \
+  {BinaryLogicOp2} \
+  {ComparisonColumn3} {Comparator3} [{ColumnValue3}|{ColumnNumber3}] \
+  {CommandPhrase} the {Aggregate} (of {AggregationColumn}) (column)
+
+AggregationIntent For {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}] \
+  {BinaryLogicOp2} \
+  {ComparisonColumn3} {Comparator3} [{ColumnValue3}|{ColumnNumber3}] \
+  {Aggregate} (rows|entries) (are there|do we have)
+
+AggregationIntent For {TableName} \
+  where {ComparisonColumn1} {Comparator1} [{ColumnValue1}|{ColumnNumber1}] \
+  {BinaryLogicOp1} \
+  {ComparisonColumn2} {Comparator2} [{ColumnValue2}|{ColumnNumber2}] \
+  {BinaryLogicOp2} \
+  {ComparisonColumn3} {Comparator3} [{ColumnValue3}|{ColumnNumber3}] \
+  {Aggregate} the {AggregationColumn} (column)
 

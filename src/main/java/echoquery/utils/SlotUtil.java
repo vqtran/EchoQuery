@@ -8,13 +8,29 @@ import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.LogicalBinaryExpression;
 
 public final class SlotUtil {
+  public final static String TABLE_NAME = "TableName";
+
   public final static String AGGREGATE = "Aggregate";
   public final static String AGGREGATION_COLUMN = "AggregationColumn";
-  public final static String TABLE_NAME = "TableName";
-  public final static String COMPARISON_COLUMN = "ComparisonColumn";
-  public final static String COLUMN_VALUE = "ColumnValue";
-  public final static String COLUMN_NUMBER = "ColumnNumber";
-  public final static String COMPARATOR = "Comparator";
+
+  public final static String COMPARISON_COLUMN_1 = "ComparisonColumn1";
+  public final static String COMPARATOR_1 = "Comparator1";
+  public final static String COLUMN_VALUE_1 = "ColumnValue1";
+  public final static String COLUMN_NUMBER_1 = "ColumnNumber1";
+
+  public final static String BINARY_LOGIC_OP_1 = "BinaryLogicOp1";
+
+  public final static String COMPARISON_COLUMN_2 = "ComparisonColumn2";
+  public final static String COMPARATOR_2 = "Comparator2";
+  public final static String COLUMN_VALUE_2 = "ColumnValue2";
+  public final static String COLUMN_NUMBER_2 = "ColumnNumber2";
+
+  public final static String BINARY_LOGIC_OP_2 = "BinaryLogicOp2";
+
+  public final static String COMPARISON_COLUMN_3 = "ComparisonColumn3";
+  public final static String COMPARATOR_3 = "Comparator3";
+  public final static String COLUMN_VALUE_3 = "ColumnValue3";
+  public final static String COLUMN_NUMBER_3 = "ColumnNumber3";
 
   private static Set<String> countExpr = new HashSet<>();
   private static Set<String> averageExpr = new HashSet<>();

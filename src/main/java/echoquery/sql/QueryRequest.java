@@ -161,12 +161,30 @@ public class QueryRequest {
         .setAggregationColumn(
             intent.getSlot(SlotUtil.AGGREGATION_COLUMN).getValue())
         .addWhereClause(
-            intent.getSlot(SlotUtil.COMPARISON_COLUMN).getValue(),
-            intent.getSlot(SlotUtil.COMPARATOR).getValue(),
+            intent.getSlot(SlotUtil.COMPARISON_COLUMN_1).getValue(),
+            intent.getSlot(SlotUtil.COMPARATOR_1).getValue(),
             ObjectUtils.defaultIfNull(
-                intent.getSlot(SlotUtil.COLUMN_VALUE).getValue(),
-                intent.getSlot(SlotUtil.COLUMN_NUMBER).getValue()),
-            (intent.getSlot(SlotUtil.COLUMN_NUMBER).getValue() != null)
+                intent.getSlot(SlotUtil.COLUMN_VALUE_1).getValue(),
+                intent.getSlot(SlotUtil.COLUMN_NUMBER_1).getValue()),
+            (intent.getSlot(SlotUtil.COLUMN_NUMBER_1).getValue() != null)
+              ? ComparisonValueType.NUMBER : ComparisonValueType.STRING)
+        .addWhereClause(
+            intent.getSlot(SlotUtil.BINARY_LOGIC_OP_1).getValue(),
+            intent.getSlot(SlotUtil.COMPARISON_COLUMN_2).getValue(),
+            intent.getSlot(SlotUtil.COMPARATOR_2).getValue(),
+            ObjectUtils.defaultIfNull(
+                intent.getSlot(SlotUtil.COLUMN_VALUE_2).getValue(),
+                intent.getSlot(SlotUtil.COLUMN_NUMBER_2).getValue()),
+            (intent.getSlot(SlotUtil.COLUMN_NUMBER_2).getValue() != null)
+              ? ComparisonValueType.NUMBER : ComparisonValueType.STRING)
+        .addWhereClause(
+            intent.getSlot(SlotUtil.BINARY_LOGIC_OP_2).getValue(),
+            intent.getSlot(SlotUtil.COMPARISON_COLUMN_3).getValue(),
+            intent.getSlot(SlotUtil.COMPARATOR_3).getValue(),
+            ObjectUtils.defaultIfNull(
+                intent.getSlot(SlotUtil.COLUMN_VALUE_3).getValue(),
+                intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue()),
+            (intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue() != null)
               ? ComparisonValueType.NUMBER : ComparisonValueType.STRING)
         .buildQuery();
   }

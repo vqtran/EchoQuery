@@ -8,8 +8,6 @@ import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.facebook.presto.sql.tree.Query;
-
 import echoquery.sql.formatter.SqlFormatter;
 
 public class Querier {

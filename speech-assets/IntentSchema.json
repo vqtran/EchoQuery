@@ -4,6 +4,10 @@
       "intent": "AggregationIntent",
       "slots": [
         {
+          "name": "CommandPhrase",
+          "type": "COMMAND_PHRASE"
+        },
+        {
           "name": "Aggregate",
           "type": "AGGREGATE"
         },
@@ -16,24 +20,60 @@
           "type": "TABLE_NAME"
         },
         {
-          "name": "ComparisonColumn",
+          "name": "ComparisonColumn1",
           "type": "COLUMN_NAME"
         },
         {
-          "name": "ColumnValue",
-          "type": "COLUMN_VALUE"
-        },
-        {
-          "name": "ColumnNumber",
-          "type": "AMAZON.NUMBER"
-        },
-        {
-          "name": "Comparator",
+          "name": "Comparator1",
           "type": "COMPARATORS"
         },
         {
-          "name": "CommandPhrase",
-          "type": "COMMAND_PHRASE"
+          "name": "ColumnValue1",
+          "type": "COLUMN_VALUE"
+        },
+        {
+          "name": "ColumnNumber1",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "BinaryLogicOp1",
+          "type": "BINARY_LOGIC_OPERATOR"
+        },
+        {
+          "name": "ComparisonColumn2",
+          "type": "COLUMN_NAME"
+        },
+        {
+          "name": "Comparator2",
+          "type": "COMPARATORS"
+        },
+        {
+          "name": "ColumnValue2",
+          "type": "COLUMN_VALUE"
+        },
+        {
+          "name": "ColumnNumber2",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "BinaryLogicOp2",
+          "type": "BINARY_LOGIC_OPERATOR"
+        },
+        {
+          "name": "ComparisonColumn3",
+          "type": "COLUMN_NAME"
+        },
+        {
+          "name": "Comparator3",
+          "type": "COMPARATORS"
+        },
+        {
+          "name": "ColumnValue3",
+          "type": "COLUMN_VALUE"
+        },
+        {
+          "name": "ColumnNumber3",
+          "type": "AMAZON.NUMBER"
         }
       ]
     },
