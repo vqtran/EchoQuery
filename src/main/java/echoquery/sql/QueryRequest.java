@@ -89,8 +89,7 @@ public class QueryRequest {
     return this;
   }
 
-  public QueryRequest buildQuery() {
-    SchemaInferrer inferrer = SchemaInferrer.getInstance();
+  public QueryRequest buildQuery(SchemaInferrer inferrer) {
     JoinRecipe from = inferrer.infer(
         fromTable, aggregationColumn, comparisonColumns);
 
@@ -185,7 +184,6 @@ public class QueryRequest {
                 intent.getSlot(SlotUtil.COLUMN_VALUE_3).getValue(),
                 intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue()),
             (intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue() != null)
-              ? ComparisonValueType.NUMBER : ComparisonValueType.STRING)
-        .buildQuery();
+              ? ComparisonValueType.NUMBER : ComparisonValueType.STRING);
   }
 }

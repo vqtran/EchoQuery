@@ -1,4 +1,4 @@
-package echoquery.sql;
+package echoquery;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,13 +9,13 @@ import org.slf4j.LoggerFactory;
 
 import echoquery.utils.EchoQueryCredentials;
 
-public final class SingletonConnection {
+public final class TestConnection {
   private static final Logger log =
-      LoggerFactory.getLogger(SingletonConnection.class);
+      LoggerFactory.getLogger(TestConnection.class);
 
   private static final String URI =
       "jdbc:mysql://speechql.cutq0x5qwogl.us-east-1.rds.amazonaws.com:3306/";
-  private static final String DB = "airlines";
+  private static final String DB = "bestbuy";
 
   private static Connection instance = null;
   static {

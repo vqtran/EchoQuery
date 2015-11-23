@@ -1,5 +1,6 @@
 package echoquery.intents;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.slf4j.Logger;
@@ -12,15 +13,17 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import echoquery.sql.Querier;
 import echoquery.sql.QueryRequest;
 import echoquery.sql.QueryResult;
-import echoquery.sql.SingletonConnection;
 import echoquery.utils.Response;
 
 public class AggregationHandler implements IntentHandler {
 
   private static final Logger log =
       LoggerFactory.getLogger(AggregationHandler.class);
-  private static final Querier querier =
-      new Querier(SingletonConnection.getInstance());
+  private final Querier querier;
+
+  public AggregationHandler(Connection conn) {
+    this.querier = new Querier(conn);
+  }
 
   @Override
   public SpeechletResponse respond(Intent intent, Session session) {

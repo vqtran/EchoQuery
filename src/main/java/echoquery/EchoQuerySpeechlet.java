@@ -16,6 +16,7 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import echoquery.intents.AggregationHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
+import echoquery.sql.SingletonConnection;
 import echoquery.utils.Response;
 
 /**
@@ -34,7 +35,8 @@ public class EchoQuerySpeechlet implements Speechlet {
 
   public EchoQuerySpeechlet() {
     super();
-    aggregationHandler = new AggregationHandler();
+    aggregationHandler =
+        new AggregationHandler(SingletonConnection.getInstance());
     helpHandler = new HelpHandler();
   }
 
