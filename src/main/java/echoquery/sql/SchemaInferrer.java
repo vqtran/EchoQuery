@@ -40,14 +40,7 @@ public class SchemaInferrer {
 
   private final List<String> tables;
 
-  private static SchemaInferrer inferrer = new SchemaInferrer();
-
-  public static SchemaInferrer getInstance() {
-    return inferrer;
-  }
-
-  private SchemaInferrer() {
-    Connection conn = SingletonConnection.getInstance();
+  public SchemaInferrer(Connection conn) {
     columnToTable = new HashMap<>();
     tableToForeignKeys = new HashMap<>();
     tables = new ArrayList<>();

@@ -11,6 +11,7 @@ import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.DefaultTraversalVisitor;
 import com.facebook.presto.sql.tree.Expression;
 import com.facebook.presto.sql.tree.FunctionCall;
+import com.facebook.presto.sql.tree.LogicalBinaryExpression;
 import com.facebook.presto.sql.tree.LongLiteral;
 import com.facebook.presto.sql.tree.QualifiedNameReference;
 import com.facebook.presto.sql.tree.QuerySpecification;
@@ -69,6 +70,7 @@ public class QueryResult {
               .append(" table");
         }
         if (node.getWhere().isPresent()) {
+            translation.append(" where the value in ");
             process(node.getWhere().get(), null);
         }
         for (Expression groupingElement : node.getGroupBy()) {
@@ -122,11 +124,26 @@ public class QueryResult {
       }
 
       @Override
+      public Void visitLogicalBinaryExpression(
+          LogicalBinaryExpression node, Void v) {
+        process(node.getLeft(), null);
+        switch (node.getType()) {
+          case AND:
+            translation.append(" and ");
+            break;
+          case OR:
+            translation.append(" or ");
+            break;
+        }
+        process(node.getRight(), null);
+        return null;
+      }
+
+      @Override
       public Void visitComparisonExpression(ComparisonExpression node, Void v) {
-        translation.append(" where the value in the ");
+        translation.append("the ");
         process(node.getLeft(), null);
         translation.append(" column is");
-
         switch (node.getType()) {
           case EQUAL:
             translation.append(" equal to ");

@@ -40,6 +40,9 @@ function buildTemplate(input, output) {
     // Expand each line out into its combinations.
     var expandedUtterances = '';
     data.split('\n').forEach(function(line) {
+      if (line == '' || line.charAt(0) == '#') {
+        return;
+      }
       expandedUtterances += expandUtterance(line).join('\n') + '\n';
     });
 
