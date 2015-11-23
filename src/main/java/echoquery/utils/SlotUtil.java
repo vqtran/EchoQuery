@@ -13,24 +13,24 @@ public final class SlotUtil {
   public final static String AGGREGATE = "Aggregate";
   public final static String AGGREGATION_COLUMN = "AggregationColumn";
 
-  public final static String COMPARISON_COLUMN_1 = "ComparisonColumn1";
-  public final static String COMPARATOR_1 = "Comparator1";
-  public final static String COLUMN_VALUE_1 = "ColumnValue1";
-  public final static String COLUMN_NUMBER_1 = "ColumnNumber1";
+  public final static String COMPARISON_COLUMN_1 = "ComparisonColumnOne";
+  public final static String COMPARATOR_1 = "ComparatorOne";
+  public final static String COLUMN_VALUE_1 = "ColumnValueOne";
+  public final static String COLUMN_NUMBER_1 = "ColumnNumberOne";
 
-  public final static String BINARY_LOGIC_OP_1 = "BinaryLogicOp1";
+  public final static String BINARY_LOGIC_OP_1 = "BinaryLogicOpOne";
 
-  public final static String COMPARISON_COLUMN_2 = "ComparisonColumn2";
-  public final static String COMPARATOR_2 = "Comparator2";
-  public final static String COLUMN_VALUE_2 = "ColumnValue2";
-  public final static String COLUMN_NUMBER_2 = "ColumnNumber2";
+  public final static String COMPARISON_COLUMN_2 = "ComparisonColumnTwo";
+  public final static String COMPARATOR_2 = "ComparatorTwo";
+  public final static String COLUMN_VALUE_2 = "ColumnValueTwo";
+  public final static String COLUMN_NUMBER_2 = "ColumnNumberTwo";
 
-  public final static String BINARY_LOGIC_OP_2 = "BinaryLogicOp2";
+  public final static String BINARY_LOGIC_OP_2 = "BinaryLogicOpTwo";
 
-  public final static String COMPARISON_COLUMN_3 = "ComparisonColumn3";
-  public final static String COMPARATOR_3 = "Comparator3";
-  public final static String COLUMN_VALUE_3 = "ColumnValue3";
-  public final static String COLUMN_NUMBER_3 = "ColumnNumber3";
+  public final static String COMPARISON_COLUMN_3 = "ComparisonColumnThree";
+  public final static String COMPARATOR_3 = "ComparatorThree";
+  public final static String COLUMN_VALUE_3 = "ColumnValueThree";
+  public final static String COLUMN_NUMBER_3 = "ColumnNumberThree";
 
   private static Set<String> countExpr = new HashSet<>();
   private static Set<String> averageExpr = new HashSet<>();

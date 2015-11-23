@@ -20,59 +20,59 @@
           "type": "TABLE_NAME"
         },
         {
-          "name": "ComparisonColumn1",
+          "name": "ComparisonColumnOne",
           "type": "COLUMN_NAME"
         },
         {
-          "name": "Comparator1",
+          "name": "ComparatorOne",
           "type": "COMPARATORS"
         },
         {
-          "name": "ColumnValue1",
+          "name": "ColumnValueOne",
           "type": "COLUMN_VALUE"
         },
         {
-          "name": "ColumnNumber1",
+          "name": "ColumnNumberOne",
           "type": "AMAZON.NUMBER"
         },
         {
-          "name": "BinaryLogicOp1",
+          "name": "BinaryLogicOpOne",
           "type": "BINARY_LOGIC_OPERATOR"
         },
         {
-          "name": "ComparisonColumn2",
+          "name": "ComparisonColumnTwo",
           "type": "COLUMN_NAME"
         },
         {
-          "name": "Comparator2",
+          "name": "ComparatorTwo",
           "type": "COMPARATORS"
         },
         {
-          "name": "ColumnValue2",
+          "name": "ColumnValueTwo",
           "type": "COLUMN_VALUE"
         },
         {
-          "name": "ColumnNumber2",
+          "name": "ColumnNumberTwo",
           "type": "AMAZON.NUMBER"
         },
         {
-          "name": "BinaryLogicOp2",
+          "name": "BinaryLogicOpTwo",
           "type": "BINARY_LOGIC_OPERATOR"
         },
         {
-          "name": "ComparisonColumn3",
+          "name": "ComparisonColumnThree",
           "type": "COLUMN_NAME"
         },
         {
-          "name": "Comparator3",
+          "name": "ComparatorThree",
           "type": "COMPARATORS"
         },
         {
-          "name": "ColumnValue3",
+          "name": "ColumnValueThree",
           "type": "COLUMN_VALUE"
         },
         {
-          "name": "ColumnNumber3",
+          "name": "ColumnNumberThree",
           "type": "AMAZON.NUMBER"
         }
       ]
