@@ -15,7 +15,7 @@ public final class SingletonConnection {
 
   private static final String URI =
       "jdbc:mysql://speechql.cutq0x5qwogl.us-east-1.rds.amazonaws.com:3306/";
-  private static final String DB = "airlines";
+  private static final String DB = "bestbuy";
 
   private static Connection instance = null;
   static {

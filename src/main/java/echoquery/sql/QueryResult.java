@@ -2,6 +2,7 @@ package echoquery.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,28 +19,32 @@ import com.facebook.presto.sql.tree.QuerySpecification;
 import com.facebook.presto.sql.tree.SortItem;
 import com.facebook.presto.sql.tree.StringLiteral;
 
+import echoquery.utils.SlotUtil;
 import echoquery.utils.TranslationUtils;
 
 public class QueryResult {
-  private static final Logger log = LoggerFactory.getLogger(QueryResult.class);
+  enum Status {
+    SUCCESS,
+    REPAIR_REQUEST,
+    FAILURE
+  }
+  private final Status status;
+  private final String message;
 
-  private final QueryRequest request;
-  private final ResultSet result;
-
-  public QueryResult(QueryRequest request, ResultSet result) {
-    this.request = request;
-    this.result = result;
+  public QueryResult(Status status, String message) {
+    this.status = status;
+    this.message = message;
   }
 
-  public QueryRequest getQueryRequest() {
-    return request;
+  public Status getStatus() {
+    return status;
   }
 
-  public ResultSet getResult() {
-    return result;
+  public String getMessage() {
+    return message;
   }
 
-  public String toEnglish() {
+  public static QueryResult of(QueryRequest request, ResultSet result) {
     double value;
     try {
       result.first();
@@ -66,7 +71,7 @@ public class QueryResult {
           // Use what the user referenced, ignoring any complicated join
           // inference we did to get it to work.
           translation.append("in the ")
-              .append(request.getFromTable())
+              .append(request.getFromTable().get())
               .append(" table");
         }
         if (node.getWhere().isPresent()) {
@@ -87,7 +92,7 @@ public class QueryResult {
 
       @Override
       public Void visitFunctionCall(FunctionCall node, Void v) {
-        String aggregation = request.getAggregationFunc();
+        String aggregation = request.getAggregationFunc().get();
         if (aggregation.equals("COUNT")) {
           if (value == 1) {
             translation.append("There is ")
@@ -98,28 +103,13 @@ public class QueryResult {
               .append(TranslationUtils.convert(value))
               .append(" rows ");
           }
-          return null;
+        } else {
+          translation.append("The ")
+              .append(SlotUtil.aggregationFunctionToEnglish(aggregation))
+              .append(" of the ");
+          process(node.getArguments().get(0), null);
+          translation.append(" column ");
         }
-
-        String longForm = "";
-        switch (aggregation) {
-          case "AVG":
-            longForm = "average";
-            break;
-          case "SUM":
-            longForm = "total";
-            break;
-          case "MIN":
-            longForm = "minimum value";
-            break;
-          case "MAX":
-            longForm = "maximum value";
-            break;
-        }
-        translation.append("The ").append(longForm).append(" of the ");
-        process(node.getArguments().get(0), null);
-        translation.append(" column ");
-
         return null;
       }
 
@@ -143,30 +133,8 @@ public class QueryResult {
       public Void visitComparisonExpression(ComparisonExpression node, Void v) {
         translation.append("the ");
         process(node.getLeft(), null);
-        translation.append(" column is");
-        switch (node.getType()) {
-          case EQUAL:
-            translation.append(" equal to ");
-            break;
-          case NOT_EQUAL:
-            translation.append(" not equal to ");
-            break;
-          case LESS_THAN:
-            translation.append(" less than ");
-            break;
-          case LESS_THAN_OR_EQUAL:
-            translation.append(" less than or equal to ");
-            break;
-          case GREATER_THAN:
-            translation.append(" greater than ");
-            break;
-          case GREATER_THAN_OR_EQUAL:
-            translation.append(" greater than or equal to ");
-            break;
-          case IS_DISTINCT_FROM:
-            translation.append(" is distinct from ");
-            break;
-        }
+        translation.append(" column is")
+            .append(SlotUtil.comparisonTypeToEnglish(node.getType()));
         process(node.getRight(), null);
         return null;
       }
@@ -192,11 +160,11 @@ public class QueryResult {
     };
     translator.process(request.getQuery(), null);
 
-    if (!request.getAggregationFunc().equals("COUNT")) {
+    if (!request.getAggregationFunc().get().equals("COUNT")) {
       translation.append(" is ").append(TranslationUtils.convert(value));
     }
     translation.append(".");
-    return translation.toString();
+    return new QueryResult(Status.SUCCESS, translation.toString());
   }
 }
 
