@@ -173,6 +173,23 @@ public final class SlotUtil {
     return null;
   }
 
+  public static String aggregationFunctionToEnglish(String aggregate) {
+    switch (aggregate) {
+      case "COUNT":
+        return "count";
+      case "AVG":
+        return "average";
+      case "SUM":
+        return "total";
+      case "MIN":
+        return "minimum value";
+      case "MAX":
+        return "maximum value";
+      default:
+        return null;
+    }
+  }
+
   public static ComparisonExpression.Type getComparisonType(String expression) {
     if (equalsExpr.contains(expression)) {
       return ComparisonExpression.Type.EQUAL;
@@ -193,6 +210,25 @@ public final class SlotUtil {
       return ComparisonExpression.Type.LESS_THAN_OR_EQUAL;
     }
     return null;
+  }
+
+  public static String comparisonTypeToEnglish(ComparisonExpression.Type type) {
+    switch (type) {
+      case EQUAL:
+        return " equal to ";
+      case NOT_EQUAL:
+        return " not equal to ";
+      case LESS_THAN:
+        return " less than ";
+      case GREATER_THAN:
+        return " greater than ";
+      case GREATER_THAN_OR_EQUAL:
+        return " greater than or equal to ";
+      case IS_DISTINCT_FROM:
+        return " is distinct from ";
+      default:
+        return null;
+    }
   }
 
   public static LogicalBinaryExpression.Type getComparisonBinaryOperatorType(
