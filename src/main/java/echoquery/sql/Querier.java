@@ -13,6 +13,11 @@ import echoquery.sql.QueryResult.Status;
 import echoquery.sql.formatter.SqlFormatter;
 import echoquery.utils.SlotUtil;
 
+/**
+ * The Querier class takes in an unbuilt QueryRequest object, validates that its
+ * contents are well-formed, builds, then executes the query.
+ */
+
 public class Querier {
 
   private static final Logger log = LoggerFactory.getLogger(Querier.class);
@@ -24,6 +29,11 @@ public class Querier {
     this.inferrer = new SchemaInferrer(conn);
   }
 
+  /**
+   * Validate then execute a QueryRequest.
+   * @param request
+   * @return A QueryResult with either a success or failure status and message.
+   */
   public QueryResult execute(QueryRequest request) {
     // First validate the request, interactively mending malformed requests.
     Optional<QueryResult> invalidation = validate(request);
@@ -47,13 +57,21 @@ public class Querier {
     }
   }
 
+  /**
+   * Validate that the unbuilt fields in the QueryRequest are well formed to
+   * make sure no null pointer exceptions occur during the building process.
+   * @param request
+   * @return
+   */
   public Optional<QueryResult> validate(QueryRequest request) {
+    // FROM VALIDATION
     if (!request.getFromTable().isPresent()) {
       return Optional.of(new QueryResult(Status.FAILURE,
           "I'm not sure what table you're interested in, or maybe you referred "
           + "to one that doesn't exist? Please try again."));
     }
 
+    // AGGREGATION VALIDATION
     if (!request.getAggregationFunc().isPresent()) {
       return Optional.of(new QueryResult(Status.FAILURE,
           "I can't tell if you want to know the number of rows or the average, "
@@ -71,6 +89,7 @@ public class Querier {
           + " table. Please try again."));
     }
 
+    // WHERE VALIDATION: Loop through each clause.
     for (int i = 0; i < request.getComparisonColumns().size(); i++) {
       String index = "";
       switch (i) {
@@ -84,7 +103,6 @@ public class Querier {
           index = "third";
           break;
       }
-
       if (!request.getComparisonColumns().get(i).isPresent()) {
         return Optional.of(new QueryResult(Status.FAILURE,
             "I can't tell what column you're interested in filtering on in "
@@ -115,7 +133,6 @@ public class Querier {
             + " Please try again."));
       }
     }
-
     return Optional.empty();
   }
 }

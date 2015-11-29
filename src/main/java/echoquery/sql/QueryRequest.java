@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.amazon.speech.slu.Intent;
@@ -19,6 +21,11 @@ import com.facebook.presto.sql.tree.StringLiteral;
 
 import echoquery.sql.joins.JoinRecipe;
 import echoquery.utils.SlotUtil;
+
+/**
+ * A QueryRequests holds all of the information necessary to build a query AST
+ * object, and hold original request fields.
+ */
 
 public class QueryRequest {
   public enum ComparisonValueType {
@@ -42,7 +49,7 @@ public class QueryRequest {
   private List<Optional<LogicalBinaryExpression.Type>>
       comparisonBinaryOperators;
 
-  // The built query object itself.
+  // The built Query AST object itself.
   private Query query;
 
   public QueryRequest() {
@@ -93,26 +100,39 @@ public class QueryRequest {
     return query;
   }
 
-  public QueryRequest setFromTable(String table) {
+  public QueryRequest setFromTable(@Nullable String table) {
     fromTable = Optional.ofNullable(table);
     return this;
   }
 
-  public QueryRequest setAggregationFunc(String func) {
+  public QueryRequest setAggregationFunc(@Nullable String func) {
     aggregationFunc = Optional.ofNullable(SlotUtil.getAggregateFunction(func));
+
+    // Sets the aggregation function to count by default.
+    if (!aggregationFunc.isPresent()) {
+      aggregationFunc = Optional.of(SlotUtil.getAggregateFunction("count"));
+    }
     return this;
   }
 
-  public QueryRequest setAggregationColumn(String col) {
+  public QueryRequest setAggregationColumn(@Nullable String col) {
     aggregationColumn = Optional.ofNullable(col);
     return this;
   }
 
+  /**
+   * Adds each component of the where clause to their respective Lists.
+   * @param comparisonColumn
+   * @param comparator
+   * @param comparisonValue
+   * @param type
+   * @return
+   */
   public QueryRequest addWhereClause(
-      String comparisonColumn,
-      String comparator,
-      String comparisonValue,
-      ComparisonValueType type) {
+      @Nullable String comparisonColumn,
+      @Nullable String comparator,
+      @Nullable String comparisonValue,
+      @Nullable ComparisonValueType type) {
     if (comparisonColumn != null
         || comparator != null
         || comparisonValue != null) {
@@ -125,12 +145,22 @@ public class QueryRequest {
     return this;
   }
 
+  /**
+   * Adds each component of the where clause to their respective Lists. This
+   * variant used for non-first where clauses to specify AND or OR.
+   * @param comparisonBinaryOperator
+   * @param comparisonColumn
+   * @param comparator
+   * @param comparisonValue
+   * @param type
+   * @return
+   */
   public QueryRequest addWhereClause(
-      String comparisonBinaryOperator,
-      String comparisonColumn,
-      String comparator,
-      String comparisonValue,
-      ComparisonValueType type) {
+      @Nullable String comparisonBinaryOperator,
+      @Nullable String comparisonColumn,
+      @Nullable String comparator,
+      @Nullable String comparisonValue,
+      @Nullable ComparisonValueType type) {
     if (comparisonBinaryOperator != null) {
       comparisonBinaryOperators.add(Optional.ofNullable(
           SlotUtil.getComparisonBinaryOperatorType(comparisonBinaryOperator)));
@@ -195,6 +225,14 @@ public class QueryRequest {
     return this;
   }
 
+  /**
+   * Assembles the ComparisonExpressions into a single Expression combined
+   * using the specified Binary Operators, in order.
+   * @param whereClauses
+   * @param binaryOps
+   * @param i
+   * @return
+   */
   private static Expression logicallyCombineWhereClauses(
       List<Expression> whereClauses,
       List<Optional<LogicalBinaryExpression.Type>> binaryOps,
@@ -208,6 +246,12 @@ public class QueryRequest {
         logicallyCombineWhereClauses(whereClauses, binaryOps, i + 1));
   }
 
+  /**
+   * Construct a QueryRequest from an intent. The Query AST field here part will
+   * NOT be built yet. buildQuery should only be called after validation.
+   * @param intent
+   * @return
+   */
   public static QueryRequest of(Intent intent) {
     return new QueryRequest()
         .setFromTable(intent.getSlot(SlotUtil.TABLE_NAME).getValue())

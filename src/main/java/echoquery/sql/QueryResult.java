@@ -2,10 +2,6 @@ package echoquery.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.facebook.presto.sql.tree.AstVisitor;
 import com.facebook.presto.sql.tree.ComparisonExpression;
@@ -21,6 +17,11 @@ import com.facebook.presto.sql.tree.StringLiteral;
 
 import echoquery.utils.SlotUtil;
 import echoquery.utils.TranslationUtils;
+
+/**
+ * The QueryResult class contains a status of a query request and a message for
+ * the end user.
+ */
 
 public class QueryResult {
   enum Status {
@@ -44,7 +45,15 @@ public class QueryResult {
     return message;
   }
 
+  /**
+   * Builds a QueryResult out of a JDBC result set, and original request object.
+   * @param request
+   * @param result
+   * @return A successful result where the message is the result of the query
+   *    is in end-user natural language.
+   */
   public static QueryResult of(QueryRequest request, ResultSet result) {
+    // Get the answer as a double to cover decimal values.
     double value;
     try {
       result.first();
