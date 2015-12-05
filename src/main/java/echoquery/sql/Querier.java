@@ -166,6 +166,16 @@ public class Querier {
       }
     }
 
+    // Group by column exists in the database.
+    if (request.getGroupByColumn().isPresent()
+        && !inferrer.getColumnsToTable().containsKey(
+            request.getGroupByColumn().get())) {
+      return Optional.of(new QueryResult(Status.FAILURE,
+          "The " + request.getGroupByColumn().get() + " column that you are "
+          + "referring to in your group by doesn't seem to exist in the "
+          + "database. Please try again."));
+    }
+
     return Optional.empty();
   }
 }

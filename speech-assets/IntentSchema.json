@@ -74,6 +74,14 @@
         {
           "name": "ColumnNumberThree",
           "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "GroupBy",
+          "type": "GROUP_BY"
+        },
+        {
+          "name": "GroupByColumn",
+          "type": "COLUMN_VALUE"
         }
       ]
     },
