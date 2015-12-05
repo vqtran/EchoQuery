@@ -50,12 +50,17 @@ public class TwoTableJoinRecipe implements JoinRecipe {
   }
 
   @Override
+  public String getAggregationPrefix() {
+    return context.getAggregationPrefix();
+  }
+
+  @Override
   public String getComparisonPrefix(int index) {
     return context.getComparisonPrefix(index);
   }
 
   @Override
-  public String getAggregationPrefix() {
-    return context.getAggregationPrefix();
+  public String getGroupByPrefix() {
+    return null;
   }
 }

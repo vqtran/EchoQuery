@@ -12,12 +12,15 @@ import com.amazon.speech.slu.Intent;
 import com.facebook.presto.sql.QueryUtil;
 import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.Expression;
+import com.facebook.presto.sql.tree.GroupingElement;
 import com.facebook.presto.sql.tree.LogicalBinaryExpression;
 import com.facebook.presto.sql.tree.LongLiteral;
 import com.facebook.presto.sql.tree.QualifiedName;
 import com.facebook.presto.sql.tree.QualifiedNameReference;
 import com.facebook.presto.sql.tree.Query;
+import com.facebook.presto.sql.tree.SimpleGroupBy;
 import com.facebook.presto.sql.tree.StringLiteral;
+import com.google.common.collect.ImmutableList;
 
 import echoquery.sql.joins.JoinRecipe;
 import echoquery.utils.SlotUtil;
@@ -48,6 +51,7 @@ public class QueryRequest {
   private List<Optional<ComparisonValueType>> comparisonValueType;
   private List<Optional<LogicalBinaryExpression.Type>>
       comparisonBinaryOperators;
+  private Optional<String> groupByColumn;
 
   // The built Query AST object itself.
   private Query query;
@@ -61,6 +65,7 @@ public class QueryRequest {
     comparisonValues = new ArrayList<>();
     comparisonValueType = new ArrayList<>();
     comparisonBinaryOperators = new ArrayList<>();
+    groupByColumn = Optional.empty();
   }
 
   public Optional<String> getFromTable() {
@@ -96,6 +101,10 @@ public class QueryRequest {
     return comparisonBinaryOperators;
   }
 
+  public Optional<String> getGroupByColumn() {
+    return groupByColumn;
+  }
+
   public Query getQuery() {
     return query;
   }
@@ -117,6 +126,11 @@ public class QueryRequest {
 
   public QueryRequest setAggregationColumn(@Nullable String col) {
     aggregationColumn = Optional.ofNullable(col);
+    return this;
+  }
+
+  public QueryRequest setGroupByColumn(@Nullable String col) {
+    groupByColumn = Optional.ofNullable(col);
     return this;
   }
 
@@ -211,16 +225,26 @@ public class QueryRequest {
             : new StringLiteral(comparisonValues.get(i).get())));
     }
 
-    if (whereClauses.isEmpty()) {
-      query = QueryUtil.simpleQuery(
-          QueryUtil.selectList(aggregationExp), from.render());
-    } else {
-      query = QueryUtil.simpleQuery(
-          QueryUtil.selectList(aggregationExp),
-          from.render(),
-          logicallyCombineWhereClauses(
-              whereClauses, comparisonBinaryOperators, 0));
+
+    QualifiedNameReference groupByName = null;
+    List<GroupingElement> groupBy = new ArrayList<>();
+    if (groupByColumn.isPresent()) {
+      groupByName = new QualifiedNameReference(
+          QualifiedName.of(from.getGroupByPrefix(), groupByColumn.get()));
+      groupBy.add(new SimpleGroupBy(ImmutableList.of(groupByName)));
     }
+
+    query = QueryUtil.simpleQuery(
+        (groupByColumn.isPresent())
+            ? QueryUtil.selectList(groupByName, aggregationExp)
+            : QueryUtil.selectList(aggregationExp),
+        from.render(),
+        Optional.ofNullable(logicallyCombineWhereClauses(
+            whereClauses, comparisonBinaryOperators, 0)),
+        groupBy,
+        Optional.empty(),
+        ImmutableList.of(),
+        Optional.empty());
 
     return this;
   }
@@ -237,6 +261,9 @@ public class QueryRequest {
       List<Expression> whereClauses,
       List<Optional<LogicalBinaryExpression.Type>> binaryOps,
       int i) {
+    if (whereClauses.isEmpty()) {
+      return null;
+    }
     if (i >= binaryOps.size()) {
       return whereClauses.get(i);
     }
@@ -283,6 +310,7 @@ public class QueryRequest {
                 intent.getSlot(SlotUtil.COLUMN_VALUE_3).getValue(),
                 intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue()),
             (intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue() != null)
-              ? ComparisonValueType.NUMBER : ComparisonValueType.STRING);
+              ? ComparisonValueType.NUMBER : ComparisonValueType.STRING)
+        .setGroupByColumn(intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue());
   }
 }

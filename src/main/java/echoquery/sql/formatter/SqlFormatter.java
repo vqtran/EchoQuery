@@ -29,6 +29,7 @@ import com.facebook.presto.sql.tree.ExplainFormat;
 import com.facebook.presto.sql.tree.ExplainOption;
 import com.facebook.presto.sql.tree.ExplainType;
 import com.facebook.presto.sql.tree.Expression;
+import com.facebook.presto.sql.tree.Insert;
 import com.facebook.presto.sql.tree.Intersect;
 import com.facebook.presto.sql.tree.Join;
 import com.facebook.presto.sql.tree.JoinCriteria;
@@ -69,15 +70,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import static echoquery.sql.formatter.ExpressionFormatter.formatExpression;
+import static echoquery.sql.formatter.ExpressionFormatter.formatGroupBy;
 import static echoquery.sql.formatter.ExpressionFormatter.formatSortItems;
 import static echoquery.sql.formatter.ExpressionFormatter.formatStringLiteral;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.collect.Iterables.transform;
-
-/**
- * EchoQuery fork of Presto's formatter to play well with MySQL.
- */
 
 public final class SqlFormatter
 {
@@ -197,8 +195,7 @@ public final class SqlFormatter
             }
 
             if (!node.getGroupBy().isEmpty()) {
-                append(indent, "GROUP BY " + Joiner.on(", ").join(transform(node.getGroupBy(), ExpressionFormatter::formatExpression)))
-                        .append('\n');
+                append(indent, "GROUP BY " + formatGroupBy(node.getGroupBy())).append('\n');
             }
 
             if (node.getHaving().isPresent()) {
@@ -697,6 +694,24 @@ public final class SqlFormatter
                     .append(node.getColumn().getName())
                     .append(" ")
                     .append(node.getColumn().getType());
+
+            return null;
+        }
+
+        @Override
+        protected Void visitInsert(Insert node, Integer indent)
+        {
+            builder.append("INSERT INTO ")
+                    .append(node.getTarget())
+                    .append(" ");
+
+            if (node.getColumns().isPresent()) {
+                builder.append("(")
+                        .append(Joiner.on(", ").join(node.getColumns().get()))
+                        .append(") ");
+            }
+
+            process(node.getQuery(), indent);
 
             return null;
         }

@@ -32,6 +32,8 @@ public final class SlotUtil {
   public final static String COLUMN_VALUE_3 = "ColumnValueThree";
   public final static String COLUMN_NUMBER_3 = "ColumnNumberThree";
 
+  public final static String GROUP_BY_COLUMN = "GroupByColumn";
+
   private static Set<String> countExpr = new HashSet<>();
   private static Set<String> averageExpr = new HashSet<>();
   private static Set<String> sumExpr = new HashSet<>();

@@ -36,6 +36,7 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARATOR_3, null);
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_3, null);
     addSlotValue(slots, SlotUtil.COLUMN_NUMBER_3, null);
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, null);
     return slots;
   }
 
@@ -264,5 +265,67 @@ public class AggregationHandlerTest {
     assertResponse(slots, "The average of the salary column in the employees "
         + "table where the value in the title column is not equal to professor "
         + "is ten.");
+  }
+
+  @Test
+  public void testCountWithGroupBy() {
+    Map<String, Slot> slots = newEmptySlots();
+    addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
+    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");
+    assertResponse(slots, "There is one row in the sales table for the store "
+        + "pawtucket, two rows for providence, and one row for warwick.");
+  }
+
+  @Test
+  public void testAverageWithGroupBy() {
+    Map<String, Slot> slots = newEmptySlots();
+    addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
+    addSlotValue(slots, SlotUtil.AGGREGATE, "average");
+    addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
+    assertResponse(slots, "The average of the count column in the sales table "
+        + "is three for the product camera, two for speakers, and two for tv.");
+  }
+
+  @Test
+  public void testSumWithGroupBy() {
+    Map<String, Slot> slots = newEmptySlots();
+    addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
+    addSlotValue(slots, SlotUtil.AGGREGATE, "total");
+    addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
+    assertResponse(slots, "The total of the count column in the sales table is "
+        + "three for the product camera, four for speakers, and two for tv.");
+  }
+
+  @Test
+  public void testGroupByWithWhereClause() {
+    Map<String, Slot> slots = newEmptySlots();
+    addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
+    addSlotValue(slots, SlotUtil.AGGREGATE, "total");
+    addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "store");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "providence");
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
+    assertResponse(slots, "The total of the count column in the sales table "
+        + "where the value in the store column is equal to providence is three "
+        + "for the product speakers, and two for tv.");
+  }
+
+  @Test
+  public void testGroupByWithWhereClauseOnSameColumn() {
+    Map<String, Slot> slots = newEmptySlots();
+    addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
+    addSlotValue(slots, SlotUtil.AGGREGATE, "total");
+    addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "store");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "providence");
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");
+    assertResponse(slots, "The total of the count column in the sales table "
+        + "where the value in the store column is equal to providence is five "
+        + "for the store providence.");
   }
 }

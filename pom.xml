@@ -85,7 +85,7 @@
     <dependency>
       <groupId>com.facebook.presto</groupId>
       <artifactId>presto-parser</artifactId>
-      <version>0.126</version>
+      <version>0.128</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
