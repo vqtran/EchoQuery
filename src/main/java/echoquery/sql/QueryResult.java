@@ -63,12 +63,11 @@ public class QueryResult {
       return null;
     }
 
-    StringBuilder translation = new StringBuilder();
-
     /**
      * Visit each node in the tree and convert it to natural language. Results
      * in a sentence form of the query.
      */
+    StringBuilder translation = new StringBuilder();
     AstVisitor<Void, Void> translator =
         new DefaultTraversalVisitor<Void, Void>() {
 
