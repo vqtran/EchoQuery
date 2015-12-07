@@ -8,7 +8,6 @@ job
 title
 salary
 custkey
-name
 address
 city
 nation
@@ -32,9 +31,6 @@ weekday
 daynuminyear
 orderkey
 linenumber
-custkey
-partkey
-suppkey
 orderdate
 orderpriority
 shippriority
@@ -53,6 +49,5 @@ brand
 category
 color
 type
-size
 container
 suppkey
