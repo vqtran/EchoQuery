@@ -5,6 +5,7 @@ node_modules/
 
 .metadata/
 
+ssb-dbgen/
 airportdata/
 
 .classpath
