@@ -22,8 +22,17 @@ public class OneTableJoinRecipe implements JoinRecipe {
     return QueryUtil.table(new QualifiedName(table));
   }
 
+  @Override public String getAggregationPrefix() {
+    return table;
+  }
+
   @Override
-  public String wherePrefix() {
+  public String getComparisonPrefix(int index) {
+    return table;
+  }
+
+  @Override
+  public String getGroupByPrefix() {
     return table;
   }
 }

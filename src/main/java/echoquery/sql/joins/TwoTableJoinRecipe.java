@@ -19,21 +19,14 @@ public class TwoTableJoinRecipe implements JoinRecipe {
   private String sourceTable;
   private String destinationColumn;
   private String destinationTable;
+  private InferredContext context;
 
-
-  public TwoTableJoinRecipe(String sourceColumn, String sourceTable,
-      String destinationColumn, String destinationTable) {
-    this.sourceColumn = sourceColumn;
-    this.sourceTable = sourceTable;
-    this.destinationColumn = destinationColumn;
-    this.destinationTable = destinationTable;
-  }
-
-  public TwoTableJoinRecipe(ForeignKey foreignKey) {
+  public TwoTableJoinRecipe(ForeignKey foreignKey, InferredContext context) {
     this.sourceColumn = foreignKey.getSourceColumn();
     this.sourceTable = foreignKey.getSourceTable();
     this.destinationColumn = foreignKey.getDestinationColumn();
     this.destinationTable = foreignKey.getDestinationTable();
+    this.context = context;
   }
 
   @Override
@@ -57,7 +50,17 @@ public class TwoTableJoinRecipe implements JoinRecipe {
   }
 
   @Override
-  public String wherePrefix() {
-    return destinationTable;
+  public String getAggregationPrefix() {
+    return context.getAggregationPrefix();
+  }
+
+  @Override
+  public String getComparisonPrefix(int index) {
+    return context.getComparisonPrefix(index);
+  }
+
+  @Override
+  public String getGroupByPrefix() {
+    return null;
   }
 }

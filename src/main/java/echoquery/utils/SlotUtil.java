@@ -5,15 +5,34 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.facebook.presto.sql.tree.ComparisonExpression;
+import com.facebook.presto.sql.tree.LogicalBinaryExpression;
 
 public final class SlotUtil {
+  public final static String TABLE_NAME = "TableName";
+
   public final static String AGGREGATE = "Aggregate";
   public final static String AGGREGATION_COLUMN = "AggregationColumn";
-  public final static String TABLE_NAME = "TableName";
-  public final static String COMPARISON_COLUMN = "ComparisonColumn";
-  public final static String COLUMN_VALUE = "ColumnValue";
-  public final static String COLUMN_NUMBER = "ColumnNumber";
-  public final static String COMPARATOR = "Comparator";
+
+  public final static String COMPARISON_COLUMN_1 = "ComparisonColumnOne";
+  public final static String COMPARATOR_1 = "ComparatorOne";
+  public final static String COLUMN_VALUE_1 = "ColumnValueOne";
+  public final static String COLUMN_NUMBER_1 = "ColumnNumberOne";
+
+  public final static String BINARY_LOGIC_OP_1 = "BinaryLogicOpOne";
+
+  public final static String COMPARISON_COLUMN_2 = "ComparisonColumnTwo";
+  public final static String COMPARATOR_2 = "ComparatorTwo";
+  public final static String COLUMN_VALUE_2 = "ColumnValueTwo";
+  public final static String COLUMN_NUMBER_2 = "ColumnNumberTwo";
+
+  public final static String BINARY_LOGIC_OP_2 = "BinaryLogicOpTwo";
+
+  public final static String COMPARISON_COLUMN_3 = "ComparisonColumnThree";
+  public final static String COMPARATOR_3 = "ComparatorThree";
+  public final static String COLUMN_VALUE_3 = "ColumnValueThree";
+  public final static String COLUMN_NUMBER_3 = "ColumnNumberThree";
+
+  public final static String GROUP_BY_COLUMN = "GroupByColumn";
 
   private static Set<String> countExpr = new HashSet<>();
   private static Set<String> averageExpr = new HashSet<>();
@@ -156,6 +175,23 @@ public final class SlotUtil {
     return null;
   }
 
+  public static String aggregationFunctionToEnglish(String aggregate) {
+    switch (aggregate) {
+      case "COUNT":
+        return "count";
+      case "AVG":
+        return "average";
+      case "SUM":
+        return "total";
+      case "MIN":
+        return "minimum value";
+      case "MAX":
+        return "maximum value";
+      default:
+        return null;
+    }
+  }
+
   public static ComparisonExpression.Type getComparisonType(String expression) {
     if (equalsExpr.contains(expression)) {
       return ComparisonExpression.Type.EQUAL;
@@ -174,6 +210,36 @@ public final class SlotUtil {
     }
     if (lessEqualExpr.contains(expression)) {
       return ComparisonExpression.Type.LESS_THAN_OR_EQUAL;
+    }
+    return null;
+  }
+
+  public static String comparisonTypeToEnglish(ComparisonExpression.Type type) {
+    switch (type) {
+      case EQUAL:
+        return " equal to ";
+      case NOT_EQUAL:
+        return " not equal to ";
+      case LESS_THAN:
+        return " less than ";
+      case GREATER_THAN:
+        return " greater than ";
+      case GREATER_THAN_OR_EQUAL:
+        return " greater than or equal to ";
+      case IS_DISTINCT_FROM:
+        return " is distinct from ";
+      default:
+        return null;
+    }
+  }
+
+  public static LogicalBinaryExpression.Type getComparisonBinaryOperatorType(
+      String op) {
+    if (op.equals("and")) {
+      return LogicalBinaryExpression.Type.AND;
+    }
+    if (op.equals("or")) {
+      return LogicalBinaryExpression.Type.OR;
     }
     return null;
   }

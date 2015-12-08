@@ -15,7 +15,17 @@ public class InvalidJoinRecipe implements JoinRecipe {
   }
 
   @Override
-  public String wherePrefix() {
+  public String getAggregationPrefix() {
+    return null;
+  }
+
+  @Override
+  public String getComparisonPrefix(int index) {
+    return null;
+  }
+
+  @Override
+  public String getGroupByPrefix() {
     return null;
   }
 }
