@@ -82,7 +82,7 @@ public class SchemaInferrer {
     List<String> tables = new ArrayList<>();
     ResultSet rs = md.getTables(null, null, "%", null);
     while (rs.next()) {
-      tables.add(rs.getString(3));
+      tables.add(rs.getString(3).toLowerCase());
     }
     return tables;
   }
@@ -91,7 +91,7 @@ public class SchemaInferrer {
       throws SQLException {
     ResultSet columns = md.getColumns(null, null, table, null);
     while (columns.next()) {
-      String col = columns.getString("COLUMN_NAME");
+      String col = columns.getString("COLUMN_NAME").toLowerCase();
       Set<String> previousSet =
           columnToTable.getOrDefault(col, new HashSet<String>());
       previousSet.add(table);
@@ -103,10 +103,10 @@ public class SchemaInferrer {
       throws SQLException {
     ResultSet foreignKeys = md.getImportedKeys(null, null, table);
     while (foreignKeys.next()) {
-      String fkTableName = foreignKeys.getString("FKTABLE_NAME");
-      String fkColumnName = foreignKeys.getString("FKCOLUMN_NAME");
-      String pkTableName = foreignKeys.getString("PKTABLE_NAME");
-      String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
+      String fkTableName = foreignKeys.getString("FKTABLE_NAME").toLowerCase();
+      String fkColumnName = foreignKeys.getString("FKCOLUMN_NAME").toLowerCase();
+      String pkTableName = foreignKeys.getString("PKTABLE_NAME").toLowerCase();
+      String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME").toLowerCase();
       List<ForeignKey> previousList = tableToForeignKeys.getOrDefault(
           fkTableName, new ArrayList<ForeignKey>());
       previousList.add(

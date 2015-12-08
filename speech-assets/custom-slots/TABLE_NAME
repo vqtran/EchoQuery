@@ -2,6 +2,8 @@ sales
 stores
 employees
 jobs
-airlines
-airports
-routes
+customers
+orders
+suppliers
+parts
+dates
