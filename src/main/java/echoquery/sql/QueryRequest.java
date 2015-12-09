@@ -23,6 +23,8 @@ import com.facebook.presto.sql.tree.StringLiteral;
 import com.google.common.collect.ImmutableList;
 
 import echoquery.sql.joins.JoinRecipe;
+import echoquery.sql.model.ColumnName;
+import echoquery.sql.model.ColumnType;
 import echoquery.utils.SlotUtil;
 
 /**
@@ -31,11 +33,6 @@ import echoquery.utils.SlotUtil;
  */
 
 public class QueryRequest {
-  public enum ComparisonValueType {
-    STRING,
-    NUMBER,
-  }
-
   /**
    * Metadata about the original request parsed from the intent. Assumption
    * made that there will always only be one aggregation. Index i in lists
@@ -44,14 +41,13 @@ public class QueryRequest {
    */
   private Optional<String> fromTable;
   private Optional<String> aggregationFunc;
-  private Optional<String> aggregationColumn;
-  private List<Optional<String>> comparisonColumns;
+  private ColumnName aggregationColumn;
+  private List<ColumnName> comparisonColumns;
   private List<Optional<ComparisonExpression.Type>> comparators;
   private List<Optional<String>> comparisonValues;
-  private List<Optional<ComparisonValueType>> comparisonValueType;
   private List<Optional<LogicalBinaryExpression.Type>>
       comparisonBinaryOperators;
-  private Optional<String> groupByColumn;
+  private ColumnName groupByColumn;
 
   // The built Query AST object itself.
   private Query query;
@@ -59,13 +55,12 @@ public class QueryRequest {
   public QueryRequest() {
     fromTable = Optional.empty();
     aggregationFunc = Optional.empty();
-    aggregationColumn = Optional.empty();
+    aggregationColumn = new ColumnName();
     comparisonColumns = new ArrayList<>();
     comparators = new ArrayList<>();
     comparisonValues = new ArrayList<>();
-    comparisonValueType = new ArrayList<>();
     comparisonBinaryOperators = new ArrayList<>();
-    groupByColumn = Optional.empty();
+    groupByColumn = new ColumnName();
   }
 
   public Optional<String> getFromTable() {
@@ -76,11 +71,11 @@ public class QueryRequest {
     return aggregationFunc;
   }
 
-  public Optional<String> getAggregationColumn() {
+  public ColumnName getAggregationColumn() {
     return aggregationColumn;
   }
 
-  public List<Optional<String>> getComparisonColumns() {
+  public List<ColumnName> getComparisonColumns() {
     return comparisonColumns;
   }
 
@@ -92,16 +87,12 @@ public class QueryRequest {
     return comparisonValues;
   }
 
-  public List<Optional<ComparisonValueType>> getComparisonValueTypes() {
-    return comparisonValueType;
-  }
-
   public List<Optional<LogicalBinaryExpression.Type>>
       getComparisonBinaryOperators() {
     return comparisonBinaryOperators;
   }
 
-  public Optional<String> getGroupByColumn() {
+  public ColumnName getGroupByColumn() {
     return groupByColumn;
   }
 
@@ -124,13 +115,13 @@ public class QueryRequest {
     return this;
   }
 
-  public QueryRequest setAggregationColumn(@Nullable String col) {
-    aggregationColumn = Optional.ofNullable(col);
+  public QueryRequest setAggregationColumn(ColumnName column) {
+    aggregationColumn = column;
     return this;
   }
 
-  public QueryRequest setGroupByColumn(@Nullable String col) {
-    groupByColumn = Optional.ofNullable(col);
+  public QueryRequest setGroupByColumn(ColumnName column) {
+    groupByColumn = column;
     return this;
   }
 
@@ -139,22 +130,19 @@ public class QueryRequest {
    * @param comparisonColumn
    * @param comparator
    * @param comparisonValue
-   * @param type
    * @return
    */
   public QueryRequest addWhereClause(
-      @Nullable String comparisonColumn,
+      ColumnName comparisonColumn,
       @Nullable String comparator,
-      @Nullable String comparisonValue,
-      @Nullable ComparisonValueType type) {
-    if (comparisonColumn != null
+      @Nullable String comparisonValue) {
+    if (comparisonColumn.getColumn().isPresent()
         || comparator != null
         || comparisonValue != null) {
-      comparisonColumns.add(Optional.ofNullable(comparisonColumn));
+      comparisonColumns.add(comparisonColumn);
       comparators.add(
           Optional.ofNullable(SlotUtil.getComparisonType(comparator)));
       comparisonValues.add(Optional.ofNullable(comparisonValue));
-      comparisonValueType.add(Optional.ofNullable(type));
     }
     return this;
   }
@@ -166,23 +154,20 @@ public class QueryRequest {
    * @param comparisonColumn
    * @param comparator
    * @param comparisonValue
-   * @param type
    * @return
    */
   public QueryRequest addWhereClause(
       @Nullable String comparisonBinaryOperator,
-      @Nullable String comparisonColumn,
+      ColumnName comparisonColumn,
       @Nullable String comparator,
-      @Nullable String comparisonValue,
-      @Nullable ComparisonValueType type) {
+      @Nullable String comparisonValue) {
     if (comparisonBinaryOperator != null) {
       comparisonBinaryOperators.add(Optional.ofNullable(
           SlotUtil.getComparisonBinaryOperatorType(comparisonBinaryOperator)));
-      comparisonColumns.add(Optional.ofNullable(comparisonColumn));
+      comparisonColumns.add(comparisonColumn);
       comparators.add(
           Optional.ofNullable(SlotUtil.getComparisonType(comparator)));
       comparisonValues.add(Optional.ofNullable(comparisonValue));
-      comparisonValueType.add(Optional.ofNullable(type));
     }
     return this;
   }
@@ -196,46 +181,42 @@ public class QueryRequest {
    * @return this query request with query built.
    */
   public QueryRequest buildQuery(SchemaInferrer inferrer) {
-    List<String> validComparisonColumns = new ArrayList<>();
-    for (Optional<String> c : comparisonColumns) {
-      validComparisonColumns.add(c.get());
-    }
-
-    JoinRecipe from = inferrer.infer(fromTable.get(),
-        aggregationColumn.orElseGet(() -> null), validComparisonColumns);
+    JoinRecipe from = inferrer.infer(
+        fromTable.get(), aggregationColumn, comparisonColumns, groupByColumn);
 
     Expression aggregationExp;
-    if (aggregationColumn.isPresent()) {
+    if (aggregationColumn.getColumn().isPresent()) {
       aggregationExp = QueryUtil.functionCall(
           aggregationFunc.get(),
           new QualifiedNameReference(QualifiedName.of(
-              from.getAggregationPrefix(), aggregationColumn.get())));
+              from.getAggregationPrefix(),
+              aggregationColumn.getColumn().get())));
     } else {
       aggregationExp = QueryUtil.functionCall(aggregationFunc.get());
     }
 
     List<Expression> whereClauses = new ArrayList<>();
     for (int i = 0; i < comparisonColumns.size(); i++) {
+      ColumnName col = comparisonColumns.get(i);
       whereClauses.add(new ComparisonExpression(
           comparators.get(i).get(),
           new QualifiedNameReference(QualifiedName.of(
-              from.getComparisonPrefix(i), comparisonColumns.get(i).get())),
-          (comparisonValueType.get(i).get() == ComparisonValueType.NUMBER)
+              from.getComparisonPrefix(i), col.getColumn().get())),
+          (col.getType() == ColumnType.NUMBER)
             ? new LongLiteral(comparisonValues.get(i).get())
             : new StringLiteral(comparisonValues.get(i).get())));
     }
 
-
     QualifiedNameReference groupByName = null;
     List<GroupingElement> groupBy = new ArrayList<>();
-    if (groupByColumn.isPresent()) {
-      groupByName = new QualifiedNameReference(
-          QualifiedName.of(from.getGroupByPrefix(), groupByColumn.get()));
+    if (groupByColumn.getColumn().isPresent()) {
+      groupByName = new QualifiedNameReference(QualifiedName.of(
+          from.getGroupByPrefix(), groupByColumn.getColumn().get()));
       groupBy.add(new SimpleGroupBy(ImmutableList.of(groupByName)));
     }
 
     query = QueryUtil.simpleQuery(
-        (groupByColumn.isPresent())
+        (groupByColumn.getColumn().isPresent())
             ? QueryUtil.selectList(groupByName, aggregationExp)
             : QueryUtil.selectList(aggregationExp),
         from.render(),
@@ -283,34 +264,40 @@ public class QueryRequest {
     return new QueryRequest()
         .setFromTable(intent.getSlot(SlotUtil.TABLE_NAME).getValue())
         .setAggregationFunc(intent.getSlot(SlotUtil.AGGREGATE).getValue())
-        .setAggregationColumn(
-            intent.getSlot(SlotUtil.AGGREGATION_COLUMN).getValue())
-        .addWhereClause(
-            intent.getSlot(SlotUtil.COMPARISON_COLUMN_1).getValue(),
+        .setAggregationColumn(SlotUtil.parseColumnSlot(
+            intent.getSlot(SlotUtil.AGGREGATION_COLUMN).getValue()))
+        .addWhereClause(SlotUtil.parseColumnSlot(
+            intent.getSlot(SlotUtil.COMPARISON_COLUMN_1).getValue())
+                .setType((intent.getSlot(
+                    SlotUtil.COLUMN_NUMBER_1).getValue() != null)
+                ? ColumnType.NUMBER : ColumnType.STRING),
             intent.getSlot(SlotUtil.COMPARATOR_1).getValue(),
             ObjectUtils.defaultIfNull(
                 intent.getSlot(SlotUtil.COLUMN_VALUE_1).getValue(),
-                intent.getSlot(SlotUtil.COLUMN_NUMBER_1).getValue()),
-            (intent.getSlot(SlotUtil.COLUMN_NUMBER_1).getValue() != null)
-              ? ComparisonValueType.NUMBER : ComparisonValueType.STRING)
+                intent.getSlot(SlotUtil.COLUMN_NUMBER_1).getValue()))
         .addWhereClause(
             intent.getSlot(SlotUtil.BINARY_LOGIC_OP_1).getValue(),
-            intent.getSlot(SlotUtil.COMPARISON_COLUMN_2).getValue(),
+            SlotUtil.parseColumnSlot(
+                intent.getSlot(SlotUtil.COMPARISON_COLUMN_2).getValue())
+                    .setType((intent.getSlot(
+                        SlotUtil.COLUMN_NUMBER_2).getValue() != null)
+                ? ColumnType.NUMBER : ColumnType.STRING),
             intent.getSlot(SlotUtil.COMPARATOR_2).getValue(),
             ObjectUtils.defaultIfNull(
                 intent.getSlot(SlotUtil.COLUMN_VALUE_2).getValue(),
-                intent.getSlot(SlotUtil.COLUMN_NUMBER_2).getValue()),
-            (intent.getSlot(SlotUtil.COLUMN_NUMBER_2).getValue() != null)
-              ? ComparisonValueType.NUMBER : ComparisonValueType.STRING)
+                intent.getSlot(SlotUtil.COLUMN_NUMBER_2).getValue()))
         .addWhereClause(
             intent.getSlot(SlotUtil.BINARY_LOGIC_OP_2).getValue(),
-            intent.getSlot(SlotUtil.COMPARISON_COLUMN_3).getValue(),
+            SlotUtil.parseColumnSlot(
+                intent.getSlot(SlotUtil.COMPARISON_COLUMN_3).getValue())
+                    .setType((intent.getSlot(
+                        SlotUtil.COLUMN_NUMBER_3).getValue() != null)
+                ? ColumnType.NUMBER : ColumnType.STRING),
             intent.getSlot(SlotUtil.COMPARATOR_3).getValue(),
             ObjectUtils.defaultIfNull(
                 intent.getSlot(SlotUtil.COLUMN_VALUE_3).getValue(),
-                intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue()),
-            (intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue() != null)
-              ? ComparisonValueType.NUMBER : ComparisonValueType.STRING)
-        .setGroupByColumn(intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue());
+                intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue()))
+        .setGroupByColumn(SlotUtil.parseColumnSlot(
+            intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue()));
   }
 }

@@ -22,6 +22,7 @@ import echoquery.sql.joins.InvalidJoinRecipe;
 import echoquery.sql.joins.JoinRecipe;
 import echoquery.sql.joins.OneTableJoinRecipe;
 import echoquery.sql.joins.TwoTableJoinRecipe;
+import echoquery.sql.model.ColumnName;
 import echoquery.sql.model.ForeignKey;
 
 /**
@@ -122,7 +123,10 @@ public class SchemaInferrer {
    *    from.
    */
   public JoinRecipe infer(
-      String table, @Nullable String aggregation, List<String> comparisons) {
+      String table,
+      ColumnName aggregation,
+      List<ColumnName> comparisons,
+      ColumnName groupBy) {
 
     // TODO: This only works for joining a fact table to a single dimension
     // table right now. It fails because every time we criteriaTables.retainAll
@@ -135,15 +139,20 @@ public class SchemaInferrer {
     Set<String> criteriaTables = new HashSet<>(tables);
 
     // Aggregate all the columns we are interested in.
-    List<String> columns = new ArrayList<>(comparisons);
-    columns.add(aggregation);
+    List<ColumnName> columns = new ArrayList<>(comparisons);
+    if (aggregation.getColumn().isPresent()) {
+      columns.add(aggregation);
+    }
+    if (groupBy.getColumn().isPresent()) {
+      columns.add(groupBy);
+    }
     columns.removeAll(Collections.singleton(null));
 
     // For each column we are interested, we need to filter down only tables
     // that contain it (ignoring columns that already exist in our base table).
-    for (String column : columns) {
-      Set<String> newCriteria =
-          columnToTable.getOrDefault(column, new HashSet<String>());
+    for (ColumnName column : columns) {
+      Set<String> newCriteria = columnToTable.getOrDefault(
+          column.getColumn().get(), new HashSet<String>());
       if (!newCriteria.contains(table)) {
         criteriaTables.retainAll(newCriteria);
       }
@@ -160,8 +169,8 @@ public class SchemaInferrer {
       for (ForeignKey foreignKey : foreignKeys) {
         String destinationTable = foreignKey.getDestinationTable();
         if (criteriaTables.contains(destinationTable)) {
-         return new TwoTableJoinRecipe(foreignKey,
-             inferPrefixes(aggregation, comparisons, table, destinationTable));
+          return new TwoTableJoinRecipe(foreignKey,
+              inferPrefixes(aggregation, comparisons, table, destinationTable));
         }
       }
     }
@@ -175,22 +184,25 @@ public class SchemaInferrer {
    * @return which table the column belongs to.
    */
   private String inferPrefix(
-      @Nullable String column, String sourceTable, String destinationTable) {
-    if (column == null) {
+      ColumnName column,
+      String sourceTable,
+      String destinationTable) {
+    if (column.getColumn().isPresent()) {
+      Set<String> tables = columnToTable.get(column.getColumn().get());
+      return (tables.contains(sourceTable)) ? sourceTable : destinationTable;
+    } else {
       return null;
     }
-    Set<String> tables = columnToTable.get(column);
-    return (tables.contains(sourceTable)) ? sourceTable : destinationTable;
   }
 
   private InferredContext inferPrefixes(
-      @Nullable String aggregation,
-      List<String> comparisons,
+      @Nullable ColumnName aggregation,
+      List<ColumnName> comparisons,
       String table,
       String destinationTable) {
     InferredContext ctx = new InferredContext();
     ctx.setAggregationPrefix(inferPrefix(aggregation, table, destinationTable));
-    for (String comparison : comparisons) {
+    for (ColumnName comparison : comparisons) {
       ctx.addComparisonPrefix(inferPrefix(comparison, table, destinationTable));
     }
     return ctx;

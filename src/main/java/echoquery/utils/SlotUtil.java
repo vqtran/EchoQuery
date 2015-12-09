@@ -4,8 +4,13 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.LogicalBinaryExpression;
+
+import echoquery.sql.model.ColumnName;
+import echoquery.sql.model.ColumnType;
 
 public final class SlotUtil {
   public final static String TABLE_NAME = "TableName";
@@ -242,6 +247,22 @@ public final class SlotUtil {
       return LogicalBinaryExpression.Type.OR;
     }
     return null;
+  }
+
+  public static ColumnName parseColumnSlot(@Nullable String columnName) {
+    // Here, there be dataset specific hacks!
+    if (columnName == null) {
+      return new ColumnName();
+    }
+    String[] parts = columnName.split(" ");
+    if (parts.length == 1) {
+      return new ColumnName(null, parts[0], ColumnType.UNKNOWN);
+    } else {
+      return new ColumnName(
+          parts[0].endsWith("s") ? parts[0] : (parts[0] + "s"),
+          parts[1],
+          ColumnType.UNKNOWN);
+    }
   }
 
   private SlotUtil() {}
