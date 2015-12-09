@@ -48,7 +48,6 @@ public class Querier {
     } catch (QueryBuildException e) {
       return e.getResult();
     }
-    System.out.println(sql);
     try {
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(sql);
