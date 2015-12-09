@@ -42,8 +42,13 @@ public class Querier {
     }
     // If it gets here the request had all necessary fields, so now try to
     // execute the SQL translation.
-    String sql =
-        SqlFormatter.formatSql(request.buildQuery(inferrer).getQuery());
+    String sql;
+    try {
+      sql = SqlFormatter.formatSql(request.buildQuery(inferrer).getQuery());
+    } catch (QueryBuildException e) {
+      return e.getResult();
+    }
+    System.out.println(sql);
     try {
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(sql);

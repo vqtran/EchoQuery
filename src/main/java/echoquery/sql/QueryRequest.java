@@ -180,16 +180,23 @@ public class QueryRequest {
    * @param inferrer
    * @return this query request with query built.
    */
-  public QueryRequest buildQuery(SchemaInferrer inferrer) {
+  public QueryRequest buildQuery(SchemaInferrer inferrer)
+      throws QueryBuildException {
     JoinRecipe from = inferrer.infer(
         fromTable.get(), aggregationColumn, comparisonColumns, groupByColumn);
+
+    if (!from.isValid()) {
+      throw new QueryBuildException(new QueryResult(
+          QueryResult.Status.REPAIR_REQUEST,
+          "We don't know what table your columns come from."));
+    }
 
     Expression aggregationExp;
     if (aggregationColumn.getColumn().isPresent()) {
       aggregationExp = QueryUtil.functionCall(
           aggregationFunc.get(),
           new QualifiedNameReference(QualifiedName.of(
-              from.getAggregationPrefix(),
+              from.getContext().getAggregationPrefix().get(),
               aggregationColumn.getColumn().get())));
     } else {
       aggregationExp = QueryUtil.functionCall(aggregationFunc.get());
@@ -201,7 +208,8 @@ public class QueryRequest {
       whereClauses.add(new ComparisonExpression(
           comparators.get(i).get(),
           new QualifiedNameReference(QualifiedName.of(
-              from.getComparisonPrefix(i), col.getColumn().get())),
+              from.getContext().getComparisonPrefix(i).get(),
+              col.getColumn().get())),
           (col.getType() == ColumnType.NUMBER)
             ? new LongLiteral(comparisonValues.get(i).get())
             : new StringLiteral(comparisonValues.get(i).get())));
@@ -211,7 +219,8 @@ public class QueryRequest {
     List<GroupingElement> groupBy = new ArrayList<>();
     if (groupByColumn.getColumn().isPresent()) {
       groupByName = new QualifiedNameReference(QualifiedName.of(
-          from.getGroupByPrefix(), groupByColumn.getColumn().get()));
+          from.getContext().getGroupByPrefix().get(),
+          groupByColumn.getColumn().get()));
       groupBy.add(new SimpleGroupBy(ImmutableList.of(groupByName)));
     }
 
