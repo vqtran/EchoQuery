@@ -32,6 +32,6 @@ public class AggregationHandler implements IntentHandler {
    * Exposed for testing purposes - SpeechletResponse is impossible to inspect.
    */
   public String getResponseInEnglish(Intent intent, Session session) {
-    return querier.execute(QueryRequest.of(intent)).getMessage();
+    return querier.execute(QueryRequest.of(intent, session)).getMessage();
   }
 }
