@@ -5,14 +5,12 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-
-import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +18,8 @@ import org.slf4j.LoggerFactory;
 import echoquery.sql.joins.InferredContext;
 import echoquery.sql.joins.InvalidJoinRecipe;
 import echoquery.sql.joins.JoinRecipe;
-import echoquery.sql.joins.OneTableJoinRecipe;
-import echoquery.sql.joins.TwoTableJoinRecipe;
+import echoquery.sql.joins.MultiTableJoinRecipe;
+import echoquery.sql.model.ColumnName;
 import echoquery.sql.model.ForeignKey;
 
 /**
@@ -77,6 +75,14 @@ public class SchemaInferrer {
     }
   }
 
+  public List<String> getTables() {
+    return tables;
+  }
+
+  public Map<String, Set<String>> getColumnsToTable() {
+    return columnToTable;
+  }
+
   private List<String> findColumnNames(DatabaseMetaData md)
       throws SQLException {
     List<String> tables = new ArrayList<>();
@@ -116,91 +122,106 @@ public class SchemaInferrer {
   }
 
   /**
-   * @param table The table that we want to aggregate over / select from.
+   * @param baseTable The table that we want to aggregate over / select from.
    * @param column The column that were filtering on.
    * @return A JoinRecipe that can create the table to filter one and select
    *    from.
    */
   public JoinRecipe infer(
-      String table, @Nullable String aggregation, List<String> comparisons) {
+      String baseTable,
+      ColumnName aggregation,
+      List<ColumnName> comparisons,
+      ColumnName groupBy) {
 
-    // TODO: This only works for joining a fact table to a single dimension
-    // table right now. It fails because every time we criteriaTables.retainAll
-    // for one column, it kills whatever was important for the previous column.
-    // The generic approach here would be more like, find the tables that work
-    // for each column, then find the minimum subset of tables that works for
-    // all columns.
+    InferredContext inference = new InferredContext();
 
-    // Initially we can join with any table.
-    Set<String> criteriaTables = new HashSet<>(tables);
+    // If there exists an aggregation column to infer on.
+    if (aggregation.getColumn().isPresent()) {
+      inference.setAggregationPrefix(inferTable(baseTable, aggregation));
+    }
 
-    // Aggregate all the columns we are interested in.
-    List<String> columns = new ArrayList<>(comparisons);
-    columns.add(aggregation);
-    columns.removeAll(Collections.singleton(null));
+    // Infer for each column in the where clause now.
+    for (ColumnName column : comparisons) {
+      inference.addComparisonPrefix(inferTable(baseTable, column));
+    }
 
-    // For each column we are interested, we need to filter down only tables
-    // that contain it (ignoring columns that already exist in our base table).
-    for (String column : columns) {
-      Set<String> newCriteria =
-          columnToTable.getOrDefault(column, new HashSet<String>());
-      if (!newCriteria.contains(table)) {
-        criteriaTables.retainAll(newCriteria);
+    // If there exists a group-by column to infer on.
+    if (groupBy.getColumn().isPresent()) {
+      inference.setGroupBy(inferTable(baseTable, groupBy));
+    }
+
+    // Validate that we've been able to assign a table to every column.
+    // TODO: Make these interactive, i.e. ask the user to clarify.
+
+    if (aggregation.getColumn().isPresent()
+        && !inference.getAggregationPrefix().isPresent()) {
+      return new InvalidJoinRecipe();
+    }
+
+    for (Optional<String> comparisonPrefix : inference.getComparisons()) {
+      if (!comparisonPrefix.isPresent()) {
+        return new InvalidJoinRecipe();
       }
     }
 
-    // If all the columns could be in our base table then we don't need to join.
-    if (criteriaTables.contains(table)) {
-      return new OneTableJoinRecipe(table);
-    } else if (criteriaTables.size() > 0) {
-      // If there are multiple choices, we choose the first one that connects
-      // to our table.
-      List<ForeignKey> foreignKeys =
-          tableToForeignKeys.getOrDefault(table, new ArrayList<ForeignKey>());
-      for (ForeignKey foreignKey : foreignKeys) {
-        String destinationTable = foreignKey.getDestinationTable();
-        if (criteriaTables.contains(destinationTable)) {
-         return new TwoTableJoinRecipe(foreignKey,
-             inferPrefixes(aggregation, comparisons, table, destinationTable));
-        }
+    if (groupBy.getColumn().isPresent()
+        && !inference.getGroupByPrefix().isPresent()) {
+      return new InvalidJoinRecipe();
+    }
+
+    // Now get all the distinct dimension tables we need to join on to satisfy
+    // these columns. This is all inferred tables except for our base table.
+    Set<String> joinTables = inference.distinctTables();
+    joinTables.remove(baseTable);
+
+    // Get all the foreign keys for our base table.
+    List<ForeignKey> foreignKeys =
+        tableToForeignKeys.getOrDefault(baseTable, new ArrayList<ForeignKey>());
+
+    // Find the ones relevant to the tables we wanted to join on.
+    Set<ForeignKey> relevantKeys = new HashSet<>();
+    for (ForeignKey key : foreignKeys) {
+      // Whenever we find a relevant one we remove it from joinTables.
+      if (joinTables.remove(key.getDestinationTable())) {
+        relevantKeys.add(key);
       }
     }
-    return new InvalidJoinRecipe();
+
+    // So if there was a foreign key leading out from our base table for each
+    // table we wanted to join on, we then expect joinTables to be empty.
+    if (!joinTables.isEmpty()) {
+      return new InvalidJoinRecipe();
+    }
+
+    // We now know all the right foreign keys to join with!
+    return new MultiTableJoinRecipe(baseTable, relevantKeys, inference);
   }
 
   /**
-   * @param column the column of interest
-   * @param sourceTable the table of interest
-   * @param destinationTable the table being joined
-   * @return which table the column belongs to.
+   * Infer from a ColumnName what table it belongs to.
+   * @param column
+   * @return
    */
-  private String inferPrefix(
-      @Nullable String column, String sourceTable, String destinationTable) {
-    if (column == null) {
+  private String inferTable(String baseTable, ColumnName column) {
+    // If the user specified and we don't need to infer its table, then don't.
+    if (column.getTable().isPresent()) {
+      return column.getTable().get();
+    } else {
+      // Otherwise, find the tables it could belong to.
+      Set<String> candidateTables = columnToTable.getOrDefault(
+          column.getColumn().get(), new HashSet<>());
+      // If there's only one, this is it!
+      if (candidateTables.size() == 1) {
+        return candidateTables.iterator().next();
+      }
+      // If one of these is the base table, then we can default to the base
+      // table.
+      if (candidateTables.contains(baseTable)) {
+        return baseTable;
+      }
+      // If there's multiple perfectly valid ones, we can't decide. Let the
+      // prefix be null, we'll validate at the end.
       return null;
     }
-    Set<String> tables = columnToTable.get(column);
-    return (tables.contains(sourceTable)) ? sourceTable : destinationTable;
-  }
-
-  private InferredContext inferPrefixes(
-      @Nullable String aggregation,
-      List<String> comparisons,
-      String table,
-      String destinationTable) {
-    InferredContext ctx = new InferredContext();
-    ctx.setAggregationPrefix(inferPrefix(aggregation, table, destinationTable));
-    for (String comparison : comparisons) {
-      ctx.addComparisonPrefix(inferPrefix(comparison, table, destinationTable));
-    }
-    return ctx;
-  }
-
-  public List<String> getTables() {
-    return tables;
-  }
-
-  public Map<String, Set<String>> getColumnsToTable() {
-    return columnToTable;
   }
 }

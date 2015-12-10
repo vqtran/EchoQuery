@@ -42,8 +42,12 @@ public class Querier {
     }
     // If it gets here the request had all necessary fields, so now try to
     // execute the SQL translation.
-    String sql =
-        SqlFormatter.formatSql(request.buildQuery(inferrer).getQuery());
+    String sql;
+    try {
+      sql = SqlFormatter.formatSql(request.buildQuery(inferrer).getQuery());
+    } catch (QueryBuildException e) {
+      return e.getResult();
+    }
     try {
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(sql);
@@ -93,7 +97,7 @@ public class Querier {
 
     // Non-count aggregation functions require a column to aggregate over.
     if (!aggregationFunc.equals("COUNT")
-        && !request.getAggregationColumn().isPresent()) {
+        && !request.getAggregationColumn().getColumn().isPresent()) {
       return Optional.of(new QueryResult(Status.FAILURE,
           "I'm not sure what column you want me to find the "
           + SlotUtil.aggregationFunctionToEnglish(aggregationFunc)
@@ -102,11 +106,12 @@ public class Querier {
     }
 
     // Aggregation column, if present, exists in the database.
-    if (request.getAggregationColumn().isPresent()) {
-      String aggregationColumn = request.getAggregationColumn().get();
+    if (request.getAggregationColumn().getColumn().isPresent()) {
+      String aggregationColumn =
+          request.getAggregationColumn().getColumn().get();
       if (!inferrer.getColumnsToTable().containsKey(aggregationColumn)) {
         return Optional.of(new QueryResult(Status.FAILURE,
-            "The " + request.getAggregationColumn().get()
+            "The " + request.getAggregationColumn().getColumn().get()
             + " column that you've asked me to find the "
             + SlotUtil.aggregationFunctionToEnglish(aggregationFunc)
             + " of doesn't seem to exist in the database. Please try another"
@@ -118,13 +123,14 @@ public class Querier {
     // Valid where for each clause.
     for (int i = 0; i < request.getComparisonColumns().size(); i++) {
       // The column to compare is present.
-      if (!request.getComparisonColumns().get(i).isPresent()) {
+      if (!request.getComparisonColumns().get(i).getColumn().isPresent()) {
         return Optional.of(new QueryResult(Status.FAILURE,
             "I can't tell what column you're interested in filtering on in "
             + "your " + ordinals[i] + " where clause. Please try again."));
       }
 
-      String comparisonColumn = request.getComparisonColumns().get(i).get();
+      String comparisonColumn =
+          request.getComparisonColumns().get(i).getColumn().get();
 
       // The column to compare exists in the database.
       if (!inferrer.getColumnsToTable().containsKey(comparisonColumn)) {
@@ -139,7 +145,8 @@ public class Querier {
         return Optional.of(new QueryResult(Status.FAILURE,
             "I can't tell if you are looking for values equal to, greater than,"
             + " or less than the specified value in the "
-            + request.getComparisonColumns().get(i).get() + " column in your "
+            + request.getComparisonColumns().get(i).getColumn().get()
+            + " column in your "
             + ordinals[i] + " where clause. Please try again."));
       }
 
@@ -148,7 +155,8 @@ public class Querier {
         return Optional.of(new QueryResult(Status.FAILURE,
             "I can't tell if in your " + ordinals[i] + " where clause, you are "
             + "looking for values in the "
-            + request.getComparisonColumns().get(i).get() + " column"
+            + request.getComparisonColumns().get(i).getColumn().get()
+            + " column"
             + SlotUtil.comparisonTypeToEnglish(
                 request.getComparators().get(i).get())
             + "what value. Please try again."));
@@ -167,13 +175,13 @@ public class Querier {
     }
 
     // Group by column exists in the database.
-    if (request.getGroupByColumn().isPresent()
+    if (request.getGroupByColumn().getColumn().isPresent()
         && !inferrer.getColumnsToTable().containsKey(
-            request.getGroupByColumn().get())) {
+            request.getGroupByColumn().getColumn().get())) {
       return Optional.of(new QueryResult(Status.FAILURE,
-          "The " + request.getGroupByColumn().get() + " column that you are "
-          + "referring to in your group by doesn't seem to exist in the "
-          + "database. Please try again."));
+          "The " + request.getGroupByColumn().getColumn().get()
+          + " column that you are referring to in your group by doesn't seem "
+          + "to exist in the database. Please try again."));
     }
 
     return Optional.empty();
