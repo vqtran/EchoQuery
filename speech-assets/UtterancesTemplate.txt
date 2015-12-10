@@ -19,24 +19,44 @@ AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
 AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
   (are there|do we have)
 
-AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
-  (table)
+# AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
+#   (table)
 
 #-------------------------------------------------------------------------------
 # Specifying table before aggregation.
 #-------------------------------------------------------------------------------
-
-AggregationIntent For {TableName} {CommandPhrase} the {Aggregate} \
-  (of {AggregationColumn}) (column)
-
-AggregationIntent For {TableName} {Aggregate} (rows|entries) \
-  (are there|do we have)
-
-AggregationIntent For {TableName} {Aggregate} the {AggregationColumn} (column)
+# 
+# AggregationIntent For {TableName} {CommandPhrase} the {Aggregate} \
+#   (of {AggregationColumn}) (column)
+# 
+# AggregationIntent For {TableName} {Aggregate} (rows|entries) \
+#   (are there|do we have)
+# 
+# AggregationIntent For {TableName} {Aggregate} the {AggregationColumn} (column)
 
 #-------------------------------------------------------------------------------
 # Specifying aggregation before table with WHERE clauses.
 #-------------------------------------------------------------------------------
+
+AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
+  (column) in {TableName} \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}]
+
+AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
+  (are there|do we have) \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}]
+
+AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
+  (column) in {TableName} \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+  {BinaryLogicOpOne} \
+  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}]
+
+AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
+  (are there|do we have) \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+  {BinaryLogicOpOne} \
+  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}]
 
 AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
   (column) in {TableName} \
@@ -54,59 +74,73 @@ AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
   {BinaryLogicOpTwo} \
   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}]
 
-AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
-  (table) \
-  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
-  {BinaryLogicOpOne} \
-  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
-  {BinaryLogicOpTwo} \
-  {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}]
+# AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
+#   (table) \
+#   where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+#   {BinaryLogicOpOne} \
+#   {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
+#   {BinaryLogicOpTwo} \
+#   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}]
 
 #-------------------------------------------------------------------------------
 # Specifying table before aggregation with WHERE clauses.
 #-------------------------------------------------------------------------------
-
-AggregationIntent For {TableName} \
-  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
-  {BinaryLogicOpOne} \
-  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
-  {BinaryLogicOpTwo} \
-  {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
-  {CommandPhrase} the {Aggregate} (of {AggregationColumn}) (column)
-
-AggregationIntent For {TableName} \
-  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
-  {BinaryLogicOpOne} \
-  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
-  {BinaryLogicOpTwo} \
-  {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
-  {Aggregate} (rows|entries) (are there|do we have)
-
-AggregationIntent For {TableName} \
-  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
-  {BinaryLogicOpOne} \
-  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
-  {BinaryLogicOpTwo} \
-  {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
-  {Aggregate} the {AggregationColumn} (column)
+# 
+# AggregationIntent For {TableName} \
+#   where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+#   {BinaryLogicOpOne} \
+#   {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
+#   {BinaryLogicOpTwo} \
+#   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
+#   {CommandPhrase} the {Aggregate} (of {AggregationColumn}) (column)
+# 
+# AggregationIntent For {TableName} \
+#   where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+#   {BinaryLogicOpOne} \
+#   {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
+#   {BinaryLogicOpTwo} \
+#   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
+#   {Aggregate} (rows|entries) (are there|do we have)
+# 
+# AggregationIntent For {TableName} \
+#   where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+#   {BinaryLogicOpOne} \
+#   {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
+#   {BinaryLogicOpTwo} \
+#   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
+#   {Aggregate} the {AggregationColumn} (column)
 
 #-------------------------------------------------------------------------------
 # Group-by before aggregation.
 #-------------------------------------------------------------------------------
 
 AggregationIntent {GroupBy} {GroupByColumn} \
-  {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) (column) \
-  in {TableName}
+  {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
+  (column) in {TableName} \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}]
 
 AggregationIntent {GroupBy} {GroupByColumn} \
-  {Aggregate} (entries in|rows in) {TableName} (are there|do we have)
+  {Aggregate} (entries in|rows in) {TableName} \
+  (are there|do we have) \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}]
 
 AggregationIntent {GroupBy} {GroupByColumn} \
-{Aggregate} the {AggregationColumn} (column) in {TableName} (table)
+  {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
+  (column) in {TableName} \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+  {BinaryLogicOpOne} \
+  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}]
 
 AggregationIntent {GroupBy} {GroupByColumn} \
-  {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) (column) \
-  in {TableName} \
+  {Aggregate} (entries in|rows in) {TableName} \
+  (are there|do we have) \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+  {BinaryLogicOpOne} \
+  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}]
+
+AggregationIntent {GroupBy} {GroupByColumn} \
+  {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
+  (column) in {TableName} \
   where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
   {BinaryLogicOpOne} \
   {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
@@ -122,39 +156,32 @@ AggregationIntent {GroupBy} {GroupByColumn} \
   {BinaryLogicOpTwo} \
   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}]
 
-AggregationIntent {GroupBy} {GroupByColumn} \
-  {Aggregate} the {AggregationColumn} (column) in {TableName} (table) \
-  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
-  {BinaryLogicOpOne} \
-  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
-  {BinaryLogicOpTwo} \
-  {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}]
-
 #-------------------------------------------------------------------------------
 # Group-by after aggregation.
 #-------------------------------------------------------------------------------
 
 AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
   (column) in {TableName} \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
   {GroupBy} {GroupByColumn}
 
 AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
   (are there|do we have) \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
   {GroupBy} {GroupByColumn}
 
-AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
-  (table) \
+AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
+  (column) in {TableName} \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+  {BinaryLogicOpOne} \
+  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
   {GroupBy} {GroupByColumn}
 
-AggregationIntent For {TableName} {CommandPhrase} the {Aggregate} \
-  (of {AggregationColumn}) (column) \
-  {GroupBy} {GroupByColumn}
-
-AggregationIntent For {TableName} {Aggregate} (rows|entries) \
+AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
   (are there|do we have) \
-  {GroupBy} {GroupByColumn}
-
-AggregationIntent For {TableName} {Aggregate} the {AggregationColumn} (column) \
+  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+  {BinaryLogicOpOne} \
+  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
   {GroupBy} {GroupByColumn}
 
 AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
@@ -168,15 +195,6 @@ AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
 
 AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
   (are there|do we have) \
-  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
-  {BinaryLogicOpOne} \
-  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
-  {BinaryLogicOpTwo} \
-  {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
-  {GroupBy} {GroupByColumn}
-
-AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
-  (table) \
   where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
   {BinaryLogicOpOne} \
   {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \

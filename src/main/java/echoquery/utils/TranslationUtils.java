@@ -141,7 +141,7 @@ public class TranslationUtils {
 
     double remainder = d - whole;
     if (remainder > 0.00001) {
-      int decimals = (int) (remainder * 1000);
+      int decimals = (int) (remainder * 100);
       String decs = "";
       while (decimals > 0) {
         decs = numNames[decimals % 10] + decs;

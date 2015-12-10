@@ -110,7 +110,7 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
     assertResponse(slots, "There are two rows in the sales table"
-        + " where the value in the product column is equal to speakers.");
+        + " where product is equal to speakers.");
   }
 
   @Test
@@ -123,8 +123,7 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is greater than");
     addSlotValue(slots, SlotUtil.COLUMN_NUMBER_1, "15");
     assertResponse(slots, "The average of the salary column in the jobs table "
-        + "where the value in the salary column is greater than fifteen is "
-        + "two hundred sixty.");
+        + "where salary is greater than fifteen is two hundred sixty.");
   }
 
   @Test
@@ -140,8 +139,8 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARATOR_2, "is not");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_2, "warwick");
     assertResponse(slots, "There is one row in the sales table"
-        + " where the value in the product column is equal to speakers and"
-        + " the store column is not equal to warwick.");
+        + " where product is equal to speakers and store is not equal "
+        + "to warwick.");
   }
 
   @Test
@@ -161,9 +160,8 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARATOR_3, "greater than");
     addSlotValue(slots, SlotUtil.COLUMN_NUMBER_3, "5");
     assertResponse(slots, "There are zero rows in the sales table"
-        + " where the value in the product column is equal to speakers and"
-        + " the store column is not equal to warwick and the count column is"
-        + " greater than five.");
+        + " where product is equal to speakers and store is not equal to"
+        + " warwick and count is greater than five.");
   }
 
   @Test
@@ -184,9 +182,8 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARATOR_3, "is equal to");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_3, "camera");
     assertResponse(slots, "The average of the count column in the sales table"
-        + " where the value in the product column is equal to speakers or"
-        + " the store column is equal to pawtucket and the product column is"
-        + " equal to camera is two point three three three.");
+        + " where product is equal to speakers or store is equal to pawtucket "
+        + "and product is equal to camera is two point three three.");
   }
 
   @Test
@@ -199,8 +196,8 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "vinh");
     assertResponse(slots, "The average of the salary column in the employees "
-        + "table where the value in the name column is not equal to vinh is "
-        + "two hundred fifty five.");
+        + "table where employee name is not equal to vinh is two hundred "
+        + "fifty five.");
   }
 
   @Test
@@ -211,8 +208,8 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "title");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "professor");
-    assertResponse(slots, "There are two rows in the employees table where the "
-        + "value in the title column is not equal to professor.");
+    assertResponse(slots, "There are two rows in the employees table where "
+        + "title is not equal to professor.");
   }
 
   @Test
@@ -227,9 +224,9 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_2, "title");
     addSlotValue(slots, SlotUtil.COMPARATOR_2, "is not");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_2, "professor");
-    assertResponse(slots, "There is one row in the employees table where the "
-        + "value in the name column is not equal to vinh and the title column "
-        + "is not equal to professor.");
+    assertResponse(slots, "There is one row in the employees table where "
+        + "employee name is not equal to vinh and title is not equal to "
+        + "professor.");
   }
 
   @Test
@@ -248,10 +245,9 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_3, "salary");
     addSlotValue(slots, SlotUtil.COMPARATOR_3, "is greater than");
     addSlotValue(slots, SlotUtil.COLUMN_NUMBER_3, "100");
-    assertResponse(slots, "There is one row in the employees table where the "
-        + "value in the name column is not equal to vinh and the title column "
-        + "is equal to professor and the salary column is greater than one "
-        + "hundred.");
+    assertResponse(slots, "There is one row in the employees table where "
+        + "employee name is not equal to vinh and title is equal to professor "
+        + "and salary is greater than one hundred.");
   }
 
   @Test
@@ -264,8 +260,7 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "professor");
     assertResponse(slots, "The average of the salary column in the employees "
-        + "table where the value in the title column is not equal to professor "
-        + "is ten.");
+        + "table where title is not equal to professor is ten.");
   }
 
   @Test
@@ -311,8 +306,8 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "providence");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
     assertResponse(slots, "The total of the count column in the sales table "
-        + "where the value in the store column is equal to providence is three "
-        + "for the product speakers, and two for tv.");
+        + "where store is equal to providence is three for the product "
+        + "speakers, and two for tv.");
   }
 
   @Test
@@ -326,7 +321,7 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "providence");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");
     assertResponse(slots, "The total of the count column in the sales table "
-        + "where the value in the store column is equal to providence is five "
-        + "for the store providence.");
+        + "where store is equal to providence is five for the store "
+        + "providence.");
   }
 }
