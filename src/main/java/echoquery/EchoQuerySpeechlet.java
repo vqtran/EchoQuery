@@ -72,6 +72,8 @@ public class EchoQuerySpeechlet implements Speechlet {
     switch(intentName) {
       case "AggregationIntent":
         return aggregationHandler.respond(intent, session);
+      case "NarrowIntent":
+        return narrowHandler.respond(intent, session);
       case "HelpIntent":
         return helpHandler.respond(intent, session);
       case "FinishIntent":

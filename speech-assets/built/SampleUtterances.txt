@@ -756,3 +756,25 @@ AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} tabl
 AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} table where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree} {GroupBy} {GroupByColumn}
 AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} table where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnValueThree} {GroupBy} {GroupByColumn}
 AggregationIntent {Aggregate} the {AggregationColumn} column in {TableName} table where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree} {GroupBy} {GroupByColumn}
+NarrowIntent What if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent What if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent What about {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent What about {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent How about {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent How about {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent And if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent And if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent And when {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent And when {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent Also if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent Also if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent Also when {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent Also when {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent Also where {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent Also where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent And where {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent And where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent Also {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent Also {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent And {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent And {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}

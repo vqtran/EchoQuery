@@ -23,7 +23,6 @@
           "name": "ComparisonColumnOne",
           "type": "COLUMN_NAME"
         },
-        {
           "name": "ComparatorOne",
           "type": "COMPARATORS"
         },
@@ -86,12 +85,23 @@
       ]
     },
     {
-      "intent": "AdditionalIntent",
+      "intent": "NarrowIntent",
       "slots": [
         {
-          "name": "CommandPhrase",
-          "type": "COMMAND_PHRASE"
+          "name": "ComparisonColumnOne",
+          "type": "COLUMN_NAME"
         },
+          "name": "ComparatorOne",
+          "type": "COMPARATORS"
+        },
+        {
+          "name": "ColumnValueOne",
+          "type": "COLUMN_VALUE"
+        },
+        {
+          "name": "ColumnNumberOne",
+          "type": "AMAZON.NUMBER"
+        }
       ]
     },
     {
