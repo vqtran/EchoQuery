@@ -184,5 +184,5 @@ AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
   {GroupBy} {GroupByColumn}
 
-AdditionalInten And where {ComparisonColumnOne} {ComparatorOne} \
+AdditionalIntent And where {ComparisonColumnOne} {ComparatorOne} \
 [{ColumnValueOne}|{ColumnNumberOne}]
