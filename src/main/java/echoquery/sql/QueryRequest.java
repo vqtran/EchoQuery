@@ -310,7 +310,7 @@ public class QueryRequest {
                 intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue()))
         .setGroupByColumn(SlotUtil.parseColumnSlot(
             intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue()));
-    //session.setAttribute(SessionUtil.REQUEST_ATTRIBUTE, request);
+    session.setAttribute(SessionUtil.REQUEST_ATTRIBUTE, request);
     return request;
   }
 }
