@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.amazon.speech.slu.Intent;
+import com.amazon.speech.speechlet.Session;
 import com.facebook.presto.sql.QueryUtil;
 import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.Expression;
@@ -25,6 +26,7 @@ import com.google.common.collect.ImmutableList;
 import echoquery.sql.joins.JoinRecipe;
 import echoquery.sql.model.ColumnName;
 import echoquery.sql.model.ColumnType;
+import echoquery.utils.SessionUtil;
 import echoquery.utils.SlotUtil;
 
 /**
@@ -269,8 +271,8 @@ public class QueryRequest {
    * @param intent
    * @return
    */
-  public static QueryRequest of(Intent intent) {
-    return new QueryRequest()
+  public static QueryRequest of(Intent intent, Session session) {
+    QueryRequest request = new QueryRequest()
         .setFromTable(intent.getSlot(SlotUtil.TABLE_NAME).getValue())
         .setAggregationFunc(intent.getSlot(SlotUtil.AGGREGATE).getValue())
         .setAggregationColumn(SlotUtil.parseColumnSlot(
@@ -308,5 +310,7 @@ public class QueryRequest {
                 intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue()))
         .setGroupByColumn(SlotUtil.parseColumnSlot(
             intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue()));
+    session.setAttribute(SessionUtil.REQUEST_ATTRIBUTE, request);
+    return request;
   }
 }
