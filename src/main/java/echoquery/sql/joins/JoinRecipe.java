@@ -17,19 +17,5 @@ public interface JoinRecipe {
    */
   public Relation render();
 
-  /**
-   * @return The table name that the aggregation column belongs to.
-   */
-  public String getAggregationPrefix();
-
-  /**
-   * @param index
-   * @return The table name that the index-th comparison column belongs to.
-   */
-  public String getComparisonPrefix(int index);
-
-  /**
-   * @return The table name that the group by column belongs to.
-   */
-  public String getGroupByPrefix();
+  public InferredContext getContext();
 }

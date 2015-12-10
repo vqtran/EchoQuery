@@ -64,7 +64,7 @@ public class QueryResult {
 
     try {
       // If there was a group by, we expect two columns and many rows.
-      if (request.getGroupByColumn().isPresent()) {
+      if (request.getGroupByColumn().getColumn().isPresent()) {
         result.first();
         // Add all of them to the list of entries.
         while (!result.isAfterLast()) {
@@ -234,7 +234,7 @@ public class QueryResult {
       // results by group.
       if (!singleValue.isPresent()) {
         translation.append(" for the ")
-            .append(request.getGroupByColumn().get())
+            .append(request.getGroupByColumn().getColumn().get())
             .append(" ")
             .append(groupByValues.get(0).getKey());
         for (int i = 1; i < groupByValues.size(); i++) {
@@ -262,7 +262,7 @@ public class QueryResult {
           translation.append(" is ")
               .append(TranslationUtils.convert(groupByValues.get(i).getValue()))
               .append(" for the ")
-              .append(request.getGroupByColumn().get())
+              .append(request.getGroupByColumn().getColumn().get())
               .append(" ")
               .append(groupByValues.get(i).getKey());
         } else {

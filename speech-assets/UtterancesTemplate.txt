@@ -94,17 +94,17 @@ AggregationIntent For {TableName} \
 # Group-by before aggregation.
 #-------------------------------------------------------------------------------
 
-AggregationIntent {GroupBy} {GroupByColumn} in {TableName} \
+AggregationIntent {GroupBy} {GroupByColumn} \
   {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) (column) \
   in {TableName}
 
-AggregationIntent {GroupBy} {GroupByColumn} in {TableName} \
+AggregationIntent {GroupBy} {GroupByColumn} \
   {Aggregate} (entries in|rows in) {TableName} (are there|do we have)
 
-AggregationIntent {GroupBy} {GroupByColumn} in {TableName} \
+AggregationIntent {GroupBy} {GroupByColumn} \
 {Aggregate} the {AggregationColumn} (column) in {TableName} (table)
 
-AggregationIntent {GroupBy} {GroupByColumn} in {TableName} \
+AggregationIntent {GroupBy} {GroupByColumn} \
   {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) (column) \
   in {TableName} \
   where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
@@ -113,7 +113,7 @@ AggregationIntent {GroupBy} {GroupByColumn} in {TableName} \
   {BinaryLogicOpTwo} \
   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}]
 
-AggregationIntent {GroupBy} {GroupByColumn} in {TableName} \
+AggregationIntent {GroupBy} {GroupByColumn} \
   {Aggregate} (entries in|rows in) {TableName} \
   (are there|do we have) \
   where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
@@ -122,7 +122,7 @@ AggregationIntent {GroupBy} {GroupByColumn} in {TableName} \
   {BinaryLogicOpTwo} \
   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}]
 
-AggregationIntent {GroupBy} {GroupByColumn} in {TableName} \
+AggregationIntent {GroupBy} {GroupByColumn} \
   {Aggregate} the {AggregationColumn} (column) in {TableName} (table) \
   where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
   {BinaryLogicOpOne} \
