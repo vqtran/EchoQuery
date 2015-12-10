@@ -183,3 +183,6 @@ AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
   {BinaryLogicOpTwo} \
   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
   {GroupBy} {GroupByColumn}
+
+AdditionalInten And where {ComparisonColumnOne} {ComparatorOne} \
+[{ColumnValueOne}|{ColumnNumberOne}]
