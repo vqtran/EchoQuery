@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 
 import com.facebook.presto.sql.tree.AstVisitor;
 import com.facebook.presto.sql.tree.ComparisonExpression;
@@ -52,12 +53,14 @@ public class QueryResult {
 
   /**
    * Builds a QueryResult out of a JDBC result set, and original request object.
+   * @param inferrer
    * @param request
    * @param result
    * @return A successful result where the message is the result of the query
    *    is in end-user natural language.
    */
-  public static QueryResult of(QueryRequest request, ResultSet result) {
+  public static QueryResult of(
+      SchemaInferrer inferrer, QueryRequest request, ResultSet result) {
     // Extract the results from the ResultSet.
     final Optional<Double> singleValue;
     List<Entry<String, Double>> groupByValues = new ArrayList<>();
@@ -83,18 +86,20 @@ public class QueryResult {
       return null;
     }
 
-    return new QueryResult(
-        Status.SUCCESS, translateResults(request, singleValue, groupByValues));
+    return new QueryResult(Status.SUCCESS,
+        translateResults(inferrer, request, singleValue, groupByValues));
   }
 
   /**
    * Translates request and parsed results into a natural language String.
+   * @param inferrer
    * @param request
    * @param singleValue Empty if there's a group by, not otherwise.
    * @param groupByValues
    * @return A natural language string conveying the results.
    */
   public static String translateResults(
+      SchemaInferrer inferrer,
       QueryRequest request,
       Optional<Double> singleValue,
       List<Entry<String, Double>> groupByValues) {
@@ -126,7 +131,7 @@ public class QueryResult {
               .append(" table");
         }
         if (node.getWhere().isPresent()) {
-            translation.append(" where the value in ");
+            translation.append(" where ");
             process(node.getWhere().get(), true);
         }
         for (GroupingElement groupingElement : node.getGroupBy()) {
@@ -191,9 +196,8 @@ public class QueryResult {
       @Override
       public Void visitComparisonExpression(
           ComparisonExpression node, Boolean capture) {
-        translation.append("the ");
         process(node.getLeft(), true);
-        translation.append(" column is")
+        translation.append(" is")
             .append(SlotUtil.comparisonTypeToEnglish(node.getType()));
         process(node.getRight(), true);
         return null;
@@ -203,6 +207,22 @@ public class QueryResult {
       public Void visitQualifiedNameReference(
           QualifiedNameReference node, Boolean capture) {
         if (capture) {
+          // If it has a table name on it, decide if we need to include it in
+          // the translation.
+          if (node.getName().getPrefix().isPresent()) {
+            // Include it in the translation only if it would be ambiguous
+            // what table the column is coming from if we didn't.
+            Set<String> containingTables =
+                inferrer.getColumnsToTable().get(node.getSuffix().toString());
+            if (containingTables.size() > 1) {
+              String prefix = node.getName().getPrefix().get().toString();
+              // Remove any trailing s's for grammar's sake.
+              if (prefix.endsWith("s")) {
+                prefix = prefix.substring(0, prefix.length()-1);
+              }
+              translation.append(prefix).append(" ");
+            }
+          }
           translation.append(node.getSuffix());
         }
         return null;

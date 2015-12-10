@@ -232,7 +232,7 @@ public final class SlotUtil {
       case GREATER_THAN_OR_EQUAL:
         return " greater than or equal to ";
       case IS_DISTINCT_FROM:
-        return " is distinct from ";
+        return " distinct from ";
       default:
         return null;
     }
