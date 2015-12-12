@@ -46,23 +46,8 @@ public class AggregationHandler implements IntentHandler {
   public SpeechletResponse respond(QueryRequest request, Session session) {
     // Save the current request object to session.
     try {
-      if (session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE) != null) {
-        QueryRequest dummyRequest = (QueryRequest) Serializer.deserialize(
-            (String) session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE));
-        log.info(querier.execute(dummyRequest).getMessage());
-      } else {
-        log.info("NULL REQ ATT");
-      }
       session.setAttribute(
           SessionUtil.REQUEST_ATTRIBUTE, Serializer.serialize(request));
-
-      if (session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE) != null) {
-        QueryRequest dummyRequest = (QueryRequest) Serializer.deserialize(
-            (String) session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE));
-        log.info("2: " + querier.execute(dummyRequest).getMessage());
-      } else {
-        log.info("2: NULL REQ ATT");
-      }
     } catch (IOException | ClassNotFoundException e) {
       e.printStackTrace();
       return Response.unexpectedError();
