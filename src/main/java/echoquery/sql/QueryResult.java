@@ -253,8 +253,13 @@ public class QueryResult {
       // the first result we already stated, as well as add on the rest of the
       // results by group.
       if (!singleValue.isPresent()) {
-        translation.append(" for the ")
-            .append(request.getGroupByColumn().getColumn().get())
+        translation.append(" for the ");
+        if (isAmbiguousWithoutTable(
+            request.getGroupByColumn().getColumn().get(), inferrer)) {
+          translation.append(request.getContext().getGroupByPrefix().get())
+              .append(" ");
+        }
+        translation.append(request.getGroupByColumn().getColumn().get())
             .append(" ")
             .append(groupByValues.get(0).getKey());
         for (int i = 1; i < groupByValues.size(); i++) {
