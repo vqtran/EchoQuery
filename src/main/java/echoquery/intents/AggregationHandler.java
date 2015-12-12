@@ -48,7 +48,7 @@ public class AggregationHandler implements IntentHandler {
     try {
       session.setAttribute(
           SessionUtil.REQUEST_ATTRIBUTE, Serializer.serialize(request));
-    } catch (IOException | ClassNotFoundException e) {
+    } catch (IOException e) {
       e.printStackTrace();
       return Response.unexpectedError();
     }
