@@ -14,11 +14,16 @@ public final class Response {
   public static SpeechletResponse say(String message) {
     SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
     outputSpeech.setSsml("<speak>" + message + "</speak>");
-    return SpeechletResponse.newTellResponse(outputSpeech);
+
+    SsmlOutputSpeech repromptOutputSpeech = new SsmlOutputSpeech();
+    repromptOutputSpeech.setSsml("<speak>Is there anything else?</speak>");
+    Reprompt reprompt = new Reprompt();
+    reprompt.setOutputSpeech(repromptOutputSpeech);
+    return SpeechletResponse.newAskResponse(outputSpeech, reprompt);
   }
   /**
    * Have Alexa ask something, and reprompt if there was no answer.
-   * 
+   *
    * @param askOutput The initial question without speak tags.
    * @param repromptOutput The reprompt statement without speak tags.
    * @return SpeechletResponse
@@ -51,5 +56,13 @@ public final class Response {
     SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
     outputSpeech.setSsml("<speak> Goodbye </speak>");
     return SpeechletResponse.newTellResponse(outputSpeech);
+  }
+
+  /**
+   * Standard unexpected error message.
+   * @return SpeechletResponse
+   */
+  public static SpeechletResponse unexpectedError() {
+    return Response.say("There was an unexpected error. Please try again.");
   }
 }

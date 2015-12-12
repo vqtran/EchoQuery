@@ -6,7 +6,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Optional;
+import java.util.Set;
 
 import com.facebook.presto.sql.tree.AstVisitor;
 import com.facebook.presto.sql.tree.ComparisonExpression;
@@ -19,7 +19,9 @@ import com.facebook.presto.sql.tree.QualifiedNameReference;
 import com.facebook.presto.sql.tree.QuerySpecification;
 import com.facebook.presto.sql.tree.SortItem;
 import com.facebook.presto.sql.tree.StringLiteral;
+import com.google.common.base.Optional;
 
+import echoquery.sql.joins.JoinRecipe;
 import echoquery.utils.SlotUtil;
 import echoquery.utils.TranslationUtils;
 
@@ -29,7 +31,7 @@ import echoquery.utils.TranslationUtils;
  */
 
 public class QueryResult {
-  enum Status {
+  public enum Status {
     SUCCESS,
     REPAIR_REQUEST,
     FAILURE
@@ -52,12 +54,14 @@ public class QueryResult {
 
   /**
    * Builds a QueryResult out of a JDBC result set, and original request object.
+   * @param inferrer
    * @param request
    * @param result
    * @return A successful result where the message is the result of the query
    *    is in end-user natural language.
    */
-  public static QueryResult of(QueryRequest request, ResultSet result) {
+  public static QueryResult of(
+      SchemaInferrer inferrer, QueryRequest request, ResultSet result) {
     // Extract the results from the ResultSet.
     final Optional<Double> singleValue;
     List<Entry<String, Double>> groupByValues = new ArrayList<>();
@@ -72,29 +76,31 @@ public class QueryResult {
               result.getString(1), result.getDouble(2)));
           result.next();
         }
-        singleValue = Optional.empty();
+        singleValue = Optional.absent();
       } else {
         // Otherwise just populate the single value.
         result.first();
-        singleValue = Optional.ofNullable(result.getDouble(1));
+        singleValue = Optional.fromNullable(result.getDouble(1));
       }
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
     }
 
-    return new QueryResult(
-        Status.SUCCESS, translateResults(request, singleValue, groupByValues));
+    return new QueryResult(Status.SUCCESS,
+        translateResults(inferrer, request, singleValue, groupByValues));
   }
 
   /**
    * Translates request and parsed results into a natural language String.
+   * @param inferrer
    * @param request
    * @param singleValue Empty if there's a group by, not otherwise.
    * @param groupByValues
    * @return A natural language string conveying the results.
    */
   public static String translateResults(
+      SchemaInferrer inferrer,
       QueryRequest request,
       Optional<Double> singleValue,
       List<Entry<String, Double>> groupByValues) {
@@ -126,7 +132,7 @@ public class QueryResult {
               .append(" table");
         }
         if (node.getWhere().isPresent()) {
-            translation.append(" where the value in ");
+            translation.append(" where ");
             process(node.getWhere().get(), true);
         }
         for (GroupingElement groupingElement : node.getGroupBy()) {
@@ -191,9 +197,8 @@ public class QueryResult {
       @Override
       public Void visitComparisonExpression(
           ComparisonExpression node, Boolean capture) {
-        translation.append("the ");
         process(node.getLeft(), true);
-        translation.append(" column is")
+        translation.append(" is")
             .append(SlotUtil.comparisonTypeToEnglish(node.getType()));
         process(node.getRight(), true);
         return null;
@@ -203,6 +208,21 @@ public class QueryResult {
       public Void visitQualifiedNameReference(
           QualifiedNameReference node, Boolean capture) {
         if (capture) {
+          // If it has a table name on it, decide if we need to include it in
+          // the translation.
+          if (node.getName().getPrefix().isPresent()) {
+            // Include it in the translation only if it would be ambiguous
+            // what table the column is coming from if we didn't.
+            if (isAmbiguousWithoutTable(
+                node.getSuffix().toString(), inferrer)) {
+              String prefix = node.getName().getPrefix().get().toString();
+              // Remove any trailing s's for grammar's sake.
+              if (prefix.endsWith("s")) {
+                prefix = prefix.substring(0, prefix.length()-1);
+              }
+              translation.append(prefix).append(" ");
+            }
+          }
           translation.append(node.getSuffix());
         }
         return null;
@@ -261,8 +281,15 @@ public class QueryResult {
         if (i == 0) {
           translation.append(" is ")
               .append(TranslationUtils.convert(groupByValues.get(i).getValue()))
-              .append(" for the ")
-              .append(request.getGroupByColumn().getColumn().get())
+              .append(" for the ");
+          // Include what table group by belonged to only if ambiguous
+          // otherwise.
+          if (isAmbiguousWithoutTable(
+              request.getGroupByColumn().getColumn().get(), inferrer)) {
+            translation.append(request.getContext().getGroupByPrefix().get())
+                .append(" ");
+          }
+          translation.append(request.getGroupByColumn().getColumn().get())
               .append(" ")
               .append(groupByValues.get(i).getKey());
         } else {
@@ -280,5 +307,99 @@ public class QueryResult {
     translation.append(".");
     return translation.toString();
   }
+
+  /**
+   * True if column name belongs to more than one table.
+   * @param column
+   * @param inferrer
+   * @return
+   */
+  private static boolean isAmbiguousWithoutTable(
+      String column, SchemaInferrer inferrer) {
+    Set<String> containingTables = inferrer.getColumnsToTable().get(column);
+    return containingTables.size() > 1;
+  }
+
+  /**
+   * Creates a QueryResult for an InvalidJoinRecipe.
+   * @param request
+   * @param invalid
+   * @return
+   */
+  public static QueryResult of(
+      QueryRequest request, JoinRecipe invalid) {
+    // There are two cases for invalid join recipes: ambiguous where a column
+    // came from, or the column doesn't have a foreign key connecting it at all.
+    switch (invalid.getReason()) {
+
+    // If ambiguous, we're going to return a result that will ask the user for
+    // which one she wants.
+    case AMBIGUOUS_TABLE_FOR_COLUMN:
+
+      // Find the first ambiguous column and ask. Order here is important:
+      // aggregation, where clauses in order, group by.
+
+      if (request.getAggregationColumn().getColumn().isPresent()
+          && !invalid.getContext().getAggregationPrefix().isPresent()) {
+        String col = request.getAggregationColumn().getColumn().get();
+        return new QueryResult(Status.REPAIR_REQUEST, askWhichTable(
+            SlotUtil.aggregationFunctionToEnglish(
+                request.getAggregationFunc().get()) + " of " + col,
+            invalid.getPossibleTables(),
+            col));
+      }
+
+      List<Optional<String>> comparisonPrefixes =
+          invalid.getContext().getComparisons();
+      for (int i = 0; i < comparisonPrefixes.size(); i++) {
+        if (!comparisonPrefixes.get(i).isPresent()) {
+          String col = request.getComparisonColumns().get(i).getColumn().get();
+          String val = request.getComparisonValues().get(i).get();
+          ComparisonExpression.Type comparator =
+              request.getComparators().get(i).get();
+          return new QueryResult(Status.REPAIR_REQUEST, askWhichTable(
+              "where " + col + " is"
+                  + SlotUtil.comparisonTypeToEnglish(comparator) + val,
+              invalid.getPossibleTables(),
+              col));
+        }
+      }
+
+      if (request.getGroupByColumn().getColumn().isPresent()
+          && !invalid.getContext().getGroupByPrefix().isPresent()) {
+        String col = request.getGroupByColumn().getColumn().get();
+        return new QueryResult(Status.REPAIR_REQUEST, askWhichTable(
+            "for each " + col, invalid.getPossibleTables(), col));
+      }
+
+      return null;
+
+    // For now missing foreign keys will just be notified.
+    case MISSING_FOREIGN_KEY:
+      return new QueryResult(Status.FAILURE,
+          invalid.getInvalidColumn() + " doesn't seem to be a column related "
+              + "to the table you referenced.");
+    }
+    return null;
+  }
+
+  /**
+   * @param partOfQuery
+   * @param possibleTables
+   * @param col
+   * @return
+   */
+  private static String askWhichTable(
+      String partOfQuery, List<String> possibleTables, String col) {
+    String message = "By "
+        + partOfQuery + ", are you referring to ";
+    for (int i = 0; i < possibleTables.size() - 1; i++) {
+      message += possibleTables.get(i) + " " + col + ", ";
+    }
+    message += "or "
+        + possibleTables.get(possibleTables.size() - 1) + " " + col + "?";
+    return message;
+  }
+
 }
 

@@ -51,7 +51,7 @@ public class Querier {
     try {
       Statement statement = conn.createStatement();
       ResultSet result = statement.executeQuery(sql);
-      return QueryResult.of(request, result);
+      return QueryResult.of(inferrer, request, result);
     } catch (SQLException e) {
       log.error(e.getMessage());
       return new QueryResult(Status.FAILURE,

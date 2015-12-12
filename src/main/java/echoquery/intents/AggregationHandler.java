@@ -1,5 +1,6 @@
 package echoquery.intents;
 
+import java.io.IOException;
 import java.sql.Connection;
 
 import org.slf4j.Logger;
@@ -11,12 +12,20 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 
 import echoquery.sql.Querier;
 import echoquery.sql.QueryRequest;
+import echoquery.sql.QueryResult;
 import echoquery.utils.Response;
+import echoquery.utils.Serializer;
+import echoquery.utils.SessionUtil;
 
+/**
+ * Where all aggregation query requests should be funneled into, regardless
+ * from end-user or another intent.
+ */
 public class AggregationHandler implements IntentHandler {
 
   private static final Logger log =
       LoggerFactory.getLogger(AggregationHandler.class);
+
   private final Querier querier;
 
   public AggregationHandler(Connection conn) {
@@ -25,13 +34,53 @@ public class AggregationHandler implements IntentHandler {
 
   @Override
   public SpeechletResponse respond(Intent intent, Session session) {
-    return Response.say(getResponseInEnglish(intent, session));
+    return respond(QueryRequest.of(intent), session);
+  }
+
+  /**
+   * Generic version of respond method to be called directly by other intents.
+   * @param request
+   * @param session
+   * @return
+   */
+  public SpeechletResponse respond(QueryRequest request, Session session) {
+    // Save the current request object to session.
+    try {
+      if (session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE) != null) {
+        QueryRequest dummyRequest = (QueryRequest) Serializer.deserialize(
+            (String) session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE));
+        log.info(querier.execute(dummyRequest).getMessage());
+      } else {
+        log.info("NULL REQ ATT");
+      }
+      session.setAttribute(
+          SessionUtil.REQUEST_ATTRIBUTE, Serializer.serialize(request));
+
+      if (session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE) != null) {
+        QueryRequest dummyRequest = (QueryRequest) Serializer.deserialize(
+            (String) session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE));
+        log.info("2: " + querier.execute(dummyRequest).getMessage());
+      } else {
+        log.info("2: NULL REQ ATT");
+      }
+    } catch (IOException | ClassNotFoundException e) {
+      e.printStackTrace();
+      return Response.unexpectedError();
+    }
+
+    // Execute the request and handle results.
+    QueryResult result = querier.execute(request);
+    if (result.getStatus() == QueryResult.Status.REPAIR_REQUEST) {
+      return Response.ask(result.getMessage(), result.getMessage());
+    } else {
+      return Response.say(result.getMessage());
+    }
   }
 
   /**
    * Exposed for testing purposes - SpeechletResponse is impossible to inspect.
    */
-  public String getResponseInEnglish(Intent intent, Session session) {
-    return querier.execute(QueryRequest.of(intent, session)).getMessage();
+  public String getResponseInEnglish(Intent intent) {
+    return querier.execute(QueryRequest.of(intent)).getMessage();
   }
 }

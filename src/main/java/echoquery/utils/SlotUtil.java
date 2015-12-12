@@ -39,6 +39,8 @@ public final class SlotUtil {
 
   public final static String GROUP_BY_COLUMN = "GroupByColumn";
 
+  public final static String TABLE_AND_COLUMN = "TableAndColumnName";
+
   private static Set<String> countExpr = new HashSet<>();
   private static Set<String> averageExpr = new HashSet<>();
   private static Set<String> sumExpr = new HashSet<>();
@@ -183,7 +185,7 @@ public final class SlotUtil {
   public static String aggregationFunctionToEnglish(String aggregate) {
     switch (aggregate) {
       case "COUNT":
-        return "count";
+        return "number";
       case "AVG":
         return "average";
       case "SUM":
@@ -232,7 +234,7 @@ public final class SlotUtil {
       case GREATER_THAN_OR_EQUAL:
         return " greater than or equal to ";
       case IS_DISTINCT_FROM:
-        return " is distinct from ";
+        return " distinct from ";
       default:
         return null;
     }

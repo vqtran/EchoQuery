@@ -81,7 +81,7 @@
         },
         {
           "name": "GroupByColumn",
-          "type": "COLUMN_VALUE"
+          "type": "COLUMN_NAME"
         }
       ]
     },
@@ -110,6 +110,19 @@
         },
         {
           "name": "GroupByColumn",
+          "type": "COLUMN_NAME"
+        }
+      ]
+    },
+    {
+      "intent": "ClarifyAmbiguousTableIntent",
+      "slots": [
+        {
+          "name": "TableName",
+          "type": "TABLE_NAME"
+        },
+        {
+          "name": "TableAndColumnName",
           "type": "COLUMN_NAME"
         }
       ]

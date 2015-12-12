@@ -14,6 +14,7 @@ import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
 import echoquery.intents.AggregationHandler;
+import echoquery.intents.ClarifyAmbiguousTableHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
 import echoquery.intents.NarrowHandler;
@@ -31,17 +32,20 @@ public class EchoQuerySpeechlet implements Speechlet {
   private static final Logger log =
       LoggerFactory.getLogger(EchoQuerySpeechlet.class);
 
-  private IntentHandler aggregationHandler;
-  private IntentHandler narrowHandler;
   private IntentHandler helpHandler;
+  private IntentHandler clarifyAmbiguousTableHandler;
+  private AggregationHandler aggregationHandler;
+  private IntentHandler narrowHandler;
 
   public EchoQuerySpeechlet() {
     super();
+    helpHandler = new HelpHandler();
     aggregationHandler =
         new AggregationHandler(SingletonConnection.getInstance());
     narrowHandler =
         new NarrowHandler(SingletonConnection.getInstance());
-    helpHandler = new HelpHandler();
+    clarifyAmbiguousTableHandler = new ClarifyAmbiguousTableHandler(
+        SingletonConnection.getInstance(), aggregationHandler);
   }
 
   @Override
@@ -78,6 +82,8 @@ public class EchoQuerySpeechlet implements Speechlet {
         return aggregationHandler.respond(intent, session);
       case "NarrowIntent":
         return narrowHandler.respond(intent, session);
+      case "ClarifyAmbiguousTableIntent":
+        return clarifyAmbiguousTableHandler.respond(intent, session);
       case "HelpIntent":
         return helpHandler.respond(intent, session);
       case "FinishIntent":

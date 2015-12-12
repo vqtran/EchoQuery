@@ -1,5 +1,6 @@
 package echoquery;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ import com.amazon.speech.speechlet.Session;
 import static org.junit.Assert.assertEquals;
 import echoquery.intents.NarrowHandler;
 import echoquery.sql.QueryRequest;
+import echoquery.utils.Serializer;
+import echoquery.utils.SessionUtil;
 import echoquery.utils.SlotUtil;
 
 public class NarrowHandlerTest {
@@ -40,8 +43,15 @@ public class NarrowHandlerTest {
     Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
     addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
-    QueryRequest.of(Intent.builder() 
-        .withName("AggregationIntent").withSlots(slots).build(), session);
+    QueryRequest request = QueryRequest.of(Intent.builder() 
+        .withName("AggregationIntent").withSlots(slots).build());
+
+    try {
+      session.setAttribute(
+            SessionUtil.REQUEST_ATTRIBUTE, Serializer.serialize(request));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     return session;
   }
 
@@ -51,8 +61,15 @@ public class NarrowHandlerTest {
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
     addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");
-    QueryRequest.of(Intent.builder() 
-        .withName("AggregationIntent").withSlots(slots).build(), session);
+    QueryRequest request = QueryRequest.of(Intent.builder() 
+        .withName("AggregationIntent").withSlots(slots).build());
+
+    try {
+      session.setAttribute(
+            SessionUtil.REQUEST_ATTRIBUTE, Serializer.serialize(request));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     return session;
   }
 
@@ -71,7 +88,7 @@ public class NarrowHandlerTest {
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
     assertResponse(slots, session, "There are two rows in the sales table"
-        + " where the value in the product column is equal to speakers.");
+        + " where product is equal to speakers.");
   }
 
   @Test

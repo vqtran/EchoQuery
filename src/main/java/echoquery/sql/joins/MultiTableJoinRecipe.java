@@ -70,4 +70,20 @@ public class MultiTableJoinRecipe implements JoinRecipe {
   public InferredContext getContext() {
     return context;
   }
+
+  @Override
+  public InvalidJoinRecipe.Error getReason() {
+    return null;
+  }
+
+  @Override
+  public List<String> getPossibleTables() {
+    return null;
+  }
+
+  @Override
+  public String getInvalidColumn() {
+    return null;
+  }
+
 }
