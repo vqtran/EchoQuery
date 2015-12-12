@@ -401,6 +401,11 @@ public class QueryRequest implements Serializable {
         return false;
     } else if (!query.equals(other.getQuery()))
       return false;
+    if (ctx == null) {
+      if (other.getContext() != null)
+        return false;
+    } else if (!ctx.equals(other.getContext()))
+      return false;
     return true;
   }
 }

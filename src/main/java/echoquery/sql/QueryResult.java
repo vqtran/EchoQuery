@@ -6,7 +6,6 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 
 import com.facebook.presto.sql.tree.AstVisitor;
@@ -20,6 +19,7 @@ import com.facebook.presto.sql.tree.QualifiedNameReference;
 import com.facebook.presto.sql.tree.QuerySpecification;
 import com.facebook.presto.sql.tree.SortItem;
 import com.facebook.presto.sql.tree.StringLiteral;
+import com.google.common.base.Optional;
 
 import echoquery.sql.joins.JoinRecipe;
 import echoquery.utils.SlotUtil;
@@ -76,11 +76,11 @@ public class QueryResult {
               result.getString(1), result.getDouble(2)));
           result.next();
         }
-        singleValue = Optional.empty();
+        singleValue = Optional.absent();
       } else {
         // Otherwise just populate the single value.
         result.first();
-        singleValue = Optional.ofNullable(result.getDouble(1));
+        singleValue = Optional.fromNullable(result.getDouble(1));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -213,9 +213,8 @@ public class QueryResult {
           if (node.getName().getPrefix().isPresent()) {
             // Include it in the translation only if it would be ambiguous
             // what table the column is coming from if we didn't.
-            Set<String> containingTables =
-                inferrer.getColumnsToTable().get(node.getSuffix().toString());
-            if (containingTables.size() > 1) {
+            if (isAmbiguousWithoutTable(
+                node.getSuffix().toString(), inferrer)) {
               String prefix = node.getName().getPrefix().get().toString();
               // Remove any trailing s's for grammar's sake.
               if (prefix.endsWith("s")) {
@@ -282,10 +281,15 @@ public class QueryResult {
         if (i == 0) {
           translation.append(" is ")
               .append(TranslationUtils.convert(groupByValues.get(i).getValue()))
-              .append(" for the ")
-              .append(request.getContext().getGroupByPrefix())
-              .append(" ")
-              .append(request.getGroupByColumn().getColumn().get())
+              .append(" for the ");
+          // Include what table group by belonged to only if ambiguous
+          // otherwise.
+          if (isAmbiguousWithoutTable(
+              request.getGroupByColumn().getColumn().get(), inferrer)) {
+            translation.append(request.getContext().getGroupByPrefix().get())
+                .append(" ");
+          }
+          translation.append(request.getGroupByColumn().getColumn().get())
               .append(" ")
               .append(groupByValues.get(i).getKey());
         } else {
@@ -302,6 +306,18 @@ public class QueryResult {
     }
     translation.append(".");
     return translation.toString();
+  }
+
+  /**
+   * True if column name belongs to more than one table.
+   * @param column
+   * @param inferrer
+   * @return
+   */
+  private static boolean isAmbiguousWithoutTable(
+      String column, SchemaInferrer inferrer) {
+    Set<String> containingTables = inferrer.getColumnsToTable().get(column);
+    return containingTables.size() > 1;
   }
 
   /**
