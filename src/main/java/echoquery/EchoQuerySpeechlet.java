@@ -16,6 +16,7 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import echoquery.intents.AggregationHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
+import echoquery.intents.NarrowHandler;
 import echoquery.sql.SingletonConnection;
 import echoquery.utils.Response;
 
@@ -31,12 +32,15 @@ public class EchoQuerySpeechlet implements Speechlet {
       LoggerFactory.getLogger(EchoQuerySpeechlet.class);
 
   private IntentHandler aggregationHandler;
+  private IntentHandler narrowHandler;
   private IntentHandler helpHandler;
 
   public EchoQuerySpeechlet() {
     super();
     aggregationHandler =
         new AggregationHandler(SingletonConnection.getInstance());
+    narrowHandler =
+        new NarrowHandler(SingletonConnection.getInstance());
     helpHandler = new HelpHandler();
   }
 

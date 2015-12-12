@@ -23,6 +23,7 @@
           "name": "ComparisonColumnOne",
           "type": "COLUMN_NAME"
         },
+        {
           "name": "ComparatorOne",
           "type": "COMPARATORS"
         },
@@ -91,6 +92,7 @@
           "name": "ComparisonColumnOne",
           "type": "COLUMN_NAME"
         },
+        {
           "name": "ComparatorOne",
           "type": "COMPARATORS"
         },
@@ -101,6 +103,14 @@
         {
           "name": "ColumnNumberOne",
           "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "GroupBy",
+          "type": "GROUP_BY"
+        },
+        {
+          "name": "GroupByColumn",
+          "type": "COLUMN_NAME"
         }
       ]
     },
