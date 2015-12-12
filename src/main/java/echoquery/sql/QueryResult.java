@@ -304,10 +304,25 @@ public class QueryResult {
     return translation.toString();
   }
 
+  /**
+   * Creates a QueryResult for an InvalidJoinRecipe.
+   * @param request
+   * @param invalid
+   * @return
+   */
   public static QueryResult of(
       QueryRequest request, JoinRecipe invalid) {
+    // There are two cases for invalid join recipes: ambiguous where a column
+    // came from, or the column doesn't have a foreign key connecting it at all.
     switch (invalid.getReason()) {
+
+    // If ambiguous, we're going to return a result that will ask the user for
+    // which one she wants.
     case AMBIGUOUS_TABLE_FOR_COLUMN:
+
+      // Find the first ambiguous column and ask. Order here is important:
+      // aggregation, where clauses in order, group by.
+
       if (request.getAggregationColumn().getColumn().isPresent()
           && !invalid.getContext().getAggregationPrefix().isPresent()) {
         String col = request.getAggregationColumn().getColumn().get();
@@ -343,6 +358,7 @@ public class QueryResult {
 
       return null;
 
+    // For now missing foreign keys will just be notified.
     case MISSING_FOREIGN_KEY:
       return new QueryResult(Status.FAILURE,
           invalid.getInvalidColumn() + " doesn't seem to be a column related "
@@ -351,6 +367,12 @@ public class QueryResult {
     return null;
   }
 
+  /**
+   * @param partOfQuery
+   * @param possibleTables
+   * @param col
+   * @return
+   */
   private static String askWhichTable(
       String partOfQuery, List<String> possibleTables, String col) {
     String message = "By "
