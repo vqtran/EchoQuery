@@ -5,8 +5,9 @@ HelpIntent how [can|do] I use [you|this]
 HelpIntent what (commands|questions|things|stuff) can I \
   [ask|ask you|say|do|use|use this for]
 
+
 #-------------------------------------------------------------------------------
-# Different ways of doing an aggregation query.
+# AggregationIntent: Different ways of doing an aggregation query.
 #-------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------
@@ -14,7 +15,7 @@ HelpIntent what (commands|questions|things|stuff) can I \
 #-------------------------------------------------------------------------------
 
 AggregationIntent {CommandPhrase} the {Aggregate} (of) ({AggregationColumn}) \
-  (column) in {TableName}
+  (column) (in|of) {TableName}
 
 AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
   (are there|do we have)
@@ -201,3 +202,13 @@ AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
   {BinaryLogicOpTwo} \
   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
   {GroupBy} {GroupByColumn}
+
+
+#-------------------------------------------------------------------------------
+# ClarifyAmbiguousTableIntent
+#-------------------------------------------------------------------------------
+
+ClarifyAmbiguousTableIntent (I meant|I'm referring to|How about) {TableName}
+ClarifyAmbiguousTableIntent (I meant|I'm referring to|How about) {TableAndColumnName}
+
+

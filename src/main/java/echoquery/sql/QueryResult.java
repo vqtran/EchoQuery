@@ -21,6 +21,7 @@ import com.facebook.presto.sql.tree.QuerySpecification;
 import com.facebook.presto.sql.tree.SortItem;
 import com.facebook.presto.sql.tree.StringLiteral;
 
+import echoquery.sql.joins.JoinRecipe;
 import echoquery.utils.SlotUtil;
 import echoquery.utils.TranslationUtils;
 
@@ -30,7 +31,7 @@ import echoquery.utils.TranslationUtils;
  */
 
 public class QueryResult {
-  enum Status {
+  public enum Status {
     SUCCESS,
     REPAIR_REQUEST,
     FAILURE
@@ -282,6 +283,8 @@ public class QueryResult {
           translation.append(" is ")
               .append(TranslationUtils.convert(groupByValues.get(i).getValue()))
               .append(" for the ")
+              .append(request.getGroupByColumn().getTable().get())
+              .append(" ")
               .append(request.getGroupByColumn().getColumn().get())
               .append(" ")
               .append(groupByValues.get(i).getKey());
@@ -300,5 +303,65 @@ public class QueryResult {
     translation.append(".");
     return translation.toString();
   }
+
+  public static QueryResult of(
+      QueryRequest request, JoinRecipe invalid) {
+    switch (invalid.getReason()) {
+    case AMBIGUOUS_TABLE_FOR_COLUMN:
+      if (request.getAggregationColumn().getColumn().isPresent()
+          && !invalid.getContext().getAggregationPrefix().isPresent()) {
+        String col = request.getAggregationColumn().getColumn().get();
+        return new QueryResult(Status.REPAIR_REQUEST, askWhichTable(
+            SlotUtil.aggregationFunctionToEnglish(
+                request.getAggregationFunc().get()) + " of " + col,
+            invalid.getPossibleTables(),
+            col));
+      }
+
+      List<Optional<String>> comparisonPrefixes =
+          invalid.getContext().getComparisons();
+      for (int i = 0; i < comparisonPrefixes.size(); i++) {
+        if (!comparisonPrefixes.get(i).isPresent()) {
+          String col = request.getComparisonColumns().get(i).getColumn().get();
+          String val = request.getComparisonValues().get(i).get();
+          ComparisonExpression.Type comparator =
+              request.getComparators().get(i).get();
+          return new QueryResult(Status.REPAIR_REQUEST, askWhichTable(
+              "where " + col + " is"
+                  + SlotUtil.comparisonTypeToEnglish(comparator) + val,
+              invalid.getPossibleTables(),
+              col));
+        }
+      }
+
+      if (request.getGroupByColumn().getColumn().isPresent()
+          && !invalid.getContext().getGroupByPrefix().isPresent()) {
+        String col = request.getGroupByColumn().getColumn().get();
+        return new QueryResult(Status.REPAIR_REQUEST, askWhichTable(
+            "for each " + col, invalid.getPossibleTables(), col));
+      }
+
+      return null;
+
+    case MISSING_FOREIGN_KEY:
+      return new QueryResult(Status.FAILURE,
+          invalid.getInvalidColumn() + " doesn't seem to be a column related "
+              + "to the table you referenced.");
+    }
+    return null;
+  }
+
+  private static String askWhichTable(
+      String partOfQuery, List<String> possibleTables, String col) {
+    String message = "By "
+        + partOfQuery + ", are you referring to ";
+    for (int i = 0; i < possibleTables.size() - 1; i++) {
+      message += possibleTables.get(i) + " " + col + ", ";
+    }
+    message += "or "
+        + possibleTables.get(possibleTables.size() - 1) + " " + col + "?";
+    return message;
+  }
+
 }
 

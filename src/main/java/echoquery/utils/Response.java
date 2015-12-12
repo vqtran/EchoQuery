@@ -18,7 +18,7 @@ public final class Response {
   }
   /**
    * Have Alexa ask something, and reprompt if there was no answer.
-   * 
+   *
    * @param askOutput The initial question without speak tags.
    * @param repromptOutput The reprompt statement without speak tags.
    * @return SpeechletResponse
@@ -51,5 +51,13 @@ public final class Response {
     SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
     outputSpeech.setSsml("<speak> Goodbye </speak>");
     return SpeechletResponse.newTellResponse(outputSpeech);
+  }
+
+  /**
+   * Standard unexpected error message.
+   * @return SpeechletResponse
+   */
+  public static SpeechletResponse unexpectedError() {
+    return Response.say("There was an unexpected error. Please try again.");
   }
 }

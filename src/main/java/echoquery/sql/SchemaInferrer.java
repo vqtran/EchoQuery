@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -151,22 +150,25 @@ public class SchemaInferrer {
     }
 
     // Validate that we've been able to assign a table to every column.
-    // TODO: Make these interactive, i.e. ask the user to clarify.
+    // If there were ambiguities we prompt the user.
 
     if (aggregation.getColumn().isPresent()
         && !inference.getAggregationPrefix().isPresent()) {
-      return new InvalidJoinRecipe();
+      return InvalidJoinRecipe.ambiguousTableForColumn(
+          columnToTable.get(aggregation.getColumn().get()), inference);
     }
 
-    for (Optional<String> comparisonPrefix : inference.getComparisons()) {
-      if (!comparisonPrefix.isPresent()) {
-        return new InvalidJoinRecipe();
+    for (int i = 0; i < comparisons.size(); i++) {
+      if (!inference.getComparisons().get(i).isPresent()) {
+        return InvalidJoinRecipe.ambiguousTableForColumn(
+            columnToTable.get(comparisons.get(i).getColumn().get()), inference);
       }
     }
 
     if (groupBy.getColumn().isPresent()
         && !inference.getGroupByPrefix().isPresent()) {
-      return new InvalidJoinRecipe();
+      return InvalidJoinRecipe.ambiguousTableForColumn(
+          columnToTable.get(groupBy.getColumn().get()), inference);
     }
 
     // Now get all the distinct dimension tables we need to join on to satisfy
@@ -190,7 +192,7 @@ public class SchemaInferrer {
     // So if there was a foreign key leading out from our base table for each
     // table we wanted to join on, we then expect joinTables to be empty.
     if (!joinTables.isEmpty()) {
-      return new InvalidJoinRecipe();
+      return InvalidJoinRecipe.missingForeignKey(joinTables.iterator().next());
     }
 
     // We now know all the right foreign keys to join with!

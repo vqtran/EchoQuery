@@ -86,6 +86,19 @@
       ]
     },
     {
+      "intent": "ClarifyAmbiguousTableIntent",
+      "slots": [
+        {
+          "name": "TableName",
+          "type": "TABLE_NAME"
+        },
+        {
+          "name": "TableAndColumnName",
+          "type": "COLUMN_NAME"
+        }
+      ]
+    },
+    {
       "intent": "GetNextEventIntent",
       "slots": []
     },

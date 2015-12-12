@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
-import com.amazon.speech.speechlet.Session;
 
 import echoquery.intents.AggregationHandler;
 import echoquery.utils.SlotUtil;
@@ -50,7 +49,8 @@ public class AggregationHandlerTest {
   private void assertResponse(Map<String, Slot> slots, String expected) {
     assertEquals(expected,
         handler.getResponseInEnglish(Intent.builder()
-            .withName("AggregationIntent").withSlots(slots).build(), Session.builder().withSessionId("1").build()));
+            .withName("AggregationIntent")
+            .withSlots(slots).build()));
   }
 
   @Test
