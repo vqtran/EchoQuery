@@ -1,15 +1,14 @@
 package echoquery.sql;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.amazon.speech.slu.Intent;
-import com.amazon.speech.speechlet.Session;
 import com.facebook.presto.sql.QueryUtil;
 import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.Expression;
@@ -21,12 +20,13 @@ import com.facebook.presto.sql.tree.QualifiedNameReference;
 import com.facebook.presto.sql.tree.Query;
 import com.facebook.presto.sql.tree.SimpleGroupBy;
 import com.facebook.presto.sql.tree.StringLiteral;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
+import echoquery.sql.joins.InferredContext;
 import echoquery.sql.joins.JoinRecipe;
 import echoquery.sql.model.ColumnName;
 import echoquery.sql.model.ColumnType;
-import echoquery.utils.SessionUtil;
 import echoquery.utils.SlotUtil;
 
 /**
@@ -34,7 +34,12 @@ import echoquery.utils.SlotUtil;
  * object, and hold original request fields.
  */
 
-public class QueryRequest {
+public class QueryRequest implements Serializable {
+  /**
+   * Generated for serialization.
+   */
+  private static final long serialVersionUID = 5356143401459952793L;
+
   /**
    * Metadata about the original request parsed from the intent. Assumption
    * made that there will always only be one aggregation. Index i in lists
@@ -53,10 +58,12 @@ public class QueryRequest {
 
   // The built Query AST object itself.
   private Query query;
+  // And what was inferred about the column.
+  private InferredContext ctx;
 
   public QueryRequest() {
-    fromTable = Optional.empty();
-    aggregationFunc = Optional.empty();
+    fromTable = Optional.absent();
+    aggregationFunc = Optional.absent();
     aggregationColumn = new ColumnName();
     comparisonColumns = new ArrayList<>();
     comparators = new ArrayList<>();
@@ -102,13 +109,18 @@ public class QueryRequest {
     return query;
   }
 
+  public InferredContext getContext() {
+    return ctx;
+  }
+
   public QueryRequest setFromTable(@Nullable String table) {
-    fromTable = Optional.ofNullable(table);
+    fromTable = Optional.fromNullable(table);
     return this;
   }
 
   public QueryRequest setAggregationFunc(@Nullable String func) {
-    aggregationFunc = Optional.ofNullable(SlotUtil.getAggregateFunction(func));
+    aggregationFunc =
+        Optional.fromNullable(SlotUtil.getAggregateFunction(func));
 
     // Sets the aggregation function to count by default.
     if (!aggregationFunc.isPresent()) {
@@ -143,8 +155,8 @@ public class QueryRequest {
         || comparisonValue != null) {
       comparisonColumns.add(comparisonColumn);
       comparators.add(
-          Optional.ofNullable(SlotUtil.getComparisonType(comparator)));
-      comparisonValues.add(Optional.ofNullable(comparisonValue));
+          Optional.fromNullable(SlotUtil.getComparisonType(comparator)));
+      comparisonValues.add(Optional.fromNullable(comparisonValue));
     }
     return this;
   }
@@ -164,12 +176,12 @@ public class QueryRequest {
       @Nullable String comparator,
       @Nullable String comparisonValue) {
     if (comparisonBinaryOperator != null) {
-      comparisonBinaryOperators.add(Optional.ofNullable(
+      comparisonBinaryOperators.add(Optional.fromNullable(
           SlotUtil.getComparisonBinaryOperatorType(comparisonBinaryOperator)));
       comparisonColumns.add(comparisonColumn);
       comparators.add(
-          Optional.ofNullable(SlotUtil.getComparisonType(comparator)));
-      comparisonValues.add(Optional.ofNullable(comparisonValue));
+          Optional.fromNullable(SlotUtil.getComparisonType(comparator)));
+      comparisonValues.add(Optional.fromNullable(comparisonValue));
     }
     return this;
   }
@@ -186,11 +198,10 @@ public class QueryRequest {
       throws QueryBuildException {
     JoinRecipe from = inferrer.infer(
         fromTable.get(), aggregationColumn, comparisonColumns, groupByColumn);
+    ctx = from.getContext();
 
     if (!from.isValid()) {
-      throw new QueryBuildException(new QueryResult(
-          QueryResult.Status.REPAIR_REQUEST,
-          "We don't know what table your columns come from."));
+      throw new QueryBuildException(QueryResult.of(this, from));
     }
 
     Expression aggregationExp;
@@ -198,7 +209,7 @@ public class QueryRequest {
       aggregationExp = QueryUtil.functionCall(
           aggregationFunc.get(),
           new QualifiedNameReference(QualifiedName.of(
-              from.getContext().getAggregationPrefix().get(),
+              ctx.getAggregationPrefix().get(),
               aggregationColumn.getColumn().get())));
     } else {
       aggregationExp = QueryUtil.functionCall(aggregationFunc.get());
@@ -210,8 +221,7 @@ public class QueryRequest {
       whereClauses.add(new ComparisonExpression(
           comparators.get(i).get(),
           new QualifiedNameReference(QualifiedName.of(
-              from.getContext().getComparisonPrefix(i).get(),
-              col.getColumn().get())),
+              ctx.getComparisonPrefix(i).get(), col.getColumn().get())),
           (col.getType() == ColumnType.NUMBER)
             ? new LongLiteral(comparisonValues.get(i).get())
             : new StringLiteral(comparisonValues.get(i).get())));
@@ -221,8 +231,7 @@ public class QueryRequest {
     List<GroupingElement> groupBy = new ArrayList<>();
     if (groupByColumn.getColumn().isPresent()) {
       groupByName = new QualifiedNameReference(QualifiedName.of(
-          from.getContext().getGroupByPrefix().get(),
-          groupByColumn.getColumn().get()));
+          ctx.getGroupByPrefix().get(), groupByColumn.getColumn().get()));
       groupBy.add(new SimpleGroupBy(ImmutableList.of(groupByName)));
     }
 
@@ -231,12 +240,12 @@ public class QueryRequest {
             ? QueryUtil.selectList(groupByName, aggregationExp)
             : QueryUtil.selectList(aggregationExp),
         from.render(),
-        Optional.ofNullable(logicallyCombineWhereClauses(
+        java.util.Optional.ofNullable(logicallyCombineWhereClauses(
             whereClauses, comparisonBinaryOperators, 0)),
         groupBy,
-        Optional.empty(),
+        java.util.Optional.empty(),
         ImmutableList.of(),
-        Optional.empty());
+        java.util.Optional.empty());
 
     return this;
   }
@@ -271,7 +280,7 @@ public class QueryRequest {
    * @param intent
    * @return
    */
-  public static QueryRequest of(Intent intent, Session session) {
+  public static QueryRequest of(Intent intent) {
     QueryRequest request = new QueryRequest()
         .setFromTable(intent.getSlot(SlotUtil.TABLE_NAME).getValue())
         .setAggregationFunc(intent.getSlot(SlotUtil.AGGREGATE).getValue())
@@ -310,7 +319,93 @@ public class QueryRequest {
                 intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue()))
         .setGroupByColumn(SlotUtil.parseColumnSlot(
             intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue()));
-    session.setAttribute(SessionUtil.REQUEST_ATTRIBUTE, request);
     return request;
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((aggregationColumn == null)
+        ? 0 : aggregationColumn.hashCode());
+    result = prime * result + ((aggregationFunc == null)
+        ? 0 : aggregationFunc.hashCode());
+    result = prime * result + ((comparators == null)
+        ? 0 : comparators.hashCode());
+    result = prime * result + ((comparisonBinaryOperators == null)
+        ? 0 : comparisonBinaryOperators.hashCode());
+    result = prime * result + ((comparisonColumns == null)
+        ? 0 : comparisonColumns.hashCode());
+    result = prime * result + ((comparisonValues == null)
+        ? 0 : comparisonValues.hashCode());
+    result = prime * result + ((fromTable == null)
+        ? 0 : fromTable.hashCode());
+    result = prime * result + ((groupByColumn == null)
+        ? 0 : groupByColumn.hashCode());
+    result = prime * result + ((query == null) ? 0 : query.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    QueryRequest other = (QueryRequest) obj;
+    if (aggregationColumn == null) {
+      if (other.getAggregationColumn() != null)
+        return false;
+    } else if (!aggregationColumn.equals(other.getAggregationColumn()))
+      return false;
+    if (aggregationFunc == null) {
+      if (other.getAggregationFunc() != null)
+        return false;
+    } else if (!aggregationFunc.equals(other.getAggregationFunc()))
+      return false;
+    if (comparators == null) {
+      if (other.getComparators() != null)
+        return false;
+    } else if (!comparators.equals(other.getComparators()))
+      return false;
+    if (comparisonBinaryOperators == null) {
+      if (other.getComparisonBinaryOperators() != null)
+        return false;
+    } else if (
+        !comparisonBinaryOperators.equals(other.getComparisonBinaryOperators()))
+      return false;
+    if (comparisonColumns == null) {
+      if (other.getComparisonColumns() != null)
+        return false;
+    } else if (!comparisonColumns.equals(other.getComparisonColumns()))
+      return false;
+    if (comparisonValues == null) {
+      if (other.getComparisonValues() != null)
+        return false;
+    } else if (!comparisonValues.equals(other.getComparisonValues()))
+      return false;
+    if (fromTable == null) {
+      if (other.getFromTable() != null)
+        return false;
+    } else if (!fromTable.equals(other.getFromTable()))
+      return false;
+    if (groupByColumn == null) {
+      if (other.getGroupByColumn() != null)
+        return false;
+    } else if (!groupByColumn.equals(other.getGroupByColumn()))
+      return false;
+    if (query == null) {
+      if (other.getQuery() != null)
+        return false;
+    } else if (!query.equals(other.getQuery()))
+      return false;
+    if (ctx == null) {
+      if (other.getContext() != null)
+        return false;
+    } else if (!ctx.equals(other.getContext()))
+      return false;
+    return true;
   }
 }

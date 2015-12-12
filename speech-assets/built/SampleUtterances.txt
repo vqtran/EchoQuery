@@ -39,14 +39,30 @@ HelpIntent what stuff can I say
 HelpIntent what stuff can I do
 HelpIntent what stuff can I use
 HelpIntent what stuff can I use this for
+AggregationIntent {CommandPhrase} the {Aggregate} {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} column {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of column {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} column {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} column {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} of in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of of {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} of {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} of {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} column in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} column of {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} of column in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of column of {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} column in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} {AggregationColumn} column of {TableName}
 AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} column in {TableName}
+AggregationIntent {CommandPhrase} the {Aggregate} of {AggregationColumn} column of {TableName}
 AggregationIntent {Aggregate} {TableName}
 AggregationIntent {Aggregate} entries in {TableName}
 AggregationIntent {Aggregate} rows in {TableName}
@@ -770,3 +786,11 @@ AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonCo
 AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree} {GroupBy} {GroupByColumn}
 AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnValueThree} {GroupBy} {GroupByColumn}
 AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree} {GroupBy} {GroupByColumn}
+ClarifyAmbiguousTableIntent {TableName}
+ClarifyAmbiguousTableIntent I meant {TableName}
+ClarifyAmbiguousTableIntent I'm referring to {TableName}
+ClarifyAmbiguousTableIntent How about {TableName}
+ClarifyAmbiguousTableIntent {TableAndColumnName}
+ClarifyAmbiguousTableIntent I meant {TableAndColumnName}
+ClarifyAmbiguousTableIntent I'm referring to {TableAndColumnName}
+ClarifyAmbiguousTableIntent How about {TableAndColumnName}
