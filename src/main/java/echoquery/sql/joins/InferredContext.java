@@ -11,12 +11,6 @@ import javax.annotation.Nullable;
 import com.google.common.base.Optional;
 
 public class InferredContext implements Serializable {
-  @Override
-  public String toString() {
-    return "InferredContext [aggregation=" + aggregation + ", comparisons=" + comparisons + ", groupBy=" + groupBy
-        + "]";
-  }
-
   /**
    * Generated for serialization.
    */
