@@ -58,46 +58,37 @@ public class ClarifyAmbiguousTableHandler implements IntentHandler {
       table = SlotUtil.parseColumnSlot(table).getTable().orNull();
     }
 
-    // Generate the InvalidJoinRecipe again, to find where the first ambiguity
-    // was.
-    JoinRecipe from = inferrer.infer(
-        request.getFromTable().get(),
-        request.getAggregationColumn(),
-        request.getComparisonColumns(),
-        request.getGroupByColumn());
+    // Go through and find the first ambiguity, setting it's table name to
+    // what was clarified and stopping after fixing that first one.
+    // Order here is important: Aggregation, where clauses, group by.
+    InferredContext inference = request.getContext();
+    boolean foundFix = false;
 
-    if (!from.isValid()) {
-      // Go through and find the first ambiguity, setting it's table name to
-      // what was clarified and stopping after fixing that first one.
-      // Order here is important: Aggregation, where clauses, group by.
-      InferredContext inference = from.getContext();
-      boolean foundFix = false;
+    // Was it the aggregation column?
+    if (request.getAggregationColumn().getColumn().isPresent()
+        && !inference.getAggregationPrefix().isPresent()) {
+      request.getAggregationColumn().setTable(table);
+      foundFix = true;
 
-      // Was it the aggregation column?
-      if (request.getAggregationColumn().getColumn().isPresent()
-          && !inference.getAggregationPrefix().isPresent()) {
-        request.getAggregationColumn().setTable(table);
-        foundFix = true;
-      } else {
-        // It was any of the where columns in order?
-        for (int i = 0; i < request.getComparisonColumns().size(); i++) {
-          if (!inference.getComparisons().get(i).isPresent()) {
-            request.getComparisonColumns().get(i).setTable(table);
-            foundFix = true;
-            break;
-          }
+    } else {
+      // It was any of the where columns in order?
+      for (int i = 0; i < request.getComparisonColumns().size(); i++) {
+        if (!inference.getComparisons().get(i).isPresent()) {
+          request.getComparisonColumns().get(i).setTable(table);
+          foundFix = true;
+          break;
         }
-      }
-
-      // if it wasn't the aggregation or where columns, is it the group by
-      // column?
-      if (!foundFix && request.getGroupByColumn().getColumn().isPresent()
-          && !inference.getGroupByPrefix().isPresent()) {
-        request.getGroupByColumn().setTable(table);
       }
     }
 
-    // Run this request through the execution pipeline again.
+    // If it wasn't the aggregation or where columns, is it the group by
+    // column?
+    if (!foundFix && request.getGroupByColumn().getColumn().isPresent()
+        && !inference.getGroupByPrefix().isPresent()) {
+      request.getGroupByColumn().setTable(table);
+    }
+
+    // Run this mended request through the execution pipeline again.
     return aggregationHandler.respond(request, session);
   }
 }

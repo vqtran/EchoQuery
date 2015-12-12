@@ -283,7 +283,7 @@ public class QueryResult {
           translation.append(" is ")
               .append(TranslationUtils.convert(groupByValues.get(i).getValue()))
               .append(" for the ")
-              .append(request.getGroupByColumn().getTable().get())
+              .append(request.getContext().getGroupByPrefix())
               .append(" ")
               .append(request.getGroupByColumn().getColumn().get())
               .append(" ")

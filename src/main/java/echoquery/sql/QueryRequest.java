@@ -23,6 +23,7 @@ import com.facebook.presto.sql.tree.StringLiteral;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
+import echoquery.sql.joins.InferredContext;
 import echoquery.sql.joins.JoinRecipe;
 import echoquery.sql.model.ColumnName;
 import echoquery.sql.model.ColumnType;
@@ -57,6 +58,8 @@ public class QueryRequest implements Serializable {
 
   // The built Query AST object itself.
   private Query query;
+  // And what was inferred about the column.
+  private InferredContext ctx;
 
   public QueryRequest() {
     fromTable = Optional.absent();
@@ -104,6 +107,10 @@ public class QueryRequest implements Serializable {
 
   public Query getQuery() {
     return query;
+  }
+
+  public InferredContext getContext() {
+    return ctx;
   }
 
   public QueryRequest setFromTable(@Nullable String table) {
@@ -191,6 +198,7 @@ public class QueryRequest implements Serializable {
       throws QueryBuildException {
     JoinRecipe from = inferrer.infer(
         fromTable.get(), aggregationColumn, comparisonColumns, groupByColumn);
+    ctx = from.getContext();
 
     if (!from.isValid()) {
       throw new QueryBuildException(QueryResult.of(this, from));
@@ -201,7 +209,7 @@ public class QueryRequest implements Serializable {
       aggregationExp = QueryUtil.functionCall(
           aggregationFunc.get(),
           new QualifiedNameReference(QualifiedName.of(
-              from.getContext().getAggregationPrefix().get(),
+              ctx.getAggregationPrefix().get(),
               aggregationColumn.getColumn().get())));
     } else {
       aggregationExp = QueryUtil.functionCall(aggregationFunc.get());
@@ -213,8 +221,7 @@ public class QueryRequest implements Serializable {
       whereClauses.add(new ComparisonExpression(
           comparators.get(i).get(),
           new QualifiedNameReference(QualifiedName.of(
-              from.getContext().getComparisonPrefix(i).get(),
-              col.getColumn().get())),
+              ctx.getComparisonPrefix(i).get(), col.getColumn().get())),
           (col.getType() == ColumnType.NUMBER)
             ? new LongLiteral(comparisonValues.get(i).get())
             : new StringLiteral(comparisonValues.get(i).get())));
@@ -224,8 +231,7 @@ public class QueryRequest implements Serializable {
     List<GroupingElement> groupBy = new ArrayList<>();
     if (groupByColumn.getColumn().isPresent()) {
       groupByName = new QualifiedNameReference(QualifiedName.of(
-          from.getContext().getGroupByPrefix().get(),
-          groupByColumn.getColumn().get()));
+          ctx.getGroupByPrefix().get(), groupByColumn.getColumn().get()));
       groupBy.add(new SimpleGroupBy(ImmutableList.of(groupByName)));
     }
 
