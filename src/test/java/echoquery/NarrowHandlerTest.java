@@ -143,5 +143,4 @@ public class NarrowHandlerTest {
     assertResponse(slots, session, "There is one row in the sales table where "
         + "store is not equal to Warwick and product is equal to speakers.");
   }
-
 }
