@@ -56,6 +56,26 @@ public class NarrowHandlerTest {
     return session;
   }
 
+  private Session newWhereSession() {
+    Session session = Session.builder().withSessionId("1").build();
+    Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
+    addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
+    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "store");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "Warwick");
+    QueryRequest request = QueryRequest.of(Intent.builder()
+        .withName("AggregationIntent").withSlots(slots).build());
+
+    try {
+      session.setAttribute(
+            SessionUtil.REQUEST_ATTRIBUTE, Serializer.serialize(request));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return session;
+  }
+
   private Session newGroupedBySession() {
     Session session = Session.builder().withSessionId("1").build();
     Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
@@ -112,4 +132,15 @@ public class NarrowHandlerTest {
         + "the product camera, two rows for speakers, and one row for tv.");
   }
 
+  @Test
+  public void testWithWhere() {
+    Session session = this.newWhereSession();
+
+    Map<String, Slot> slots = newNarrowEmptySlots();
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
+    assertResponse(slots, session, "There is one row in the sales table where "
+        + "store is not equal to Warwick and product is equal to speakers.");
+  }
 }

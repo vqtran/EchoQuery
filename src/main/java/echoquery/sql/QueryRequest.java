@@ -182,8 +182,10 @@ public class QueryRequest implements Serializable {
       comparators.add(
           Optional.fromNullable(SlotUtil.getComparisonType(comparator)));
       comparisonValues.add(Optional.fromNullable(comparisonValue));
+      return this;
+    } else {
+      return addWhereClause(comparisonColumn, comparator, comparisonValue);
     }
-    return this;
   }
 
   /**
