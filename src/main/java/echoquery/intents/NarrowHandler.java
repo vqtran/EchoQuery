@@ -62,7 +62,9 @@ public class NarrowHandler implements IntentHandler {
   
   private QueryRequest updateRequest(Intent intent, QueryRequest previousRequest) {
     return previousRequest
-        .addWhereClause(SlotUtil.parseColumnSlot(
+        .addWhereClause(
+            previousRequest.getComparisonColumns().size() > 0 ? "and" : null,
+            SlotUtil.parseColumnSlot(
             intent.getSlot(SlotUtil.COMPARISON_COLUMN_1).getValue())
                 .setType((intent.getSlot(
                     SlotUtil.COLUMN_NUMBER_1).getValue() != null)
