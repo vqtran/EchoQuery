@@ -14,7 +14,7 @@ import echoquery.intents.AggregationHandler;
 import echoquery.utils.SlotUtil;
 
 public class AggregationHandlerTest {
-  AggregationHandler handler =
+  private AggregationHandler handler =
       new AggregationHandler(TestConnection.getInstance());
 
   public static Map<String, Slot> newEmptySlots() {

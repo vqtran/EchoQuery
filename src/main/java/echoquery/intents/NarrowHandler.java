@@ -25,27 +25,20 @@ public class NarrowHandler implements IntentHandler {
   private static final Logger log =
       LoggerFactory.getLogger(NarrowHandler.class);
   private final Querier querier;
+  private final AggregationHandler aggregationHandler;
 
-  public NarrowHandler(Connection conn) {
+  public NarrowHandler(Connection conn, AggregationHandler aggregationHandler) {
     this.querier = new Querier(conn);
+    this.aggregationHandler = aggregationHandler;
   }
 
   @Override
   public SpeechletResponse respond(Intent intent, Session session) {
     try {
-      QueryRequest request = 
+      return aggregationHandler.respond(
           updateRequest(intent, (QueryRequest) Serializer.deserialize(
-              (String) session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE)));
-      session.setAttribute(
-          SessionUtil.REQUEST_ATTRIBUTE, Serializer.serialize(request));
-
-      // Execute the request and handle results.
-      QueryResult result = querier.execute(request);
-      if (result.getStatus() == QueryResult.Status.REPAIR_REQUEST) {
-        return Response.ask(result.getMessage(), result.getMessage());
-      } else {
-        return Response.say(result.getMessage());
-      }
+              (String) session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE))),
+          session);
     } catch (ClassNotFoundException | IOException e) {
       e.printStackTrace();
       return Response.unexpectedError();
@@ -67,7 +60,7 @@ public class NarrowHandler implements IntentHandler {
     }
   }
   
-  QueryRequest updateRequest(Intent intent, QueryRequest previousRequest) {
+  private QueryRequest updateRequest(Intent intent, QueryRequest previousRequest) {
     return previousRequest
         .addWhereClause(SlotUtil.parseColumnSlot(
             intent.getSlot(SlotUtil.COMPARISON_COLUMN_1).getValue())

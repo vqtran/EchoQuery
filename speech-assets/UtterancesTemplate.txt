@@ -203,14 +203,9 @@ AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
   {GroupBy} {GroupByColumn}
 
-AggregationIntent {Aggregate} the {AggregationColumn} (column) in {TableName} \
-  (table) \
-  where {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
-  {BinaryLogicOpOne} \
-  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
-  {BinaryLogicOpTwo} \
-  {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
-  {GroupBy} {GroupByColumn}
+#-------------------------------------------------------------------------------
+# NarrowIntent
+#-------------------------------------------------------------------------------
 
 NarrowIntent [What if|What about|How about|And if|And when|Also if|Also when|Also \
 where|And where|Also|And] \

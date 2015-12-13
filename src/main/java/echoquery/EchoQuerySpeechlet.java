@@ -43,7 +43,7 @@ public class EchoQuerySpeechlet implements Speechlet {
     aggregationHandler =
         new AggregationHandler(SingletonConnection.getInstance());
     narrowHandler =
-        new NarrowHandler(SingletonConnection.getInstance());
+        new NarrowHandler(SingletonConnection.getInstance(), aggregationHandler);
     clarifyAmbiguousTableHandler = new ClarifyAmbiguousTableHandler(
         SingletonConnection.getInstance(), aggregationHandler);
   }
