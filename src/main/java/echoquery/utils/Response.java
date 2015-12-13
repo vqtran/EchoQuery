@@ -12,10 +12,9 @@ public final class Response {
    * @return SpeechletResponse
    */
   public static SpeechletResponse say(String message) {
-    SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-    outputSpeech.setSsml("<speak>" + message + "</speak>");
-    return SpeechletResponse.newTellResponse(outputSpeech);
+    return ask(message, "Is there anything else?");
   }
+
   /**
    * Have Alexa ask something, and reprompt if there was no answer.
    *

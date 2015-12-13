@@ -786,6 +786,42 @@ AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonCo
 AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree} {GroupBy} {GroupByColumn}
 AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnValueThree} {GroupBy} {GroupByColumn}
 AggregationIntent {Aggregate} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree} {GroupBy} {GroupByColumn}
+NarrowIntent What if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent What if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent What about {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent What about {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent How about {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent How about {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent And if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent And if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent And when {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent And when {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent Also if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent Also if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent Also when {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent Also when {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent Also where {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent Also where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent And where {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent And where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent Also {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent Also {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent And {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+NarrowIntent And {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+NarrowIntent {GroupBy} {GroupByColumn}
+NarrowIntent What if {GroupBy} {GroupByColumn}
+NarrowIntent What about {GroupBy} {GroupByColumn}
+NarrowIntent How about {GroupBy} {GroupByColumn}
+NarrowIntent And if {GroupBy} {GroupByColumn}
+NarrowIntent And when {GroupBy} {GroupByColumn}
+NarrowIntent Also if {GroupBy} {GroupByColumn}
+NarrowIntent Also when {GroupBy} {GroupByColumn}
+NarrowIntent Also where {GroupBy} {GroupByColumn}
+NarrowIntent And where {GroupBy} {GroupByColumn}
+NarrowIntent Also {GroupBy} {GroupByColumn}
+NarrowIntent And {GroupBy} {GroupByColumn}
+NarrowIntent Instead {GroupBy} {GroupByColumn}
+NarrowIntent Actually {GroupBy} {GroupByColumn}
 ClarifyAmbiguousTableIntent {TableName}
 ClarifyAmbiguousTableIntent I meant {TableName}
 ClarifyAmbiguousTableIntent I'm referring to {TableName}

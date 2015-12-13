@@ -17,6 +17,7 @@ import echoquery.intents.AggregationHandler;
 import echoquery.intents.ClarifyAmbiguousTableHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
+import echoquery.intents.NarrowHandler;
 import echoquery.sql.SingletonConnection;
 import echoquery.utils.Response;
 
@@ -34,12 +35,15 @@ public class EchoQuerySpeechlet implements Speechlet {
   private IntentHandler helpHandler;
   private IntentHandler clarifyAmbiguousTableHandler;
   private AggregationHandler aggregationHandler;
+  private IntentHandler narrowHandler;
 
   public EchoQuerySpeechlet() {
     super();
     helpHandler = new HelpHandler();
     aggregationHandler =
         new AggregationHandler(SingletonConnection.getInstance());
+    narrowHandler =
+        new NarrowHandler(SingletonConnection.getInstance(), aggregationHandler);
     clarifyAmbiguousTableHandler = new ClarifyAmbiguousTableHandler(
         SingletonConnection.getInstance(), aggregationHandler);
   }
@@ -76,6 +80,8 @@ public class EchoQuerySpeechlet implements Speechlet {
     switch(intentName) {
       case "AggregationIntent":
         return aggregationHandler.respond(intent, session);
+      case "NarrowIntent":
+        return narrowHandler.respond(intent, session);
       case "ClarifyAmbiguousTableIntent":
         return clarifyAmbiguousTableHandler.respond(intent, session);
       case "HelpIntent":

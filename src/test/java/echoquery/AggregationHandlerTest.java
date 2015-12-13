@@ -14,10 +14,10 @@ import echoquery.intents.AggregationHandler;
 import echoquery.utils.SlotUtil;
 
 public class AggregationHandlerTest {
-  AggregationHandler handler =
+  private AggregationHandler handler =
       new AggregationHandler(TestConnection.getInstance());
 
-  private Map<String, Slot> newEmptySlots() {
+  public static Map<String, Slot> newEmptySlots() {
     Map<String, Slot> slots = new HashMap<>();
     addSlotValue(slots, SlotUtil.TABLE_NAME, null);
     addSlotValue(slots, SlotUtil.AGGREGATE, null);
@@ -40,7 +40,7 @@ public class AggregationHandlerTest {
     return slots;
   }
 
-  private void addSlotValue(
+  private static void addSlotValue(
       Map<String, Slot> slots, String slotName, String slotValue) {
     slots.put(slotName,
         Slot.builder().withName(slotName).withValue(slotValue).build());

@@ -203,6 +203,16 @@ AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
   {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}] \
   {GroupBy} {GroupByColumn}
 
+#-------------------------------------------------------------------------------
+# NarrowIntent
+#-------------------------------------------------------------------------------
+
+NarrowIntent [What if|What about|How about|And if|And when|Also if|Also when|Also \
+where|And where|Also|And] \
+{ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}]
+
+NarrowIntent (What if|What about|How about|And if|And when|Also if|Also when|Also \
+where|And where|Also|And|Instead|Actually) {GroupBy} {GroupByColumn}
 
 #-------------------------------------------------------------------------------
 # ClarifyAmbiguousTableIntent
@@ -210,5 +220,3 @@ AggregationIntent {Aggregate} (entries in|rows in) {TableName} \
 
 ClarifyAmbiguousTableIntent (I meant|I'm referring to|How about) {TableName}
 ClarifyAmbiguousTableIntent (I meant|I'm referring to|How about) {TableAndColumnName}
-
-

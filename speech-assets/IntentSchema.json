@@ -81,7 +81,36 @@
         },
         {
           "name": "GroupByColumn",
+          "type": "COLUMN_NAME"
+        }
+      ]
+    },
+    {
+      "intent": "NarrowIntent",
+      "slots": [
+        {
+          "name": "ComparisonColumnOne",
+          "type": "COLUMN_NAME"
+        },
+        {
+          "name": "ComparatorOne",
+          "type": "COMPARATORS"
+        },
+        {
+          "name": "ColumnValueOne",
           "type": "COLUMN_VALUE"
+        },
+        {
+          "name": "ColumnNumberOne",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "GroupBy",
+          "type": "GROUP_BY"
+        },
+        {
+          "name": "GroupByColumn",
+          "type": "COLUMN_NAME"
         }
       ]
     },

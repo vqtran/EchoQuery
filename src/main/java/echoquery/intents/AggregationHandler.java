@@ -3,6 +3,9 @@ package echoquery.intents;
 import java.io.IOException;
 import java.sql.Connection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
@@ -19,6 +22,9 @@ import echoquery.utils.SessionUtil;
  * from end-user or another intent.
  */
 public class AggregationHandler implements IntentHandler {
+
+  private static final Logger log =
+      LoggerFactory.getLogger(AggregationHandler.class);
 
   private final Querier querier;
 
