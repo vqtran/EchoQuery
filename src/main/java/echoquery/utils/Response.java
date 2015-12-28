@@ -12,6 +12,7 @@ public final class Response {
    * @return SpeechletResponse
    */
   public static SpeechletResponse say(String message) {
+    VisualizationUtil.updateDisplayText(message);
     return ask(message, "Is there anything else?");
   }
 
