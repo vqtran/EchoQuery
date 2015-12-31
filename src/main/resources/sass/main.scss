@@ -1,0 +1,9 @@
+$font-stack: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif;
+$font-color: #cccccc;
+
+body {
+  font-family: $font-stack;
+  color: $font-color;
+  font-size: 16px;
+  line-height: 1.6;
+}

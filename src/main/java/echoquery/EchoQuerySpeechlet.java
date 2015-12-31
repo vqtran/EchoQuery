@@ -18,7 +18,7 @@ import echoquery.intents.ClarifyAmbiguousTableHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
 import echoquery.intents.NarrowHandler;
-import echoquery.sql.SingletonConnection;
+import echoquery.sql.SingletonConnections;
 import echoquery.utils.Response;
 
 /**
@@ -41,11 +41,11 @@ public class EchoQuerySpeechlet implements Speechlet {
     super();
     helpHandler = new HelpHandler();
     aggregationHandler =
-        new AggregationHandler(SingletonConnection.getInstance());
+        new AggregationHandler(SingletonConnections.getDataInstance());
     narrowHandler =
-        new NarrowHandler(SingletonConnection.getInstance(), aggregationHandler);
+        new NarrowHandler(SingletonConnections.getDataInstance(), aggregationHandler);
     clarifyAmbiguousTableHandler = new ClarifyAmbiguousTableHandler(
-        SingletonConnection.getInstance(), aggregationHandler);
+        SingletonConnections.getDataInstance(), aggregationHandler);
   }
 
   @Override

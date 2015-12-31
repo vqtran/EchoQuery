@@ -1,0 +1,11 @@
+{
+  "name": "EchoQuery-FrontEnd",
+  "version": "0.0.0",
+  "author": "Gabe Lyons & Vinh Tran",
+  "dependencies": {
+    "alt": "^0.18.1",
+    "jquery": "^2.1.4",
+    "react": "^0.13.0-rc2",
+    "whatwg-fetch": "^0.10.1"
+  }
+}
