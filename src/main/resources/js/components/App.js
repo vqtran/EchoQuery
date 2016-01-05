@@ -11,8 +11,8 @@ class App extends React.Component {
     return (
       <div>
         <UserIdInput />
-        <div>
-          {this.state.displayText}
+        <div className="text-center">
+          <h1>{this.state.displayText}</h1>
         </div>
       </div>
     );

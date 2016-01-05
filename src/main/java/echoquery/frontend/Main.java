@@ -15,10 +15,13 @@ public class Main {
   private static void runSparkServer() {
     Spark.externalStaticFileLocation("public/");
 
-    Spark.get("/", (request, response) -> new ModelAndView(new HashMap<>(), "index.jade"),
+    Spark.get("/", (request, response) ->
+        new ModelAndView(new HashMap<>(), "index.jade"),
         new JadeTemplateEngine());
     
     Spark.get("/fetch/:id", (request, response) -> 
         new FetchHandler(request, response).respond());
+
+    Spark.get("/fetch/", (request, response) -> "Enter a valid User ID");
   }
 }

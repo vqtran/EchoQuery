@@ -28,9 +28,12 @@ class SessionStore {
   }
 
   updateSessionId(data) {
-    this.setState({
-      userId: data,
-    });
+    if (!/[^a-zA-Z0-9]/.test(data)) {
+      // input is alphanumeric
+      this.setState({
+        userId: data,
+      });
+    }
   }
 
   getSessionId() {
