@@ -42,8 +42,8 @@ public class EchoQuerySpeechlet implements Speechlet {
     helpHandler = new HelpHandler();
     aggregationHandler =
         new AggregationHandler(SingletonConnections.getDataInstance());
-    narrowHandler =
-        new NarrowHandler(SingletonConnections.getDataInstance(), aggregationHandler);
+    narrowHandler = new NarrowHandler(
+        SingletonConnections.getDataInstance(), aggregationHandler);
     clarifyAmbiguousTableHandler = new ClarifyAmbiguousTableHandler(
         SingletonConnections.getDataInstance(), aggregationHandler);
   }
@@ -84,9 +84,9 @@ public class EchoQuerySpeechlet implements Speechlet {
         return narrowHandler.respond(intent, session);
       case "ClarifyAmbiguousTableIntent":
         return clarifyAmbiguousTableHandler.respond(intent, session);
-      case "HelpIntent":
+      case "AMAZON.HelpIntent":
         return helpHandler.respond(intent, session);
-      case "FinishIntent":
+      case "AMAZON.StopIntent":
         return Response.bye();
       default:
         throw new SpeechletException("Invalid Intent");

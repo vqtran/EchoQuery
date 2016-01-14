@@ -19,17 +19,17 @@ public class VisualizationUtil {
   public static void updateDisplayText(String message) {
     try {
       Statement statement = conn.createStatement();
-      statement.executeUpdate(
-          "update sessions set display='" + StringEscapeUtils.escapeJava(message) + "'where id=1");
+      statement.executeUpdate("update sessions set display='"
+          + StringEscapeUtils.escapeJava(message) + "'where id=1");
     } catch (SQLException e) {
       log.error(e.getMessage());
     }
   }
-  
+
   public static String getDisplayText() {
     try {
       Statement statement = conn.createStatement();
-      ResultSet result = 
+      ResultSet result =
           statement.executeQuery("select display from sessions where id=1");
       result.first();
       return result.getString(1);

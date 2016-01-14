@@ -10,6 +10,7 @@ import org.apache.commons.lang3.ObjectUtils;
 
 import com.amazon.speech.slu.Intent;
 import com.facebook.presto.sql.QueryUtil;
+import com.facebook.presto.sql.tree.AllColumns;
 import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.Expression;
 import com.facebook.presto.sql.tree.GroupingElement;
@@ -18,7 +19,9 @@ import com.facebook.presto.sql.tree.LongLiteral;
 import com.facebook.presto.sql.tree.QualifiedName;
 import com.facebook.presto.sql.tree.QualifiedNameReference;
 import com.facebook.presto.sql.tree.Query;
+import com.facebook.presto.sql.tree.SelectItem;
 import com.facebook.presto.sql.tree.SimpleGroupBy;
+import com.facebook.presto.sql.tree.SingleColumn;
 import com.facebook.presto.sql.tree.StringLiteral;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -47,6 +50,7 @@ public class QueryRequest implements Serializable {
    * to support malformed requests.
    */
   private Optional<String> fromTable;
+  private Optional<String> selectAll;
   private Optional<String> aggregationFunc;
   private ColumnName aggregationColumn;
   private List<ColumnName> comparisonColumns;
@@ -63,6 +67,7 @@ public class QueryRequest implements Serializable {
 
   public QueryRequest() {
     fromTable = Optional.absent();
+    selectAll = Optional.absent();
     aggregationFunc = Optional.absent();
     aggregationColumn = new ColumnName();
     comparisonColumns = new ArrayList<>();
@@ -74,6 +79,10 @@ public class QueryRequest implements Serializable {
 
   public Optional<String> getFromTable() {
     return fromTable;
+  }
+
+  public Optional<String> getSelectAll() {
+    return selectAll;
   }
 
   public Optional<String> getAggregationFunc() {
@@ -118,13 +127,18 @@ public class QueryRequest implements Serializable {
     return this;
   }
 
-  public QueryRequest setAggregationFunc(@Nullable String func) {
-    aggregationFunc =
-        Optional.fromNullable(SlotUtil.getAggregateFunction(func));
+  public QueryRequest setFunc(@Nullable String func) {
+    Optional<String> f = Optional.fromNullable(SlotUtil.getFunction(func));
 
-    // Sets the aggregation function to count by default.
-    if (!aggregationFunc.isPresent()) {
-      aggregationFunc = Optional.of(SlotUtil.getAggregateFunction("count"));
+    // Sets selectAll by default.
+    if (!f.isPresent()) {
+      selectAll = Optional.of(SlotUtil.getFunction("get"));
+    }
+
+    if (f.equals("GET")) {
+      selectAll = f;
+    } else {
+      aggregationFunc = f;
     }
     return this;
   }
@@ -206,15 +220,17 @@ public class QueryRequest implements Serializable {
       throw new QueryBuildException(QueryResult.of(this, from));
     }
 
-    Expression aggregationExp;
-    if (aggregationColumn.getColumn().isPresent()) {
-      aggregationExp = QueryUtil.functionCall(
+    SelectItem select;
+    if (selectAll.isPresent()) {
+      select = new AllColumns();
+    } else if (aggregationColumn.getColumn().isPresent()) {
+      select = new SingleColumn(QueryUtil.functionCall(
           aggregationFunc.get(),
           new QualifiedNameReference(QualifiedName.of(
               ctx.getAggregationPrefix().get(),
-              aggregationColumn.getColumn().get())));
+              aggregationColumn.getColumn().get()))));
     } else {
-      aggregationExp = QueryUtil.functionCall(aggregationFunc.get());
+      select = new SingleColumn(QueryUtil.functionCall(aggregationFunc.get()));
     }
 
     List<Expression> whereClauses = new ArrayList<>();
@@ -239,8 +255,8 @@ public class QueryRequest implements Serializable {
 
     query = QueryUtil.simpleQuery(
         (groupByColumn.getColumn().isPresent())
-            ? QueryUtil.selectList(groupByName, aggregationExp)
-            : QueryUtil.selectList(aggregationExp),
+            ? QueryUtil.selectList(new SingleColumn(groupByName), select)
+            : QueryUtil.selectList(select),
         from.render(),
         java.util.Optional.ofNullable(logicallyCombineWhereClauses(
             whereClauses, comparisonBinaryOperators, 0)),
@@ -285,7 +301,7 @@ public class QueryRequest implements Serializable {
   public static QueryRequest of(Intent intent) {
     QueryRequest request = new QueryRequest()
         .setFromTable(intent.getSlot(SlotUtil.TABLE_NAME).getValue())
-        .setAggregationFunc(intent.getSlot(SlotUtil.AGGREGATE).getValue())
+        .setFunc(intent.getSlot(SlotUtil.FUNC).getValue())
         .setAggregationColumn(SlotUtil.parseColumnSlot(
             intent.getSlot(SlotUtil.AGGREGATION_COLUMN).getValue()))
         .addWhereClause(SlotUtil.parseColumnSlot(
@@ -330,6 +346,8 @@ public class QueryRequest implements Serializable {
     int result = 1;
     result = prime * result + ((aggregationColumn == null)
         ? 0 : aggregationColumn.hashCode());
+    result = prime * result + ((selectAll == null)
+        ? 0 : selectAll.hashCode());
     result = prime * result + ((aggregationFunc == null)
         ? 0 : aggregationFunc.hashCode());
     result = prime * result + ((comparators == null)
@@ -361,6 +379,11 @@ public class QueryRequest implements Serializable {
       if (other.getAggregationColumn() != null)
         return false;
     } else if (!aggregationColumn.equals(other.getAggregationColumn()))
+      return false;
+    if (selectAll == null) {
+      if (other.getSelectAll() != null)
+        return false;
+    } else if (!selectAll.equals(other.getSelectAll()))
       return false;
     if (aggregationFunc == null) {
       if (other.getAggregationFunc() != null)

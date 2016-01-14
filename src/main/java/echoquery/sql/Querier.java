@@ -85,17 +85,19 @@ public class Querier {
           + " database. Please try another table name."));
     }
 
-    // Aggregation is present.
-    if (!request.getAggregationFunc().isPresent()) {
+    // Function is present.
+    if (!request.getSelectAll().isPresent()
+        && !request.getAggregationFunc().isPresent()) {
       return Optional.of(new QueryResult(Status.FAILURE,
-          "I can't tell if you want to know the number of rows or the average, "
-          + "sum, min, or max of a particular column in the "
+          "I can't tell if you want to know the rows, the number of rows or "
+          + "the average, sum, min, or max of a particular column in the "
           + table + " table. Please try again."));
     }
 
     String aggregationFunc = request.getAggregationFunc().get();
 
-    // Non-count aggregation functions require a column to aggregate over.
+    // Non-get and non-count aggregation functions require a column to
+    // aggregate over.
     if (!aggregationFunc.equals("COUNT")
         && !request.getAggregationColumn().getColumn().isPresent()) {
       return Optional.of(new QueryResult(Status.FAILURE,

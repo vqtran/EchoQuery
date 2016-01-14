@@ -20,7 +20,7 @@ public class Main {
         new JadeTemplateEngine());
 
     Spark.get("/test", (request, response) -> "Hello World!");
-    
+
     Spark.get("/fetch", (request, response) -> 
         new FetchHandler(request, response).respond());
   }
