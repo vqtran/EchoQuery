@@ -63,7 +63,7 @@ public class EchoQuerySpeechlet implements Speechlet {
     log.info("onLaunch requestId={}, sessionId={}", request.getRequestId(),
         session.getSessionId());
 
-    return Response.welcome();
+    return Response.welcome(session);
   }
 
   @Override
@@ -87,7 +87,7 @@ public class EchoQuerySpeechlet implements Speechlet {
       case "HelpIntent":
         return helpHandler.respond(intent, session);
       case "FinishIntent":
-        return Response.bye();
+        return Response.bye(session);
       default:
         throw new SpeechletException("Invalid Intent");
     }

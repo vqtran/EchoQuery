@@ -16,7 +16,7 @@ public class HelpHandler implements IntentHandler {
           + " For example, you could say,"
           + " How many sales did we have?";
     String repromptOutput = "What do you want to ask?";
-    return Response.ask(askOutput, repromptOutput);
+    return Response.ask(askOutput, repromptOutput, session);
 
   }
 }

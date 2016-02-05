@@ -41,7 +41,7 @@ public class NarrowHandler implements IntentHandler {
           session);
     } catch (ClassNotFoundException | IOException e) {
       e.printStackTrace();
-      return Response.unexpectedError();
+      return Response.unexpectedError(session);
     }
   }
     

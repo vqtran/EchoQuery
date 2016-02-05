@@ -43,7 +43,7 @@ public class ClarifyAmbiguousTableHandler implements IntentHandler {
           (String) session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE));
     } catch (ClassNotFoundException | IOException e) {
       e.printStackTrace();
-      return Response.unexpectedError();
+      return Response.unexpectedError(session);
     }
 
     // Get the clarified values from the slots. It could either be clarifed

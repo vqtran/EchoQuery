@@ -5,10 +5,14 @@ import spark.Request;
 import spark.Response;
 
 public class FetchHandler {
-  
-  public FetchHandler(Request request, Response response) { }
+ 
+  Request request;
+
+  public FetchHandler(Request request, Response response) { 
+    this.request = request;
+  }
 
   public String respond() {
-    return VisualizationUtil.getDisplayText();
+    return VisualizationUtil.getDisplayText(request.params(":id"));
   }
 }
