@@ -44,7 +44,7 @@ public class NarrowHandlerTest {
     Session session = Session.builder().withSessionId("1").build();
     Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
     QueryRequest request = QueryRequest.of(Intent.builder()
         .withName("AggregationIntent").withSlots(slots).build());
 
@@ -61,7 +61,7 @@ public class NarrowHandlerTest {
     Session session = Session.builder().withSessionId("1").build();
     Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "store");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "Warwick");
@@ -81,7 +81,7 @@ public class NarrowHandlerTest {
     Session session = Session.builder().withSessionId("1").build();
     Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");
     QueryRequest request = QueryRequest.of(Intent.builder()
         .withName("AggregationIntent").withSlots(slots).build());

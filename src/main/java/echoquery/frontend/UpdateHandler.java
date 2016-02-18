@@ -6,7 +6,7 @@ import spark.Response;
 
 public class UpdateHandler {
   public UpdateHandler(Request request, Response response) {
-    VisualizationUtil.updateDisplayText(request.queryParams("display"));
+    VisualizationUtil.updateDisplayText(request.queryParams("display"), null);
   }
 
   public String respond() {

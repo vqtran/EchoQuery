@@ -1,5 +1,6 @@
 package echoquery.utils;
 
+import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SsmlOutputSpeech;
@@ -11,9 +12,8 @@ public final class Response {
    * @param message What to say, without speak tags.
    * @return SpeechletResponse
    */
-  public static SpeechletResponse say(String message) {
-    VisualizationUtil.updateDisplayText(message);
-    return ask(message, "Is there anything else?");
+  public static SpeechletResponse say(String message, Session session) {
+    return ask(message, "Is there anything else?", session);
   }
 
   /**
@@ -23,7 +23,10 @@ public final class Response {
    * @param repromptOutput The reprompt statement without speak tags.
    * @return SpeechletResponse
    */
-  public static SpeechletResponse ask(String askOutput, String repromptOutput) {
+  public static SpeechletResponse ask(String askOutput, String repromptOutput,
+      Session session) {
+    VisualizationUtil.updateDisplayText(askOutput, session);
+
     SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
     outputSpeech.setSsml("<speak>" + askOutput + "</speak>");
     SsmlOutputSpeech repromptOutputSpeech = new SsmlOutputSpeech();
@@ -37,27 +40,29 @@ public final class Response {
    * Welcome prompt for the user.
    * @return SpeechletResponse
    */
-  public static SpeechletResponse welcome() {
+  public static SpeechletResponse welcome(Session session) {
     String speechOutput = "Echo Query. What do you want?";
     String repromptOutput = "With Echo Query, the world is your oyster!";
-    return ask(speechOutput, repromptOutput);
+    return ask(speechOutput, repromptOutput, session);
   }
-
+  
   /**
    * Bye message for the user.
    * @return SpeechletResponse
    */
-  public static SpeechletResponse bye() {
+  public static SpeechletResponse bye(Session session) {
     SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
     outputSpeech.setSsml("<speak> Goodbye! </speak>");
     return SpeechletResponse.newTellResponse(outputSpeech);
   }
 
+
   /**
    * Standard unexpected error message.
    * @return SpeechletResponse
    */
-  public static SpeechletResponse unexpectedError() {
-    return Response.say("There was an unexpected error. Please try again.");
+  public static SpeechletResponse unexpectedError(Session session) {
+    return Response.say(
+        "There was an unexpected error. Please try again.", session);
   }
 }

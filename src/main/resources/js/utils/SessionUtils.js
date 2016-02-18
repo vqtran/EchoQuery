@@ -1,6 +1,9 @@
+import SessionStore from '../stores/SessionStore';
+
 class SessionUtils {
   static giveSessionDisplayText(callback) {
-    fetch('/fetch').then((response) => {return response.text();})
+    fetch('/fetch/' + SessionStore.getSessionId()).then((response) => 
+      {return response.text();})
       .then((text) => {callback(text);});
   }
 }

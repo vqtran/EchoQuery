@@ -19,7 +19,7 @@ public class SerializationTest {
   private Map<String, Slot> newEmptySlots() {
     Map<String, Slot> slots = new HashMap<>();
     addSlotValue(slots, SlotUtil.TABLE_NAME, null);
-    addSlotValue(slots, SlotUtil.AGGREGATE, null);
+    addSlotValue(slots, SlotUtil.FUNC, null);
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, null);
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, null);
     addSlotValue(slots, SlotUtil.COMPARATOR_1, null);
@@ -49,7 +49,7 @@ public class SerializationTest {
   public void test() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "employees");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "average");
+    addSlotValue(slots, SlotUtil.FUNC, "average");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "salary");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "name");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");

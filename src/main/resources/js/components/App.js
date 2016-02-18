@@ -3,13 +3,17 @@ import React from 'react';
 import DisplayActions from '../actions/DisplayActions';
 import SessionStore from '../stores/SessionStore';
 import SessionUtils from '../utils/SessionUtils';
+import UserIdInput from '../components/UserIdInput.js';
 
 class App extends React.Component {
 
   render() {
     return (
       <div>
-        {this.state.displayText}
+        <UserIdInput />
+        <div className="text-center">
+          <h1>{this.state.displayText}</h1>
+        </div>
       </div>
     );
   }

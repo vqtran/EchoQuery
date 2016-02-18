@@ -20,7 +20,7 @@ public class AggregationHandlerTest {
   public static Map<String, Slot> newEmptySlots() {
     Map<String, Slot> slots = new HashMap<>();
     addSlotValue(slots, SlotUtil.TABLE_NAME, null);
-    addSlotValue(slots, SlotUtil.AGGREGATE, null);
+    addSlotValue(slots, SlotUtil.FUNC, null);
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, null);
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, null);
     addSlotValue(slots, SlotUtil.COMPARATOR_1, null);
@@ -57,7 +57,7 @@ public class AggregationHandlerTest {
   public void testCountWithoutWhere() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
     assertResponse(slots, "There are four rows in the sales table.");
   }
 
@@ -65,7 +65,7 @@ public class AggregationHandlerTest {
   public void testAverageWithoutWhere() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "average");
+    addSlotValue(slots, SlotUtil.FUNC, "average");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
     assertResponse(slots, "The average of the count column in the sales table "
         + "is two point two five.");
@@ -75,7 +75,7 @@ public class AggregationHandlerTest {
   public void testSumWithoutWhere() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "total");
+    addSlotValue(slots, SlotUtil.FUNC, "total");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
     assertResponse(slots, "The total of the count column in the sales table "
         + "is nine.");
@@ -85,7 +85,7 @@ public class AggregationHandlerTest {
   public void testMinWithoutWhere() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "minimum");
+    addSlotValue(slots, SlotUtil.FUNC, "minimum");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
     assertResponse(slots, "The minimum value of the count column in the sales "
         + "table is one.");
@@ -95,7 +95,7 @@ public class AggregationHandlerTest {
   public void testMaxWithoutWhere() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "maximum");
+    addSlotValue(slots, SlotUtil.FUNC, "maximum");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
     assertResponse(slots, "The maximum value of the count column in the sales "
         + "table is three.");
@@ -105,7 +105,7 @@ public class AggregationHandlerTest {
   public void testWithEnumeratedWhere() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
@@ -117,7 +117,7 @@ public class AggregationHandlerTest {
   public void testWithNumericalWhere() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "jobs");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "average");
+    addSlotValue(slots, SlotUtil.FUNC, "average");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "salary");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "salary");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is greater than");
@@ -130,7 +130,7 @@ public class AggregationHandlerTest {
   public void testWithTwoWhereClauses() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
@@ -147,7 +147,7 @@ public class AggregationHandlerTest {
   public void testWithThreeWhereClauses() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
@@ -168,7 +168,7 @@ public class AggregationHandlerTest {
   public void testWithThreeWhereClausesWithOrderOfOperations() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "average");
+    addSlotValue(slots, SlotUtil.FUNC, "average");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
@@ -190,7 +190,7 @@ public class AggregationHandlerTest {
   public void testRequiringJoinForAggregationColumn() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "employees");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "average");
+    addSlotValue(slots, SlotUtil.FUNC, "average");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "salary");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "name");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
@@ -204,7 +204,7 @@ public class AggregationHandlerTest {
   public void testRequiringJoinForFirstComparisonColumn() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "employees");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "count");
+    addSlotValue(slots, SlotUtil.FUNC, "count");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "title");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "professor");
@@ -216,7 +216,7 @@ public class AggregationHandlerTest {
   public void testRequiringJoinForSecondComparisonColumn() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "employees");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "count");
+    addSlotValue(slots, SlotUtil.FUNC, "count");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "name");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "vinh");
@@ -233,7 +233,7 @@ public class AggregationHandlerTest {
   public void testRequiringJoinForThirdComparisonColumn() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "employees");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "count");
+    addSlotValue(slots, SlotUtil.FUNC, "count");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "name");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "vinh");
@@ -254,7 +254,7 @@ public class AggregationHandlerTest {
   public void testRequiringJoinForBothAggregateAndComparisonColumns() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "employees");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "average");
+    addSlotValue(slots, SlotUtil.FUNC, "average");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "salary");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "title");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
@@ -267,7 +267,7 @@ public class AggregationHandlerTest {
   public void testCountWithGroupBy() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");
     assertResponse(slots, "There is one row in the sales table for the store "
         + "pawtucket, two rows for providence, and one row for warwick.");
@@ -277,7 +277,7 @@ public class AggregationHandlerTest {
   public void testAverageWithGroupBy() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "average");
+    addSlotValue(slots, SlotUtil.FUNC, "average");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
     assertResponse(slots, "The average of the count column in the sales table "
@@ -288,7 +288,7 @@ public class AggregationHandlerTest {
   public void testSumWithGroupBy() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "total");
+    addSlotValue(slots, SlotUtil.FUNC, "total");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
     assertResponse(slots, "The total of the count column in the sales table is "
@@ -299,7 +299,7 @@ public class AggregationHandlerTest {
   public void testGroupByWithWhereClause() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "total");
+    addSlotValue(slots, SlotUtil.FUNC, "total");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "store");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
@@ -314,7 +314,7 @@ public class AggregationHandlerTest {
   public void testGroupByWithWhereClauseOnSameColumn() {
     Map<String, Slot> slots = newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "total");
+    addSlotValue(slots, SlotUtil.FUNC, "total");
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, "count");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "store");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");

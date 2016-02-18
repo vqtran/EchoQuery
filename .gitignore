@@ -16,3 +16,5 @@ airportdata/
 
 *.swp
 *.swo
+
+public/assets/bundle.js

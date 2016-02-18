@@ -50,15 +50,15 @@ public class AggregationHandler implements IntentHandler {
           SessionUtil.REQUEST_ATTRIBUTE, Serializer.serialize(request));
     } catch (IOException e) {
       e.printStackTrace();
-      return Response.unexpectedError();
+      return Response.unexpectedError(session);
     }
 
     // Execute the request and handle results.
     QueryResult result = querier.execute(request);
     if (result.getStatus() == QueryResult.Status.REPAIR_REQUEST) {
-      return Response.ask(result.getMessage(), result.getMessage());
+      return Response.ask(result.getMessage(), result.getMessage(), session);
     } else {
-      return Response.say(result.getMessage());
+      return Response.say(result.getMessage(), session);
     }
   }
 
