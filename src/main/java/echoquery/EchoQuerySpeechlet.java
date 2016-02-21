@@ -13,7 +13,7 @@ import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
-import echoquery.intents.AggregationHandler;
+import echoquery.intents.QueryHandler;
 import echoquery.intents.ClarifyAmbiguousTableHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
@@ -34,18 +34,18 @@ public class EchoQuerySpeechlet implements Speechlet {
 
   private IntentHandler helpHandler;
   private IntentHandler clarifyAmbiguousTableHandler;
-  private AggregationHandler aggregationHandler;
+  private QueryHandler queryHandler;
   private IntentHandler narrowHandler;
 
   public EchoQuerySpeechlet() {
     super();
     helpHandler = new HelpHandler();
-    aggregationHandler =
-        new AggregationHandler(SingletonConnections.getDataInstance());
+    queryHandler =
+        new QueryHandler(SingletonConnections.getDataInstance());
     narrowHandler = new NarrowHandler(
-        SingletonConnections.getDataInstance(), aggregationHandler);
+        SingletonConnections.getDataInstance(), queryHandler);
     clarifyAmbiguousTableHandler = new ClarifyAmbiguousTableHandler(
-        SingletonConnections.getDataInstance(), aggregationHandler);
+        SingletonConnections.getDataInstance(), queryHandler);
   }
 
   @Override
@@ -78,8 +78,8 @@ public class EchoQuerySpeechlet implements Speechlet {
 
     // Route the intent to the proper handlers.
     switch(intentName) {
-      case "AggregationIntent":
-        return aggregationHandler.respond(intent, session);
+      case "QueryIntent":
+        return queryHandler.respond(intent, session);
       case "NarrowIntent":
         return narrowHandler.respond(intent, session);
       case "ClarifyAmbiguousTableIntent":

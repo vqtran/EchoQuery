@@ -25,11 +25,11 @@ import echoquery.utils.SlotUtil;
  */
 public class ClarifyAmbiguousTableHandler implements IntentHandler {
 
-  private final AggregationHandler aggregationHandler;
+  private final QueryHandler aggregationHandler;
   private final SchemaInferrer inferrer;
 
   public ClarifyAmbiguousTableHandler(
-      Connection conn, AggregationHandler aggregationHandler) {
+      Connection conn, QueryHandler aggregationHandler) {
     this.aggregationHandler = aggregationHandler;
     this.inferrer = new SchemaInferrer(conn);
   }

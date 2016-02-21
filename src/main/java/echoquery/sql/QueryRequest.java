@@ -133,9 +133,7 @@ public class QueryRequest implements Serializable {
     // Sets selectAll by default.
     if (!f.isPresent()) {
       selectAll = Optional.of(SlotUtil.getFunction("get"));
-    }
-
-    if (f.equals("GET")) {
+    } else if (f.get().equals("GET")) {
       selectAll = f;
     } else {
       aggregationFunc = f;

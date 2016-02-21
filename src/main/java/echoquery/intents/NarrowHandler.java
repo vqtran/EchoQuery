@@ -25,9 +25,9 @@ public class NarrowHandler implements IntentHandler {
   private static final Logger log =
       LoggerFactory.getLogger(NarrowHandler.class);
   private final Querier querier;
-  private final AggregationHandler aggregationHandler;
+  private final QueryHandler aggregationHandler;
 
-  public NarrowHandler(Connection conn, AggregationHandler aggregationHandler) {
+  public NarrowHandler(Connection conn, QueryHandler aggregationHandler) {
     this.querier = new Querier(conn);
     this.aggregationHandler = aggregationHandler;
   }
@@ -44,7 +44,7 @@ public class NarrowHandler implements IntentHandler {
       return Response.unexpectedError(session);
     }
   }
-    
+
   /**
    * Exposed for testing purposes - SpeechletResponse is impossible to inspect.
    */
@@ -53,14 +53,16 @@ public class NarrowHandler implements IntentHandler {
     try {
       previousRequest = (QueryRequest) Serializer.deserialize(
                 (String) session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE));
-      return querier.execute(updateRequest(intent, previousRequest)).getMessage();
+      return querier.execute(
+          updateRequest(intent, previousRequest)).getMessage();
     } catch (ClassNotFoundException | IOException e) {
       e.printStackTrace();
       return "There was an error generating the response in English";
     }
   }
-  
-  private QueryRequest updateRequest(Intent intent, QueryRequest previousRequest) {
+
+  private QueryRequest updateRequest(
+      Intent intent, QueryRequest previousRequest) {
     return previousRequest
         .addWhereClause(
             previousRequest.getComparisonColumns().size() > 0 ? "and" : null,

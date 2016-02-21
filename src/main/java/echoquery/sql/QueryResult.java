@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.json.JSONObject;
+
 import com.facebook.presto.sql.tree.AstVisitor;
 import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.DefaultTraversalVisitor;
@@ -22,6 +24,7 @@ import com.facebook.presto.sql.tree.StringLiteral;
 import com.google.common.base.Optional;
 
 import echoquery.sql.joins.JoinRecipe;
+import echoquery.utils.ResultSetConverter;
 import echoquery.utils.SlotUtil;
 import echoquery.utils.TranslationUtils;
 
@@ -38,10 +41,18 @@ public class QueryResult {
   }
   private final Status status;
   private final String message;
+  private final JSONObject data;
 
   public QueryResult(Status status, String message) {
     this.status = status;
     this.message = message;
+    this.data = null;
+  }
+
+  public QueryResult(Status status, String message, JSONObject data) {
+    this.status = status;
+    this.message = message;
+    this.data = data;
   }
 
   public Status getStatus() {
@@ -50,6 +61,10 @@ public class QueryResult {
 
   public String getMessage() {
     return message;
+  }
+
+  public JSONObject getData() {
+    return data;
   }
 
   /**
@@ -65,10 +80,17 @@ public class QueryResult {
     // Extract the results from the ResultSet.
     final Optional<Double> singleValue;
     List<Entry<String, Double>> groupByValues = new ArrayList<>();
-
+    JSONObject json;
     try {
-      // If there was a group by, we expect two columns and many rows.
-      if (request.getGroupByColumn().getColumn().isPresent()) {
+      json = ResultSetConverter.convert(result);
+      if (request.getSelectAll().isPresent()) {
+        return new QueryResult(Status.SUCCESS,
+            "There are "
+                + TranslationUtils.convert(
+                    json.getJSONArray(json.keys().next()).length())
+                + " rows in the get request.", json);
+      } else if (request.getGroupByColumn().getColumn().isPresent()) {
+        // If there was a group by, we expect two columns and many rows.
         result.first();
         // Add all of them to the list of entries.
         while (!result.isAfterLast()) {
@@ -87,8 +109,10 @@ public class QueryResult {
       return null;
     }
 
-    return new QueryResult(Status.SUCCESS,
-        translateResults(inferrer, request, singleValue, groupByValues));
+    return new QueryResult(
+        Status.SUCCESS,
+        translateResults(inferrer, request, singleValue, groupByValues),
+        json);
   }
 
   /**

@@ -1,11 +1,11 @@
 package echoquery.utils;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,17 +30,32 @@ public class VisualizationUtil {
     }
   }
 
-  public static String getDisplayText(String userId) {
+  public static void updateResultData(JSONObject data, Session session) {
+    try {
+      makeSureSessionExistsInDB(session.getUser().getUserId());
+      Statement statement = conn.createStatement();
+      statement.executeUpdate("update sessions set result='" +
+          StringEscapeUtils.escapeJava(data.toString()) + "'where id='" +
+          cleanId(session.getUser().getUserId()) + "';");
+    } catch (SQLException e) {
+      log.error(e.getMessage());
+    }
+  }
+
+  public static JSONObject getUserData(String userId) {
     try {
       makeSureSessionExistsInDB(userId);
       Statement statement = conn.createStatement();
-      ResultSet result = statement.executeQuery(
-          "select display from sessions where id='" + cleanId(userId) + "';");
-      result.first();
-      return result.getString(1);
+      return ResultSetConverter.convert(
+          statement.executeQuery(
+              "select display,result from sessions where id='"
+                  + cleanId(userId) + "';"));
     } catch (SQLException e) {
       log.error(e.getMessage());
-      return "There was an error retrieving the display text from the database";
+      JSONObject obj = new JSONObject();
+      obj.put("display",
+          "There was an error retrieving the display text from the database");
+      return obj;
     }
   }
 

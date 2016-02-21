@@ -23,14 +23,19 @@ public final class SingletonConnections {
   static {
     try {
       dataInstance = (Connection) DriverManager.getConnection(
-          URI + dataDB, EchoQueryCredentials.dbUser, EchoQueryCredentials.dbPwd);
+          URI + dataDB,
+          EchoQueryCredentials.dbUser,
+          EchoQueryCredentials.dbPwd);
       stateInstance = (Connection) DriverManager.getConnection(
-          URI + stateDB, EchoQueryCredentials.dbUser, EchoQueryCredentials.dbPwd);
+          URI + stateDB,
+          EchoQueryCredentials.dbUser,
+          EchoQueryCredentials.dbPwd);
     } catch (SQLException e) {
       log.error(e.toString());
       System.exit(1);
     }
-    log.info("EchoQuery successfully connected to " + URI + dataDB + " and " + stateDB + ".");
+    log.info("EchoQuery successfully connected to "
+        + URI + dataDB + " and " + stateDB + ".");
   }
 
   public static Connection getDataInstance() {

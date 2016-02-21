@@ -10,12 +10,12 @@ import org.junit.Test;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 
-import echoquery.intents.AggregationHandler;
+import echoquery.intents.QueryHandler;
 import echoquery.utils.SlotUtil;
 
 public class AggregationHandlerTest {
-  private AggregationHandler handler =
-      new AggregationHandler(TestConnection.getInstance());
+  private QueryHandler handler =
+      new QueryHandler(TestConnection.getInstance());
 
   public static Map<String, Slot> newEmptySlots() {
     Map<String, Slot> slots = new HashMap<>();

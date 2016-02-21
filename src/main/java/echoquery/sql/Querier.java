@@ -9,9 +9,13 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazon.speech.speechlet.Session;
+
 import echoquery.sql.QueryResult.Status;
 import echoquery.sql.formatter.SqlFormatter;
+import echoquery.utils.ResultSetConverter;
 import echoquery.utils.SlotUtil;
+import echoquery.utils.VisualizationUtil;
 
 /**
  * The Querier class takes in an unbuilt QueryRequest object, validates that its
@@ -94,15 +98,16 @@ public class Querier {
           + table + " table. Please try again."));
     }
 
-    String aggregationFunc = request.getAggregationFunc().get();
-
     // Non-get and non-count aggregation functions require a column to
     // aggregate over.
-    if (!aggregationFunc.equals("COUNT")
+    if (!request.getSelectAll().isPresent()
+        && request.getAggregationFunc().isPresent()
+        && !request.getAggregationFunc().get().equals("COUNT")
         && !request.getAggregationColumn().getColumn().isPresent()) {
       return Optional.of(new QueryResult(Status.FAILURE,
           "I'm not sure what column you want me to find the "
-          + SlotUtil.aggregationFunctionToEnglish(aggregationFunc)
+          + SlotUtil.aggregationFunctionToEnglish(
+              request.getAggregationFunc().get())
           + " over from the " + table
           + " table. Please try again."));
     }
@@ -115,7 +120,8 @@ public class Querier {
         return Optional.of(new QueryResult(Status.FAILURE,
             "The " + request.getAggregationColumn().getColumn().get()
             + " column that you've asked me to find the "
-            + SlotUtil.aggregationFunctionToEnglish(aggregationFunc)
+            + SlotUtil.aggregationFunctionToEnglish(
+                request.getAggregationFunc().get())
             + " of doesn't seem to exist in the database. Please try another"
             + " column name."));
       }

@@ -1,7 +1,7 @@
 {
   "intents": [
     {
-      "intent": "AggregationIntent",
+      "intent": "QueryIntent",
       "slots": [
         {
           "name": "CommandPhrase",

@@ -11,7 +11,7 @@ import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.Session;
 
 import static org.junit.Assert.assertEquals;
-import echoquery.intents.AggregationHandler;
+import echoquery.intents.QueryHandler;
 import echoquery.intents.NarrowHandler;
 import echoquery.sql.QueryRequest;
 import echoquery.utils.Serializer;
@@ -21,7 +21,7 @@ import echoquery.utils.SlotUtil;
 public class NarrowHandlerTest {
   private NarrowHandler handler = new NarrowHandler(
       TestConnection.getInstance(),
-      new AggregationHandler(TestConnection.getInstance()));
+      new QueryHandler(TestConnection.getInstance()));
 
   private Map<String, Slot> newNarrowEmptySlots() {
     Map<String, Slot> slots = new HashMap<>();

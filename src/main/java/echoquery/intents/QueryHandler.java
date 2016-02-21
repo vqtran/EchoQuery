@@ -16,19 +16,20 @@ import echoquery.sql.QueryResult;
 import echoquery.utils.Response;
 import echoquery.utils.Serializer;
 import echoquery.utils.SessionUtil;
+import echoquery.utils.VisualizationUtil;
 
 /**
  * Where all aggregation query requests should be funneled into, regardless
  * from end-user or another intent.
  */
-public class AggregationHandler implements IntentHandler {
+public class QueryHandler implements IntentHandler {
 
   private static final Logger log =
-      LoggerFactory.getLogger(AggregationHandler.class);
+      LoggerFactory.getLogger(QueryHandler.class);
 
   private final Querier querier;
 
-  public AggregationHandler(Connection conn) {
+  public QueryHandler(Connection conn) {
     this.querier = new Querier(conn);
   }
 
@@ -55,6 +56,12 @@ public class AggregationHandler implements IntentHandler {
 
     // Execute the request and handle results.
     QueryResult result = querier.execute(request);
+
+    VisualizationUtil.updateDisplayText(result.getMessage(), session);
+    if (result.getStatus() == QueryResult.Status.SUCCESS) {
+      VisualizationUtil.updateResultData(result.getData(), session);
+    }
+
     if (result.getStatus() == QueryResult.Status.REPAIR_REQUEST) {
       return Response.ask(result.getMessage(), result.getMessage(), session);
     } else {
