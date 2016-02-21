@@ -19,11 +19,11 @@ With this project, we make the case for querying database systems using a voice-
 
 The main features of the voice-based interface of EchoQuery are:
 
-_Hands-free Access:_ EchoQuery does not require the user to press a button or start an application using a gesture or a mouse-click. Instead, users can interact with the database by solely using their voice at any time.
+   __Hands-free Access:__ EchoQuery does not require the user to press a button or start an application using a gesture or a mouse-click. Instead, users can interact with the database by solely using their voice at any time.
 
-_Dialogue-based Querying:_ While traditional database systems provide a one-shot (i.e., stateless) query interface, natural language conversations are incremental (i.e., stateful) in nature. To that end, EchoQuery provides a stateful dialogue-based query interface between the user and the database where (1) users can start a conversation with an initial query and refine that query incrementally over time, and (2) EchoQuery can seek for clarification if the query is incomplete or has some ambiguities that need to be resolved.
+   __Dialogue-based Querying:__ While traditional database systems provide a one-shot (i.e., stateless) query interface, natural language conversations are incremental (i.e., stateful) in nature. To that end, EchoQuery provides a stateful dialogue-based query interface between the user and the database where (1) users can start a conversation with an initial query and refine that query incrementally over time, and (2) EchoQuery can seek for clarification if the query is incomplete or has some ambiguities that need to be resolved.
 
-_Personalizable Vocabulary:_ Domain experts often use their own terms to formulate queries, which might be different from the schema elements (i.e., table and column names) of a database. Learning the terminology of a user and its translation to the underlying schema is similar to the problem of constructing a schema mapping in data integration.EchoQuery constructs these mappings incrementally on a per-user basis by issuing clarification questions using its dialogue-based query interface.
+   __Personalizable Vocabulary:__ Domain experts often use their own terms to formulate queries, which might be different from the schema elements (i.e., table and column names) of a database. Learning the terminology of a user and its translation to the underlying schema is similar to the problem of constructing a schema mapping in data integration.EchoQuery constructs these mappings incrementally on a per-user basis by issuing clarification questions using its dialogue-based query interface.
 
 For more information see our [SIGMOD 2016 demonstration proposal](https://raw.github.com/vqtran/EchoQuery/master/public/resources/EchoQuery - SIGMOD 2016 Demo Proposal.pdf).
 
