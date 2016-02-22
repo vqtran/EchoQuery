@@ -19,6 +19,7 @@ import com.facebook.presto.sql.tree.LongLiteral;
 import com.facebook.presto.sql.tree.QualifiedName;
 import com.facebook.presto.sql.tree.QualifiedNameReference;
 import com.facebook.presto.sql.tree.Query;
+import com.facebook.presto.sql.tree.Select;
 import com.facebook.presto.sql.tree.SelectItem;
 import com.facebook.presto.sql.tree.SimpleGroupBy;
 import com.facebook.presto.sql.tree.SingleColumn;
@@ -218,17 +219,29 @@ public class QueryRequest implements Serializable {
       throw new QueryBuildException(QueryResult.of(this, from));
     }
 
-    SelectItem select;
+    Select select;
     if (selectAll.isPresent()) {
-      select = new AllColumns();
-    } else if (aggregationColumn.getColumn().isPresent()) {
-      select = new SingleColumn(QueryUtil.functionCall(
-          aggregationFunc.get(),
-          new QualifiedNameReference(QualifiedName.of(
-              ctx.getAggregationPrefix().get(),
-              aggregationColumn.getColumn().get()))));
+      select = QueryUtil.selectList(new AllColumns());
     } else {
-      select = new SingleColumn(QueryUtil.functionCall(aggregationFunc.get()));
+      SelectItem aggr;
+      if (aggregationColumn.getColumn().isPresent()) {
+        aggr = new SingleColumn(QueryUtil.functionCall(
+            aggregationFunc.get(),
+            new QualifiedNameReference(QualifiedName.of(
+                ctx.getAggregationPrefix().get(),
+                aggregationColumn.getColumn().get()))));
+      } else {
+        aggr = new SingleColumn(QueryUtil.functionCall(aggregationFunc.get()));
+      }
+
+      if (groupByColumn.getColumn().isPresent()) {
+        QualifiedNameReference groupByName =
+            new QualifiedNameReference(QualifiedName.of(
+                ctx.getGroupByPrefix().get(), groupByColumn.getColumn().get()));
+        select = QueryUtil.selectList(new SingleColumn(groupByName), aggr);
+      } else {
+        select = QueryUtil.selectList(aggr);
+      }
     }
 
     List<Expression> whereClauses = new ArrayList<>();
@@ -252,9 +265,7 @@ public class QueryRequest implements Serializable {
     }
 
     query = QueryUtil.simpleQuery(
-        (groupByColumn.getColumn().isPresent())
-            ? QueryUtil.selectList(new SingleColumn(groupByName), select)
-            : QueryUtil.selectList(select),
+        select,
         from.render(),
         java.util.Optional.ofNullable(logicallyCombineWhereClauses(
             whereClauses, comparisonBinaryOperators, 0)),

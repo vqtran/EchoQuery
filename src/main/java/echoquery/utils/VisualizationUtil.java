@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.amazon.speech.speechlet.Session;
 
+import echoquery.sql.ResultTable;
 import echoquery.sql.SingletonConnections;
 
 public class VisualizationUtil {
@@ -46,10 +47,10 @@ public class VisualizationUtil {
     try {
       makeSureSessionExistsInDB(userId);
       Statement statement = conn.createStatement();
-      return ResultSetConverter.convert(
+      return new ResultTable(
           statement.executeQuery(
               "select display,result from sessions where id='"
-                  + cleanId(userId) + "';"));
+                  + cleanId(userId) + "';")).json();
     } catch (SQLException e) {
       log.error(e.getMessage());
       JSONObject obj = new JSONObject();

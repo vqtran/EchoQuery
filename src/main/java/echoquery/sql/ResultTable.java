@@ -1,4 +1,4 @@
-package echoquery.utils;
+package echoquery.sql;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -9,28 +9,55 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Converts a JDBC ResultSet into a columnar format in JSON.
+ * Frontend friendly representation of the resulting table from the user's SQL
+ * query. Implemented as a utility wrapper around a columnar translation of
+ * the ResultSet into a JSONObject.
  */
 
-public final class ResultSetConverter {
+public class ResultTable {
+  private ResultSetMetaData rsmd;
+  private JSONObject data;
 
-  private ResultSetConverter() {}
+  public ResultTable(ResultSet rs) throws SQLException, JSONException {
+    this.rsmd = rs.getMetaData();
+    this.data = convert(rs);
+  }
 
-  public static JSONObject convert(ResultSet rs)
-      throws SQLException, JSONException {
-    ResultSetMetaData rsmd = rs.getMetaData();
+  public JSONObject json() {
+    return data;
+  }
+
+  public int numRows() {
+    if (data.keySet().isEmpty()) {
+      return 0;
+    }
+    return data.getJSONArray(data.keys().next()).length();
+  }
+
+  public int numCols() {
+    return data.keySet().size();
+  }
+
+  public double getDouble(String column, int row) {
+    return data.getJSONArray(column).getDouble(row);
+  }
+
+  public String getString(String column, int row) {
+    return data.getJSONArray(column).getString(row);
+  }
+
+  private JSONObject convert(ResultSet rs) throws SQLException, JSONException {
     int numColumns = rsmd.getColumnCount();
 
     JSONObject json = new JSONObject();
     for (int i = 1; i <= numColumns; i++) {
-      String columnName = rsmd.getTableName(i) + "." + rsmd.getColumnName(i);
-      json.put(columnName, Collections.emptyList());
+      json.put(getColumnWithTable(i, rsmd), Collections.emptyList());
     }
 
     rs.beforeFirst();
     while(rs.next()) {
       for (int i = 1; i <= numColumns; i++) {
-        String columnName = rsmd.getTableName(i) + "." + rsmd.getColumnName(i);
+        String columnName = getColumnWithTable(i, rsmd);
         switch (rsmd.getColumnType(i)) {
           case java.sql.Types.ARRAY:
             json.getJSONArray(columnName).put(rs.getArray(columnName));
@@ -77,5 +104,12 @@ public final class ResultSetConverter {
       }
     }
     return json;
+  }
+
+  private String getColumnWithTable(int i, ResultSetMetaData rsmd)
+      throws SQLException {
+    return (rsmd.getTableName(i).isEmpty()) ?
+        rsmd.getColumnName(i)
+        : String.join(".", rsmd.getTableName(i), rsmd.getColumnName(i));
   }
 }

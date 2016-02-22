@@ -9,13 +9,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazon.speech.speechlet.Session;
-
 import echoquery.sql.QueryResult.Status;
 import echoquery.sql.formatter.SqlFormatter;
-import echoquery.utils.ResultSetConverter;
 import echoquery.utils.SlotUtil;
-import echoquery.utils.VisualizationUtil;
 
 /**
  * The Querier class takes in an unbuilt QueryRequest object, validates that its

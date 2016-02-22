@@ -2,10 +2,7 @@ package echoquery.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.json.JSONObject;
@@ -13,18 +10,20 @@ import org.json.JSONObject;
 import com.facebook.presto.sql.tree.AstVisitor;
 import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.DefaultTraversalVisitor;
+import com.facebook.presto.sql.tree.Expression;
 import com.facebook.presto.sql.tree.FunctionCall;
 import com.facebook.presto.sql.tree.GroupingElement;
 import com.facebook.presto.sql.tree.LogicalBinaryExpression;
 import com.facebook.presto.sql.tree.LongLiteral;
 import com.facebook.presto.sql.tree.QualifiedNameReference;
 import com.facebook.presto.sql.tree.QuerySpecification;
+import com.facebook.presto.sql.tree.SimpleGroupBy;
 import com.facebook.presto.sql.tree.SortItem;
 import com.facebook.presto.sql.tree.StringLiteral;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
 
 import echoquery.sql.joins.JoinRecipe;
-import echoquery.utils.ResultSetConverter;
 import echoquery.utils.SlotUtil;
 import echoquery.utils.TranslationUtils;
 
@@ -76,43 +75,17 @@ public class QueryResult {
    *    is in end-user natural language.
    */
   public static QueryResult of(
-      SchemaInferrer inferrer, QueryRequest request, ResultSet result) {
-    // Extract the results from the ResultSet.
-    final Optional<Double> singleValue;
-    List<Entry<String, Double>> groupByValues = new ArrayList<>();
-    JSONObject json;
+      SchemaInferrer inferrer, QueryRequest request, ResultSet rs) {
+    ResultTable result;
     try {
-      json = ResultSetConverter.convert(result);
-      if (request.getSelectAll().isPresent()) {
-        return new QueryResult(Status.SUCCESS,
-            "There are "
-                + TranslationUtils.convert(
-                    json.getJSONArray(json.keys().next()).length())
-                + " rows in the get request.", json);
-      } else if (request.getGroupByColumn().getColumn().isPresent()) {
-        // If there was a group by, we expect two columns and many rows.
-        result.first();
-        // Add all of them to the list of entries.
-        while (!result.isAfterLast()) {
-          groupByValues.add(new AbstractMap.SimpleEntry<>(
-              result.getString(1), result.getDouble(2)));
-          result.next();
-        }
-        singleValue = Optional.absent();
-      } else {
-        // Otherwise just populate the single value.
-        result.first();
-        singleValue = Optional.fromNullable(result.getDouble(1));
-      }
+      result = new ResultTable(rs);
     } catch (SQLException e) {
       e.printStackTrace();
       return null;
     }
-
     return new QueryResult(
-        Status.SUCCESS,
-        translateResults(inferrer, request, singleValue, groupByValues),
-        json);
+        Status.SUCCESS, translateResults(inferrer, request, result),
+        result.json());
   }
 
   /**
@@ -124,10 +97,38 @@ public class QueryResult {
    * @return A natural language string conveying the results.
    */
   public static String translateResults(
-      SchemaInferrer inferrer,
-      QueryRequest request,
-      Optional<Double> singleValue,
-      List<Entry<String, Double>> groupByValues) {
+      SchemaInferrer inferrer, QueryRequest request, ResultTable result) {
+    /**
+     * First compute the column names that we'll use to look up things in
+     * the result table in the table_name.column_name format that ResultTable
+     * uses.
+     */
+    String groupByTable = "";
+    String groupByCol = "";
+    String groupColName = "";
+    String aggregateColName;
+
+    if (request.getAggregationFunc().isPresent()) {
+      if (request.getAggregationFunc().get().equals("COUNT")) {
+        aggregateColName = "count(*)";
+      } else {
+        aggregateColName = request.getAggregationFunc().get().toLowerCase()
+            + "("
+            + String.join(".",
+                request.getContext().getAggregationPrefix().get(),
+                request.getAggregationColumn().getColumn().get())
+            + ")";
+      }
+    } else {
+      aggregateColName = "";
+    }
+
+    if (request.getGroupByColumn().getColumn().isPresent()) {
+      groupByTable = request.getContext().getGroupByPrefix().get();
+      groupByCol = request.getGroupByColumn().getColumn().get();
+      groupColName = String.join(".", groupByTable, groupByCol);
+    }
+
     /**
      * Visit each node in the tree and convert it to natural language. Results
      * in a sentence form of the query.
@@ -145,8 +146,22 @@ public class QueryResult {
       @Override
       protected Void visitQuerySpecification(
           QuerySpecification node, Boolean capture) {
-        // By default do not capture any qualified names in select clauses.
-        process(node.getSelect(), false);
+        // If its SELECT * then we give a special message.
+        if (request.getSelectAll().isPresent()) {
+          if (result.numRows() == 0) {
+            translation.append("There are zero rows ");
+          } else if (result.numRows() == 1) {
+            translation.append("Here's the one row ");
+          } else {
+            translation.append("Here are all ")
+                .append(TranslationUtils.convert(result.numRows()))
+                .append(" rows ");
+          }
+        } else {
+          // Otherwise we use the one corresponding to the aggregation.
+          // By default do not capture any qualified names in select clauses.
+          process(node.getSelect(), false);
+        }
 
         if (node.getFrom().isPresent()) {
           // Use what the user referenced, ignoring any complicated join
@@ -155,16 +170,26 @@ public class QueryResult {
               .append(request.getFromTable().get())
               .append(" table");
         }
+
         if (node.getWhere().isPresent()) {
             translation.append(" where ");
             process(node.getWhere().get(), true);
         }
+
         for (GroupingElement groupingElement : node.getGroupBy()) {
-            process(groupingElement, true);
+            if (request.getSelectAll().isPresent() &&
+                groupingElement instanceof SimpleGroupBy) {
+              translation.append(" grouped by ");
+              ImmutableSet.copyOf(
+                  ((SimpleGroupBy) groupingElement).getColumnExpressions())
+                      .forEach((c) -> process(c, true));
+            }
         }
+
         if (node.getHaving().isPresent()) {
             process(node.getHaving().get(), true);
         }
+
         for (SortItem sortItem : node.getOrderBy()) {
             process(sortItem, true);
         }
@@ -175,12 +200,7 @@ public class QueryResult {
       public Void visitFunctionCall(FunctionCall node, Boolean capture) {
         String aggregation = request.getAggregationFunc().get();
         if (aggregation.equals("COUNT")) {
-          double value;
-          if (singleValue.isPresent()) {
-            value = singleValue.get();
-          } else {
-            value = groupByValues.get(0).getValue();
-          }
+          double value = result.getDouble(aggregateColName, 0);
           if (value == 1) {
             translation.append("There is ")
               .append(TranslationUtils.convert(value))
@@ -267,69 +287,76 @@ public class QueryResult {
     translator.process(request.getQuery(), true);
 
     /**
-     * At this point the body of the query has been translated, but we need to
-     * append one or more results to the end now.
+     * At this point the body of the query has been translated, but if there was
+     * aggregation with a group by, we need to append one or more results to the
+     * end now.
      */
+    if (request.getAggregationFunc().isPresent()) {
+      // If it's count and it only had a single value, we're all set.
+      if (request.getAggregationFunc().get().equals("COUNT")) {
+        // Otherwise if its count and a group by, we then have to say the group
+        // of the first result we already stated, as well as add on the rest of
+        // the results by group.
+        if (result.numRows() > 1) {
+          translation.append(" for the ");
+          if (isAmbiguousWithoutTable(groupByCol, inferrer)) {
+            translation.append(groupByTable).append(" ");
+          }
+          translation
+              .append(groupByCol).append(" ")
+              .append(result.getString(groupColName, 0));
 
-    // If it's count and it only had a single value, we're all set.
-    if (request.getAggregationFunc().get().equals("COUNT")) {
-      // Otherwise if its count and a group by, we then have to say the group of
-      // the first result we already stated, as well as add on the rest of the
-      // results by group.
-      if (!singleValue.isPresent()) {
-        translation.append(" for the ");
-        if (isAmbiguousWithoutTable(
-            request.getGroupByColumn().getColumn().get(), inferrer)) {
-          translation.append(request.getContext().getGroupByPrefix().get())
-              .append(" ");
-        }
-        translation.append(request.getGroupByColumn().getColumn().get())
-            .append(" ")
-            .append(groupByValues.get(0).getKey());
-        for (int i = 1; i < groupByValues.size(); i++) {
-          translation.append(", ");
-          if (i == groupByValues.size() - 1) {
-            translation.append("and ");
+          for (int i = 1; i < result.numRows(); i++) {
+            translation.append(", ");
+            if (i == result.numRows() - 1) {
+              translation.append("and ");
+            }
+            translation
+                .append(TranslationUtils.convert(
+                    result.getDouble(aggregateColName, i)))
+                .append((result.getDouble(aggregateColName, i) == 1)
+                    ? " row for " : " rows for ")
+                .append(result.getString(groupColName, i));
           }
-          translation
-              .append(TranslationUtils.convert(groupByValues.get(i).getValue()))
-              .append((groupByValues.get(i).getValue() == 1)
-                  ? " row for " : " rows for ")
-              .append(groupByValues.get(i).getKey());
         }
-      }
-    } else {
-      // For all other aggregations, if there's only a single value we simply
-      // tack it on.
-      if (singleValue.isPresent()) {
-        translation.append(" is ")
-            .append(TranslationUtils.convert(singleValue.get()));
-      }
-      // Otherwise we have to tack on all of the remaining values.
-      for (int i = 0; i < groupByValues.size(); i++) {
-        if (i == 0) {
+      } else {
+        // For all other aggregations, if there's only a single value we simply
+        // tack it on.
+        if (result.numRows() == 1) {
           translation.append(" is ")
-              .append(TranslationUtils.convert(groupByValues.get(i).getValue()))
-              .append(" for the ");
-          // Include what table group by belonged to only if ambiguous
-          // otherwise.
-          if (isAmbiguousWithoutTable(
-              request.getGroupByColumn().getColumn().get(), inferrer)) {
-            translation.append(request.getContext().getGroupByPrefix().get())
-                .append(" ");
-          }
-          translation.append(request.getGroupByColumn().getColumn().get())
-              .append(" ")
-              .append(groupByValues.get(i).getKey());
+              .append(TranslationUtils.convert(
+                  result.getDouble(aggregateColName, 0)));
         } else {
-          translation.append(", ");
-          if (i == groupByValues.size() - 1) {
-            translation.append("and ");
+          // Otherwise we have to tack on all of the remaining values.
+          for (int i = 0; i < result.numRows(); i++) {
+            if (i == 0) {
+              translation.append(" is ")
+                  .append(TranslationUtils.convert(
+                      result.getDouble(aggregateColName, i)))
+                  .append(" for the ");
+              // Include what table group by belonged to only if ambiguous
+              // otherwise.
+              if (isAmbiguousWithoutTable(
+                  request.getGroupByColumn().getColumn().get(), inferrer)) {
+                translation
+                    .append(request.getContext().getGroupByPrefix().get())
+                    .append(" ");
+              }
+              translation.append(request.getGroupByColumn().getColumn().get())
+                  .append(" ")
+                  .append(result.getString(groupColName, i));
+            } else {
+              translation.append(", ");
+              if (i == result.numRows() - 1) {
+                translation.append("and ");
+              }
+              translation
+                  .append(TranslationUtils.convert(
+                      result.getDouble(aggregateColName, i)))
+                  .append(" for ")
+                  .append(result.getString(groupColName, i));
+            }
           }
-          translation
-              .append(TranslationUtils.convert(groupByValues.get(i).getValue()))
-              .append(" for ")
-              .append(groupByValues.get(i).getKey());
         }
       }
     }

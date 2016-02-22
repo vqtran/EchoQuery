@@ -42,7 +42,7 @@ public class NarrowHandlerTest {
 
   private Session newSimpleSession() {
     Session session = Session.builder().withSessionId("1").build();
-    Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
+    Map<String, Slot> slots = QueryHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
     addSlotValue(slots, SlotUtil.FUNC, "how many");
     QueryRequest request = QueryRequest.of(Intent.builder()
@@ -59,7 +59,7 @@ public class NarrowHandlerTest {
 
   private Session newWhereSession() {
     Session session = Session.builder().withSessionId("1").build();
-    Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
+    Map<String, Slot> slots = QueryHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
     addSlotValue(slots, SlotUtil.FUNC, "how many");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "store");
@@ -79,7 +79,7 @@ public class NarrowHandlerTest {
 
   private Session newGroupedBySession() {
     Session session = Session.builder().withSessionId("1").build();
-    Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
+    Map<String, Slot> slots = QueryHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
     addSlotValue(slots, SlotUtil.FUNC, "how many");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");

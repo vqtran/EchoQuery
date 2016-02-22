@@ -13,7 +13,7 @@ import com.amazon.speech.slu.Slot;
 import echoquery.intents.QueryHandler;
 import echoquery.utils.SlotUtil;
 
-public class AggregationHandlerTest {
+public class QueryHandlerTest {
   private QueryHandler handler =
       new QueryHandler(TestConnection.getInstance());
 
@@ -321,7 +321,59 @@ public class AggregationHandlerTest {
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "providence");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");
     assertResponse(slots, "The total of the count column in the sales table "
-        + "where store is equal to providence is five for the store "
-        + "providence.");
+        + "where store is equal to providence is five.");
+  }
+
+  @Test
+  public void testGetWithZero() {
+    Map<String, Slot> slots = newEmptySlots();
+    addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
+    addSlotValue(slots, SlotUtil.FUNC, "get");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_2, "store");
+    addSlotValue(slots, SlotUtil.BINARY_LOGIC_OP_1, "and");
+    addSlotValue(slots, SlotUtil.COMPARATOR_2, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_2, "pawtucket");
+    assertResponse(slots, "There are zero rows in the sales table where "
+        + "product is equal to speakers and store is equal to pawtucket.");
+  }
+
+  @Test
+  public void testGetWithOne() {
+    Map<String, Slot> slots = newEmptySlots();
+    addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
+    addSlotValue(slots, SlotUtil.FUNC, "get");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_2, "store");
+    addSlotValue(slots, SlotUtil.BINARY_LOGIC_OP_1, "and");
+    addSlotValue(slots, SlotUtil.COMPARATOR_2, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_2, "providence");
+    assertResponse(slots, "Here's the one row in the sales table where "
+        + "product is equal to speakers and store is equal to providence.");
+  }
+
+  @Test
+  public void testGetWithGreaterThanOne() {
+    Map<String, Slot> slots = newEmptySlots();
+    addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
+    addSlotValue(slots, SlotUtil.FUNC, "get");
+    assertResponse(slots, "Here are all four rows in the sales table.");
+  }
+
+  @Test
+  public void testGetWithGroupBy() {
+    Map<String, Slot> slots = newEmptySlots();
+    addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
+    addSlotValue(slots, SlotUtil.FUNC, "get");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");
+    assertResponse(slots, "Here are all two rows in the sales table where "
+        + "product is equal to speakers grouped by store.");
   }
 }
