@@ -2,6 +2,7 @@ package echoquery.frontend;
 
 import java.util.HashMap;
 
+import echoquery.utils.VisualizationUtil;
 import spark.ModelAndView;
 import spark.Spark;
 import spark.template.jade.JadeTemplateEngine;
@@ -18,9 +19,9 @@ public class Main {
     Spark.get("/", (request, response) ->
         new ModelAndView(new HashMap<>(), "index.jade"),
         new JadeTemplateEngine());
-    
-    Spark.get("/fetch/:id", (request, response) -> 
-        new FetchHandler(request, response).respond());
+
+    Spark.get("/fetch/:id", (request, response) ->
+        VisualizationUtil.getUserData(request.params(":id")).toString());
 
     Spark.get("/fetch/", (request, response) -> "Enter a valid User ID");
   }

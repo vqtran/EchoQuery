@@ -11,7 +11,7 @@ import com.amazon.speech.slu.Slot;
 import com.amazon.speech.speechlet.Session;
 
 import static org.junit.Assert.assertEquals;
-import echoquery.intents.AggregationHandler;
+import echoquery.intents.QueryHandler;
 import echoquery.intents.NarrowHandler;
 import echoquery.sql.QueryRequest;
 import echoquery.utils.Serializer;
@@ -19,8 +19,9 @@ import echoquery.utils.SessionUtil;
 import echoquery.utils.SlotUtil;
 
 public class NarrowHandlerTest {
-  private NarrowHandler handler =
-      new NarrowHandler(TestConnection.getInstance(), new AggregationHandler(TestConnection.getInstance()));
+  private NarrowHandler handler = new NarrowHandler(
+      TestConnection.getInstance(),
+      new QueryHandler(TestConnection.getInstance()));
 
   private Map<String, Slot> newNarrowEmptySlots() {
     Map<String, Slot> slots = new HashMap<>();
@@ -38,13 +39,13 @@ public class NarrowHandlerTest {
     slots.put(slotName,
         Slot.builder().withName(slotName).withValue(slotValue).build());
   }
-  
+
   private Session newSimpleSession() {
     Session session = Session.builder().withSessionId("1").build();
-    Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
+    Map<String, Slot> slots = QueryHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
-    QueryRequest request = QueryRequest.of(Intent.builder() 
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
+    QueryRequest request = QueryRequest.of(Intent.builder()
         .withName("AggregationIntent").withSlots(slots).build());
 
     try {
@@ -58,9 +59,9 @@ public class NarrowHandlerTest {
 
   private Session newWhereSession() {
     Session session = Session.builder().withSessionId("1").build();
-    Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
+    Map<String, Slot> slots = QueryHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "store");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "Warwick");
@@ -78,11 +79,11 @@ public class NarrowHandlerTest {
 
   private Session newGroupedBySession() {
     Session session = Session.builder().withSessionId("1").build();
-    Map<String, Slot> slots = AggregationHandlerTest.newEmptySlots();
+    Map<String, Slot> slots = QueryHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
-    addSlotValue(slots, SlotUtil.AGGREGATE, "how many");
+    addSlotValue(slots, SlotUtil.FUNC, "how many");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");
-    QueryRequest request = QueryRequest.of(Intent.builder() 
+    QueryRequest request = QueryRequest.of(Intent.builder()
         .withName("AggregationIntent").withSlots(slots).build());
 
     try {
@@ -94,7 +95,8 @@ public class NarrowHandlerTest {
     return session;
   }
 
-  private void assertResponse(Map<String, Slot> slots, Session session, String expected) {
+  private void assertResponse(
+      Map<String, Slot> slots, Session session, String expected) {
     assertEquals(expected,
         handler.getResponseInEnglish(Intent.builder()
             .withName("AggregationIntent").withSlots(slots).build(), session));
@@ -103,7 +105,7 @@ public class NarrowHandlerTest {
   @Test
   public void testWhere() {
     Session session = this.newSimpleSession();
-    
+
     Map<String, Slot> slots = newNarrowEmptySlots();
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
@@ -115,17 +117,17 @@ public class NarrowHandlerTest {
   @Test
   public void testGroupBy() {
     Session session = this.newSimpleSession();
-    
+
     Map<String, Slot> slots = newNarrowEmptySlots();
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
     assertResponse(slots, session, "There is one row in the sales table for "
         + "the product camera, two rows for speakers, and one row for tv.");
   }
-  
+
   @Test
   public void testOverwriteGroupBy() {
     Session session = this.newGroupedBySession();
-    
+
     Map<String, Slot> slots = newNarrowEmptySlots();
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
     assertResponse(slots, session, "There is one row in the sales table for "

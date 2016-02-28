@@ -15,7 +15,7 @@ import echoquery.sql.model.ColumnType;
 public final class SlotUtil {
   public final static String TABLE_NAME = "TableName";
 
-  public final static String AGGREGATE = "Aggregate";
+  public final static String FUNC = "Func";
   public final static String AGGREGATION_COLUMN = "AggregationColumn";
 
   public final static String COMPARISON_COLUMN_1 = "ComparisonColumnOne";
@@ -41,6 +41,7 @@ public final class SlotUtil {
 
   public final static String TABLE_AND_COLUMN = "TableAndColumnName";
 
+  private static Set<String> getExpr = new HashSet<>();
   private static Set<String> countExpr = new HashSet<>();
   private static Set<String> averageExpr = new HashSet<>();
   private static Set<String> sumExpr = new HashSet<>();
@@ -55,6 +56,22 @@ public final class SlotUtil {
   private static Set<String> lessEqualExpr = new HashSet<>();
 
   static {
+    getExpr.addAll(Arrays.asList(new String[] {
+        "get",
+        "get all",
+        "find",
+        "find all",
+        "query",
+        "query for",
+        "show",
+        "show all",
+        "visualize",
+        "visualize all",
+        "list",
+        "list all",
+        "select",
+        "select all"
+    }));
     countExpr.addAll(Arrays.asList(new String[] {
         "count",
         "number",
@@ -163,7 +180,10 @@ public final class SlotUtil {
     }));
   }
 
-  public static String getAggregateFunction(String expression) {
+  public static String getFunction(String expression) {
+    if (getExpr.contains(expression)) {
+      return "GET";
+    }
     if (countExpr.contains(expression)) {
       return "COUNT";
     }
@@ -252,7 +272,7 @@ public final class SlotUtil {
   }
 
   public static ColumnName parseColumnSlot(@Nullable String columnName) {
-    // Here, there be dataset specific hacks!
+    // WARNING: Here, there be dataset specific hacks!
     if (columnName == null) {
       return new ColumnName();
     }

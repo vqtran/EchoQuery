@@ -25,8 +25,6 @@ public final class Response {
    */
   public static SpeechletResponse ask(String askOutput, String repromptOutput,
       Session session) {
-    VisualizationUtil.updateDisplayText(askOutput, session);
-
     SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
     outputSpeech.setSsml("<speak>" + askOutput + "</speak>");
     SsmlOutputSpeech repromptOutputSpeech = new SsmlOutputSpeech();
@@ -45,17 +43,16 @@ public final class Response {
     String repromptOutput = "With Echo Query, the world is your oyster!";
     return ask(speechOutput, repromptOutput, session);
   }
-  
+
   /**
    * Bye message for the user.
    * @return SpeechletResponse
    */
   public static SpeechletResponse bye(Session session) {
     SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-    outputSpeech.setSsml("<speak> Goodbye </speak>");
+    outputSpeech.setSsml("<speak> Goodbye! </speak>");
     return SpeechletResponse.newTellResponse(outputSpeech);
   }
-
 
   /**
    * Standard unexpected error message.

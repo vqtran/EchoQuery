@@ -1,15 +1,15 @@
 {
   "intents": [
     {
-      "intent": "AggregationIntent",
+      "intent": "QueryIntent",
       "slots": [
         {
           "name": "CommandPhrase",
           "type": "COMMAND_PHRASE"
         },
         {
-          "name": "Aggregate",
-          "type": "AGGREGATE"
+          "name": "Func",
+          "type": "FUNC"
         },
         {
           "name": "AggregationColumn",
@@ -126,18 +126,6 @@
           "type": "COLUMN_NAME"
         }
       ]
-    },
-    {
-      "intent": "GetNextEventIntent",
-      "slots": []
-    },
-    {
-      "intent": "HelpIntent",
-      "slots": []
-    },
-    {
-      "intent": "FinishIntent",
-      "slots": []
     }
   ]
 }
