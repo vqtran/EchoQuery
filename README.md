@@ -25,6 +25,6 @@ The main features of the voice-based interface of EchoQuery are:
 
    __Personalizable Vocabulary:__ Domain experts often use their own terms to formulate queries, which might be different from the schema elements (i.e., table and column names) of a database. Learning the terminology of a user and its translation to the underlying schema is similar to the problem of constructing a schema mapping in data integration.EchoQuery constructs these mappings incrementally on a per-user basis by issuing clarification questions using its dialogue-based query interface.
 
-For more information see our [SIGMOD 2016 demonstration proposal](https://raw.github.com/vqtran/EchoQuery/master/public/resources/EchoQuery - SIGMOD 2016 Demo Proposal.pdf).
+For more information see our [SIGMOD 2016 demonstration proposal](https://github.com/vqtran/EchoQuery/blob/master/public/resources/EchoQuery%20-%20SIGMOD%202016%20Demo%20Proposal.pdf).
 
 
