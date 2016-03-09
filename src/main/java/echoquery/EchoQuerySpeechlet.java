@@ -13,11 +13,11 @@ import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
-import echoquery.intents.QueryHandler;
 import echoquery.intents.ClarifyAmbiguousTableHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
 import echoquery.intents.NarrowHandler;
+import echoquery.intents.QueryHandler;
 import echoquery.sql.SingletonConnections;
 import echoquery.utils.Response;
 
@@ -88,8 +88,12 @@ public class EchoQuerySpeechlet implements Speechlet {
         return helpHandler.respond(intent, session);
       case "AMAZON.StopIntent":
         return Response.bye(session);
+      case "AMAZON.CancelIntent":
+        return Response.bye(session);
+      case "AMAZON.NoIntent":
+        return Response.bye(session);
       default:
-        throw new SpeechletException("Invalid Intent");
+        throw new SpeechletException("Invalid Intent: " + intentName);
     }
   }
 

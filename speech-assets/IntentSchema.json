@@ -126,6 +126,18 @@
           "type": "COLUMN_NAME"
         }
       ]
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
     }
   ]
 }

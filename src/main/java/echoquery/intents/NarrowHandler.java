@@ -13,7 +13,6 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 
 import echoquery.sql.Querier;
 import echoquery.sql.QueryRequest;
-import echoquery.sql.QueryResult;
 import echoquery.sql.model.ColumnType;
 import echoquery.utils.Response;
 import echoquery.utils.Serializer;

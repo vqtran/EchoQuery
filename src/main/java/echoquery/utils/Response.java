@@ -50,7 +50,7 @@ public final class Response {
    */
   public static SpeechletResponse bye(Session session) {
     SsmlOutputSpeech outputSpeech = new SsmlOutputSpeech();
-    outputSpeech.setSsml("<speak> Goodbye! </speak>");
+    outputSpeech.setSsml("<speak></speak>");
     return SpeechletResponse.newTellResponse(outputSpeech);
   }
 
