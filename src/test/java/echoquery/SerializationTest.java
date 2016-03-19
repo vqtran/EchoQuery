@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.amazon.speech.slu.Intent;
 import com.amazon.speech.slu.Slot;
 
-import echoquery.sql.QueryRequest;
+import echoquery.querier.QueryRequest;
 import echoquery.utils.Serializer;
 import echoquery.utils.SlotUtil;
 

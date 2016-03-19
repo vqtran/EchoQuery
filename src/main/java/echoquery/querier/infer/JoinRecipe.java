@@ -1,4 +1,4 @@
-package echoquery.sql.joins;
+package echoquery.querier.infer;
 
 import java.util.List;
 

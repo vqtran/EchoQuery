@@ -11,9 +11,9 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
-import echoquery.sql.Querier;
-import echoquery.sql.QueryRequest;
-import echoquery.sql.model.ColumnType;
+import echoquery.querier.Querier;
+import echoquery.querier.QueryRequest;
+import echoquery.querier.schema.ColumnType;
 import echoquery.utils.Response;
 import echoquery.utils.Serializer;
 import echoquery.utils.SessionUtil;

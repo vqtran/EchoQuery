@@ -12,8 +12,8 @@ import com.amazon.speech.speechlet.Session;
 
 import static org.junit.Assert.assertEquals;
 import echoquery.intents.QueryHandler;
+import echoquery.querier.QueryRequest;
 import echoquery.intents.NarrowHandler;
-import echoquery.sql.QueryRequest;
 import echoquery.utils.Serializer;
 import echoquery.utils.SessionUtil;
 import echoquery.utils.SlotUtil;

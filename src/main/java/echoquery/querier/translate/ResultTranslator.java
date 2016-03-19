@@ -1,103 +1,61 @@
-package echoquery.sql;
+package echoquery.querier.translate;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Set;
 
-import org.json.JSONObject;
+import org.json.JSONException;
 
 import com.facebook.presto.sql.tree.AstVisitor;
 import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.DefaultTraversalVisitor;
-import com.facebook.presto.sql.tree.Expression;
 import com.facebook.presto.sql.tree.FunctionCall;
 import com.facebook.presto.sql.tree.GroupingElement;
 import com.facebook.presto.sql.tree.LogicalBinaryExpression;
 import com.facebook.presto.sql.tree.LongLiteral;
 import com.facebook.presto.sql.tree.QualifiedNameReference;
+import com.facebook.presto.sql.tree.Query;
 import com.facebook.presto.sql.tree.QuerySpecification;
 import com.facebook.presto.sql.tree.SimpleGroupBy;
 import com.facebook.presto.sql.tree.SortItem;
 import com.facebook.presto.sql.tree.StringLiteral;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 
-import echoquery.sql.joins.JoinRecipe;
+import echoquery.querier.QueryRequest;
+import echoquery.querier.ResultTable;
+import echoquery.querier.infer.InferredContext;
+import echoquery.querier.infer.JoinRecipe;
+import echoquery.querier.infer.SchemaInferrer;
 import echoquery.utils.SlotUtil;
-import echoquery.utils.TranslationUtils;
 
 /**
- * The QueryResult class contains a status of a query request and a message for
- * the end user.
+ * Translates a ResultTable given the QueryRequest and Query ASt into a natural
+ * language expression of the result.
  */
+public class ResultTranslator {
+  private SchemaInferrer inferrer;
 
-public class QueryResult {
-  public enum Status {
-    SUCCESS,
-    REPAIR_REQUEST,
-    FAILURE
-  }
-  private final Status status;
-  private final String message;
-  private final JSONObject data;
-
-  public QueryResult(Status status, String message) {
-    this.status = status;
-    this.message = message;
-    this.data = null;
-  }
-
-  public QueryResult(Status status, String message, JSONObject data) {
-    this.status = status;
-    this.message = message;
-    this.data = data;
-  }
-
-  public Status getStatus() {
-    return status;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public JSONObject getData() {
-    return data;
+  public ResultTranslator(SchemaInferrer inferrer) {
+    this.inferrer = inferrer;
   }
 
   /**
-   * Builds a QueryResult out of a JDBC result set, and original request object.
-   * @param inferrer
-   * @param request
-   * @param result
-   * @return A successful result where the message is the result of the query
-   *    is in end-user natural language.
+   * @param result ResultTable created from the ResultSet
+   * @param request QueryRequest used to get the result
+   * @param query Query AST used to get the Result
+   * @return The natural language string conveying the ResultTable.
+   * @throws JSONException
+   * @throws SQLException
    */
-  public static QueryResult of(
-      SchemaInferrer inferrer, QueryRequest request, ResultSet rs) {
-    ResultTable result;
-    try {
-      result = new ResultTable(rs);
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return null;
-    }
-    return new QueryResult(
-        Status.SUCCESS, translateResults(inferrer, request, result),
-        result.json());
-  }
+  public String translate(ResultTable result, QueryRequest request, Query query)
+      throws JSONException, SQLException {
+    JoinRecipe from = inferrer.infer(
+        request.getFromTable().get(),
+        request.getAggregationColumn(),
+        request.getComparisonColumns(),
+        request.getGroupByColumn());
+    InferredContext ctx = from.getContext();
 
-  /**
-   * Translates request and parsed results into a natural language String.
-   * @param inferrer
-   * @param request
-   * @param singleValue Empty if there's a group by, not otherwise.
-   * @param groupByValues
-   * @return A natural language string conveying the results.
-   */
-  public static String translateResults(
-      SchemaInferrer inferrer, QueryRequest request, ResultTable result) {
     /**
      * First compute the column names that we'll use to look up things in
      * the result table in the table_name.column_name format that ResultTable
@@ -115,7 +73,7 @@ public class QueryResult {
         aggregateColName = request.getAggregationFunc().get().toLowerCase()
             + "("
             + String.join(".",
-                request.getContext().getAggregationPrefix().get(),
+                ctx.getAggregationPrefix().get(),
                 request.getAggregationColumn().getColumn().get())
             + ")";
       }
@@ -124,7 +82,7 @@ public class QueryResult {
     }
 
     if (request.getGroupByColumn().getColumn().isPresent()) {
-      groupByTable = request.getContext().getGroupByPrefix().get();
+      groupByTable = ctx.getGroupByPrefix().get();
       groupByCol = request.getGroupByColumn().getColumn().get();
       groupColName = String.join(".", groupByTable, groupByCol);
     }
@@ -284,7 +242,7 @@ public class QueryResult {
         return null;
       }
     };
-    translator.process(request.getQuery(), true);
+    translator.process(query, true);
 
     /**
      * At this point the body of the query has been translated, but if there was
@@ -339,7 +297,7 @@ public class QueryResult {
               if (isAmbiguousWithoutTable(
                   request.getGroupByColumn().getColumn().get(), inferrer)) {
                 translation
-                    .append(request.getContext().getGroupByPrefix().get())
+                    .append(ctx.getGroupByPrefix().get())
                     .append(" ");
               }
               translation.append(request.getGroupByColumn().getColumn().get())
@@ -376,86 +334,4 @@ public class QueryResult {
     return containingTables.size() > 1;
   }
 
-  /**
-   * Creates a QueryResult for an InvalidJoinRecipe.
-   * @param request
-   * @param invalid
-   * @return
-   */
-  public static QueryResult of(
-      QueryRequest request, JoinRecipe invalid) {
-    // There are two cases for invalid join recipes: ambiguous where a column
-    // came from, or the column doesn't have a foreign key connecting it at all.
-    switch (invalid.getReason()) {
-
-    // If ambiguous, we're going to return a result that will ask the user for
-    // which one she wants.
-    case AMBIGUOUS_TABLE_FOR_COLUMN:
-
-      // Find the first ambiguous column and ask. Order here is important:
-      // aggregation, where clauses in order, group by.
-
-      if (request.getAggregationColumn().getColumn().isPresent()
-          && !invalid.getContext().getAggregationPrefix().isPresent()) {
-        String col = request.getAggregationColumn().getColumn().get();
-        return new QueryResult(Status.REPAIR_REQUEST, askWhichTable(
-            SlotUtil.aggregationFunctionToEnglish(
-                request.getAggregationFunc().get()) + " of " + col,
-            invalid.getPossibleTables(),
-            col));
-      }
-
-      List<Optional<String>> comparisonPrefixes =
-          invalid.getContext().getComparisons();
-      for (int i = 0; i < comparisonPrefixes.size(); i++) {
-        if (!comparisonPrefixes.get(i).isPresent()) {
-          String col = request.getComparisonColumns().get(i).getColumn().get();
-          String val = request.getComparisonValues().get(i).get();
-          ComparisonExpression.Type comparator =
-              request.getComparators().get(i).get();
-          return new QueryResult(Status.REPAIR_REQUEST, askWhichTable(
-              "where " + col + " is"
-                  + SlotUtil.comparisonTypeToEnglish(comparator) + val,
-              invalid.getPossibleTables(),
-              col));
-        }
-      }
-
-      if (request.getGroupByColumn().getColumn().isPresent()
-          && !invalid.getContext().getGroupByPrefix().isPresent()) {
-        String col = request.getGroupByColumn().getColumn().get();
-        return new QueryResult(Status.REPAIR_REQUEST, askWhichTable(
-            "for each " + col, invalid.getPossibleTables(), col));
-      }
-
-      return null;
-
-    // For now missing foreign keys will just be notified.
-    case MISSING_FOREIGN_KEY:
-      return new QueryResult(Status.FAILURE,
-          invalid.getInvalidColumn() + " doesn't seem to be a column related "
-              + "to the table you referenced.");
-    }
-    return null;
-  }
-
-  /**
-   * @param partOfQuery
-   * @param possibleTables
-   * @param col
-   * @return
-   */
-  private static String askWhichTable(
-      String partOfQuery, List<String> possibleTables, String col) {
-    String message = "By "
-        + partOfQuery + ", are you referring to ";
-    for (int i = 0; i < possibleTables.size() - 1; i++) {
-      message += possibleTables.get(i) + " " + col + ", ";
-    }
-    message += "or "
-        + possibleTables.get(possibleTables.size() - 1) + " " + col + "?";
-    return message;
-  }
-
 }
-

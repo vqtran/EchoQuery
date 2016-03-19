@@ -18,7 +18,6 @@ import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
 import echoquery.intents.NarrowHandler;
 import echoquery.intents.QueryHandler;
-import echoquery.sql.SingletonConnections;
 import echoquery.utils.Response;
 
 /**

@@ -1,4 +1,4 @@
-package echoquery.sql;
+package echoquery.querier.infer;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -14,12 +14,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import echoquery.sql.joins.InferredContext;
-import echoquery.sql.joins.InvalidJoinRecipe;
-import echoquery.sql.joins.JoinRecipe;
-import echoquery.sql.joins.MultiTableJoinRecipe;
-import echoquery.sql.model.ColumnName;
-import echoquery.sql.model.ForeignKey;
+import echoquery.querier.schema.ColumnName;
+import echoquery.querier.schema.ForeignKey;
 
 /**
  * The SchemaInferrer class knows the different columns on each table and the

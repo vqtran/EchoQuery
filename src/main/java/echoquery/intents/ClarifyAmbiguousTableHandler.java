@@ -9,10 +9,10 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
-import echoquery.sql.QueryRequest;
-import echoquery.sql.SchemaInferrer;
-import echoquery.sql.joins.InferredContext;
-import echoquery.sql.joins.JoinRecipe;
+import echoquery.querier.QueryRequest;
+import echoquery.querier.infer.InferredContext;
+import echoquery.querier.infer.JoinRecipe;
+import echoquery.querier.infer.SchemaInferrer;
 import echoquery.utils.Response;
 import echoquery.utils.Serializer;
 import echoquery.utils.SessionUtil;

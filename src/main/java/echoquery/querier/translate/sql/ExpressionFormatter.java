@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package echoquery.sql.formatter;
+package echoquery.querier.translate.sql;
 
 import com.facebook.presto.sql.QueryUtil;
 import com.facebook.presto.sql.tree.AllColumns;

@@ -1,4 +1,4 @@
-package echoquery.sql;
+package echoquery.querier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,10 +27,11 @@ import com.facebook.presto.sql.tree.StringLiteral;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
-import echoquery.sql.joins.InferredContext;
-import echoquery.sql.joins.JoinRecipe;
-import echoquery.sql.model.ColumnName;
-import echoquery.sql.model.ColumnType;
+import echoquery.querier.infer.InferredContext;
+import echoquery.querier.infer.JoinRecipe;
+import echoquery.querier.infer.SchemaInferrer;
+import echoquery.querier.schema.ColumnName;
+import echoquery.querier.schema.ColumnType;
 import echoquery.utils.SlotUtil;
 
 /**
@@ -61,11 +62,6 @@ public class QueryRequest implements Serializable {
       comparisonBinaryOperators;
   private ColumnName groupByColumn;
 
-  // The built Query AST object itself.
-  private Query query;
-  // And what was inferred about the column.
-  private InferredContext ctx;
-
   public QueryRequest() {
     fromTable = Optional.absent();
     selectAll = Optional.absent();
@@ -76,6 +72,73 @@ public class QueryRequest implements Serializable {
     comparisonValues = new ArrayList<>();
     comparisonBinaryOperators = new ArrayList<>();
     groupByColumn = new ColumnName();
+  }
+
+  /**
+   * Construct a QueryRequest from an intent. Accesses all the relevant slots
+   * from the intent and uses all relevant methods of QueryRequest to populate
+   * QueryRequest.
+   * @param intent
+   * @return a new populated QueryRequest.
+   */
+  public static QueryRequest of(Intent intent) {
+    QueryRequest request = new QueryRequest()
+        // FROM
+        .setFromTable(intent.getSlot(SlotUtil.TABLE_NAME).getValue())
+        // AGGREGATION FUNCTION
+        .setFunc(intent.getSlot(SlotUtil.FUNC).getValue())
+        // AGGREGATION COLUMN
+        .setAggregationColumn(SlotUtil.parseColumnSlot(
+            intent.getSlot(SlotUtil.AGGREGATION_COLUMN).getValue()))
+        // WHERE CLAUSE 1
+        .addWhereClause(SlotUtil.parseColumnSlot(
+            // WHERE CLAUSE 1 COLUMN
+            intent.getSlot(SlotUtil.COMPARISON_COLUMN_1).getValue())
+                .setType((intent.getSlot(
+                    SlotUtil.COLUMN_NUMBER_1).getValue() != null)
+                ? ColumnType.NUMBER : ColumnType.STRING),
+            // WHERE CLAUSE 1 COMPARATOR
+            intent.getSlot(SlotUtil.COMPARATOR_1).getValue(),
+            // WHERE CLAUSE 1 VALUE
+            ObjectUtils.defaultIfNull(
+                intent.getSlot(SlotUtil.COLUMN_VALUE_1).getValue(),
+                intent.getSlot(SlotUtil.COLUMN_NUMBER_1).getValue()))
+        // WHERE CLAUSE 2
+        .addWhereClause(
+            // OPERATOR BETWEEN WHERE 1 and WHERE 2.
+            intent.getSlot(SlotUtil.BINARY_LOGIC_OP_1).getValue(),
+            // WHERE CLAUSE 2 COLUMN
+            SlotUtil.parseColumnSlot(
+                intent.getSlot(SlotUtil.COMPARISON_COLUMN_2).getValue())
+                    .setType((intent.getSlot(
+                        SlotUtil.COLUMN_NUMBER_2).getValue() != null)
+                ? ColumnType.NUMBER : ColumnType.STRING),
+            // WHERE CLAUSE 2 COMPARATOR
+            intent.getSlot(SlotUtil.COMPARATOR_2).getValue(),
+            // WHERE CLAUSE 2 VALUE
+            ObjectUtils.defaultIfNull(
+                intent.getSlot(SlotUtil.COLUMN_VALUE_2).getValue(),
+                intent.getSlot(SlotUtil.COLUMN_NUMBER_2).getValue()))
+        // WHERE CLAUSE 3
+        .addWhereClause(
+            // OPERATOR BETWEEN WHERE 2 and WHERE 3.
+            intent.getSlot(SlotUtil.BINARY_LOGIC_OP_2).getValue(),
+            // WHERE CLAUSE 3 COLUMN
+            SlotUtil.parseColumnSlot(
+                intent.getSlot(SlotUtil.COMPARISON_COLUMN_3).getValue())
+                    .setType((intent.getSlot(
+                        SlotUtil.COLUMN_NUMBER_3).getValue() != null)
+                ? ColumnType.NUMBER : ColumnType.STRING),
+            // WHERE CLAUSE 3 COMPARATOR
+            intent.getSlot(SlotUtil.COMPARATOR_3).getValue(),
+            // WHERE CLAUSE 3 VALUE
+            ObjectUtils.defaultIfNull(
+                intent.getSlot(SlotUtil.COLUMN_VALUE_3).getValue(),
+                intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue()))
+        // GROUP-BY (COLUMN TO GROUP BY)
+        .setGroupByColumn(SlotUtil.parseColumnSlot(
+            intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue()));
+    return request;
   }
 
   public Optional<String> getFromTable() {
@@ -113,14 +176,6 @@ public class QueryRequest implements Serializable {
 
   public ColumnName getGroupByColumn() {
     return groupByColumn;
-  }
-
-  public Query getQuery() {
-    return query;
-  }
-
-  public InferredContext getContext() {
-    return ctx;
   }
 
   public QueryRequest setFromTable(@Nullable String table) {
@@ -201,154 +256,6 @@ public class QueryRequest implements Serializable {
     }
   }
 
-  /**
-   * Builds the AST query object with the current request metadata, and schema
-   * inference engine. Assumes that the metadata has been validated, and so
-   * necessary names are non-empty, and lists are properly structured.
-   *
-   * @param inferrer
-   * @return this query request with query built.
-   */
-  public QueryRequest buildQuery(SchemaInferrer inferrer)
-      throws QueryBuildException {
-    JoinRecipe from = inferrer.infer(
-        fromTable.get(), aggregationColumn, comparisonColumns, groupByColumn);
-    ctx = from.getContext();
-
-    if (!from.isValid()) {
-      throw new QueryBuildException(QueryResult.of(this, from));
-    }
-
-    Select select;
-    if (selectAll.isPresent()) {
-      select = QueryUtil.selectList(new AllColumns());
-    } else {
-      SelectItem aggr;
-      if (aggregationColumn.getColumn().isPresent()) {
-        aggr = new SingleColumn(QueryUtil.functionCall(
-            aggregationFunc.get(),
-            new QualifiedNameReference(QualifiedName.of(
-                ctx.getAggregationPrefix().get(),
-                aggregationColumn.getColumn().get()))));
-      } else {
-        aggr = new SingleColumn(QueryUtil.functionCall(aggregationFunc.get()));
-      }
-
-      if (groupByColumn.getColumn().isPresent()) {
-        QualifiedNameReference groupByName =
-            new QualifiedNameReference(QualifiedName.of(
-                ctx.getGroupByPrefix().get(), groupByColumn.getColumn().get()));
-        select = QueryUtil.selectList(new SingleColumn(groupByName), aggr);
-      } else {
-        select = QueryUtil.selectList(aggr);
-      }
-    }
-
-    List<Expression> whereClauses = new ArrayList<>();
-    for (int i = 0; i < comparisonColumns.size(); i++) {
-      ColumnName col = comparisonColumns.get(i);
-      whereClauses.add(new ComparisonExpression(
-          comparators.get(i).get(),
-          new QualifiedNameReference(QualifiedName.of(
-              ctx.getComparisonPrefix(i).get(), col.getColumn().get())),
-          (col.getType() == ColumnType.NUMBER)
-            ? new LongLiteral(comparisonValues.get(i).get())
-            : new StringLiteral(comparisonValues.get(i).get())));
-    }
-
-    QualifiedNameReference groupByName = null;
-    List<GroupingElement> groupBy = new ArrayList<>();
-    if (groupByColumn.getColumn().isPresent()) {
-      groupByName = new QualifiedNameReference(QualifiedName.of(
-          ctx.getGroupByPrefix().get(), groupByColumn.getColumn().get()));
-      groupBy.add(new SimpleGroupBy(ImmutableList.of(groupByName)));
-    }
-
-    query = QueryUtil.simpleQuery(
-        select,
-        from.render(),
-        java.util.Optional.ofNullable(logicallyCombineWhereClauses(
-            whereClauses, comparisonBinaryOperators, 0)),
-        groupBy,
-        java.util.Optional.empty(),
-        ImmutableList.of(),
-        java.util.Optional.empty());
-
-    return this;
-  }
-
-  /**
-   * Assembles the ComparisonExpressions into a single Expression combined
-   * using the specified Binary Operators, in order.
-   * @param whereClauses
-   * @param binaryOps
-   * @param i
-   * @return
-   */
-  private static Expression logicallyCombineWhereClauses(
-      List<Expression> whereClauses,
-      List<Optional<LogicalBinaryExpression.Type>> binaryOps,
-      int i) {
-    if (whereClauses.isEmpty()) {
-      return null;
-    }
-    if (i >= binaryOps.size()) {
-      return whereClauses.get(i);
-    }
-    return new LogicalBinaryExpression(
-        binaryOps.get(i).get(),
-        whereClauses.get(i),
-        logicallyCombineWhereClauses(whereClauses, binaryOps, i + 1));
-  }
-
-  /**
-   * Construct a QueryRequest from an intent. The Query AST field here part will
-   * NOT be built yet. buildQuery should only be called after validation.
-   * @param intent
-   * @return
-   */
-  public static QueryRequest of(Intent intent) {
-    QueryRequest request = new QueryRequest()
-        .setFromTable(intent.getSlot(SlotUtil.TABLE_NAME).getValue())
-        .setFunc(intent.getSlot(SlotUtil.FUNC).getValue())
-        .setAggregationColumn(SlotUtil.parseColumnSlot(
-            intent.getSlot(SlotUtil.AGGREGATION_COLUMN).getValue()))
-        .addWhereClause(SlotUtil.parseColumnSlot(
-            intent.getSlot(SlotUtil.COMPARISON_COLUMN_1).getValue())
-                .setType((intent.getSlot(
-                    SlotUtil.COLUMN_NUMBER_1).getValue() != null)
-                ? ColumnType.NUMBER : ColumnType.STRING),
-            intent.getSlot(SlotUtil.COMPARATOR_1).getValue(),
-            ObjectUtils.defaultIfNull(
-                intent.getSlot(SlotUtil.COLUMN_VALUE_1).getValue(),
-                intent.getSlot(SlotUtil.COLUMN_NUMBER_1).getValue()))
-        .addWhereClause(
-            intent.getSlot(SlotUtil.BINARY_LOGIC_OP_1).getValue(),
-            SlotUtil.parseColumnSlot(
-                intent.getSlot(SlotUtil.COMPARISON_COLUMN_2).getValue())
-                    .setType((intent.getSlot(
-                        SlotUtil.COLUMN_NUMBER_2).getValue() != null)
-                ? ColumnType.NUMBER : ColumnType.STRING),
-            intent.getSlot(SlotUtil.COMPARATOR_2).getValue(),
-            ObjectUtils.defaultIfNull(
-                intent.getSlot(SlotUtil.COLUMN_VALUE_2).getValue(),
-                intent.getSlot(SlotUtil.COLUMN_NUMBER_2).getValue()))
-        .addWhereClause(
-            intent.getSlot(SlotUtil.BINARY_LOGIC_OP_2).getValue(),
-            SlotUtil.parseColumnSlot(
-                intent.getSlot(SlotUtil.COMPARISON_COLUMN_3).getValue())
-                    .setType((intent.getSlot(
-                        SlotUtil.COLUMN_NUMBER_3).getValue() != null)
-                ? ColumnType.NUMBER : ColumnType.STRING),
-            intent.getSlot(SlotUtil.COMPARATOR_3).getValue(),
-            ObjectUtils.defaultIfNull(
-                intent.getSlot(SlotUtil.COLUMN_VALUE_3).getValue(),
-                intent.getSlot(SlotUtil.COLUMN_NUMBER_3).getValue()))
-        .setGroupByColumn(SlotUtil.parseColumnSlot(
-            intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue()));
-    return request;
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -371,7 +278,6 @@ public class QueryRequest implements Serializable {
         ? 0 : fromTable.hashCode());
     result = prime * result + ((groupByColumn == null)
         ? 0 : groupByColumn.hashCode());
-    result = prime * result + ((query == null) ? 0 : query.hashCode());
     return result;
   }
 
@@ -429,16 +335,6 @@ public class QueryRequest implements Serializable {
       if (other.getGroupByColumn() != null)
         return false;
     } else if (!groupByColumn.equals(other.getGroupByColumn()))
-      return false;
-    if (query == null) {
-      if (other.getQuery() != null)
-        return false;
-    } else if (!query.equals(other.getQuery()))
-      return false;
-    if (ctx == null) {
-      if (other.getContext() != null)
-        return false;
-    } else if (!ctx.equals(other.getContext()))
       return false;
     return true;
   }
