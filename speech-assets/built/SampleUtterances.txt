@@ -779,47 +779,47 @@ QueryIntent {Func} rows in {TableName} do we have where {ComparisonColumnOne} {C
 QueryIntent {Func} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree} {GroupBy} {GroupByColumn}
 QueryIntent {Func} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnValueThree} {GroupBy} {GroupByColumn}
 QueryIntent {Func} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree} {GroupBy} {GroupByColumn}
-NarrowIntent What if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent What if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent What about {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent What about {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent How about {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent How about {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent And if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent And if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent And when {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent And when {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent Also if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent Also if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent Also when {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent Also when {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent Also where {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent Also where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent And where {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent And where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent Also {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent Also {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent And {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-NarrowIntent And {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-NarrowIntent {GroupBy} {GroupByColumn}
-NarrowIntent What if {GroupBy} {GroupByColumn}
-NarrowIntent What about {GroupBy} {GroupByColumn}
-NarrowIntent How about {GroupBy} {GroupByColumn}
-NarrowIntent And if {GroupBy} {GroupByColumn}
-NarrowIntent And when {GroupBy} {GroupByColumn}
-NarrowIntent Also if {GroupBy} {GroupByColumn}
-NarrowIntent Also when {GroupBy} {GroupByColumn}
-NarrowIntent Also where {GroupBy} {GroupByColumn}
-NarrowIntent And where {GroupBy} {GroupByColumn}
-NarrowIntent Also {GroupBy} {GroupByColumn}
-NarrowIntent And {GroupBy} {GroupByColumn}
-NarrowIntent Instead {GroupBy} {GroupByColumn}
-NarrowIntent Actually {GroupBy} {GroupByColumn}
-ClarifyAmbiguousTableIntent {TableName}
-ClarifyAmbiguousTableIntent I meant {TableName}
-ClarifyAmbiguousTableIntent I'm referring to {TableName}
-ClarifyAmbiguousTableIntent How about {TableName}
-ClarifyAmbiguousTableIntent {TableAndColumnName}
-ClarifyAmbiguousTableIntent I meant {TableAndColumnName}
-ClarifyAmbiguousTableIntent I'm referring to {TableAndColumnName}
-ClarifyAmbiguousTableIntent How about {TableAndColumnName}
+RefineIntent What if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent What if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent What about {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent What about {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent How about {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent How about {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent And if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent And if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent And when {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent And when {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent Also if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent Also if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent Also when {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent Also when {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent Also where {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent Also where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent And where {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent And where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent Also {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent Also {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent And {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent And {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent {GroupBy} {GroupByColumn}
+RefineIntent What if {GroupBy} {GroupByColumn}
+RefineIntent What about {GroupBy} {GroupByColumn}
+RefineIntent How about {GroupBy} {GroupByColumn}
+RefineIntent And if {GroupBy} {GroupByColumn}
+RefineIntent And when {GroupBy} {GroupByColumn}
+RefineIntent Also if {GroupBy} {GroupByColumn}
+RefineIntent Also when {GroupBy} {GroupByColumn}
+RefineIntent Also where {GroupBy} {GroupByColumn}
+RefineIntent And where {GroupBy} {GroupByColumn}
+RefineIntent Also {GroupBy} {GroupByColumn}
+RefineIntent And {GroupBy} {GroupByColumn}
+RefineIntent Instead {GroupBy} {GroupByColumn}
+RefineIntent Actually {GroupBy} {GroupByColumn}
+ClarifyIntent {TableName}
+ClarifyIntent I meant {TableName}
+ClarifyIntent I'm referring to {TableName}
+ClarifyIntent How about {TableName}
+ClarifyIntent {TableAndColumnName}
+ClarifyIntent I meant {TableAndColumnName}
+ClarifyIntent I'm referring to {TableAndColumnName}
+ClarifyIntent How about {TableAndColumnName}

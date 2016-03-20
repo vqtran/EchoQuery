@@ -13,10 +13,10 @@ import com.amazon.speech.speechlet.Speechlet;
 import com.amazon.speech.speechlet.SpeechletException;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
-import echoquery.intents.ClarifyAmbiguousTableHandler;
+import echoquery.intents.ClarifyHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
-import echoquery.intents.NarrowHandler;
+import echoquery.intents.RefineHandler;
 import echoquery.intents.QueryHandler;
 import echoquery.utils.Response;
 
@@ -31,19 +31,18 @@ public class EchoQuerySpeechlet implements Speechlet {
   private static final Logger log =
       LoggerFactory.getLogger(EchoQuerySpeechlet.class);
 
-  private IntentHandler helpHandler;
-  private IntentHandler clarifyAmbiguousTableHandler;
   private QueryHandler queryHandler;
-  private IntentHandler narrowHandler;
+  private IntentHandler helpHandler;
+  private IntentHandler clarifyHandler;
+  private IntentHandler refineHandler;
 
   public EchoQuerySpeechlet() {
     super();
     helpHandler = new HelpHandler();
-    queryHandler =
-        new QueryHandler(SingletonConnections.getDataInstance());
-    narrowHandler = new NarrowHandler(
+    queryHandler = new QueryHandler(SingletonConnections.getDataInstance());
+    refineHandler = new RefineHandler(
         SingletonConnections.getDataInstance(), queryHandler);
-    clarifyAmbiguousTableHandler = new ClarifyAmbiguousTableHandler(
+    clarifyHandler = new ClarifyHandler(
         SingletonConnections.getDataInstance(), queryHandler);
   }
 
@@ -79,10 +78,10 @@ public class EchoQuerySpeechlet implements Speechlet {
     switch(intentName) {
       case "QueryIntent":
         return queryHandler.respond(intent, session);
-      case "NarrowIntent":
-        return narrowHandler.respond(intent, session);
-      case "ClarifyAmbiguousTableIntent":
-        return clarifyAmbiguousTableHandler.respond(intent, session);
+      case "RefineIntent":
+        return refineHandler.respond(intent, session);
+      case "ClarifyIntent":
+        return clarifyHandler.respond(intent, session);
       case "AMAZON.HelpIntent":
         return helpHandler.respond(intent, session);
       case "AMAZON.StopIntent":

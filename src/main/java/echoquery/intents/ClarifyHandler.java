@@ -23,12 +23,12 @@ import echoquery.utils.SlotUtil;
  * previous request with what the user clarified, then re-runs it through
  * AggregationIntent.
  */
-public class ClarifyAmbiguousTableHandler implements IntentHandler {
+public class ClarifyHandler implements IntentHandler {
 
   private final QueryHandler aggregationHandler;
   private final SchemaInferrer inferrer;
 
-  public ClarifyAmbiguousTableHandler(
+  public ClarifyHandler(
       Connection conn, QueryHandler aggregationHandler) {
     this.aggregationHandler = aggregationHandler;
     this.inferrer = new SchemaInferrer(conn);

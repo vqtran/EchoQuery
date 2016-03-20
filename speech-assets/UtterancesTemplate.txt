@@ -156,22 +156,22 @@ QueryIntent {Func} (entries in|rows in) {TableName} \
   {GroupBy} {GroupByColumn}
 
 #-------------------------------------------------------------------------------
-# NarrowIntent: Add more where or group-by after the fact.
+# RefineIntent: Add more where or group-by after the fact.
 #-------------------------------------------------------------------------------
 
-NarrowIntent [What if|What about|How about|And if|And when|Also if|Also when|Also \
+RefineIntent [What if|What about|How about|And if|And when|Also if|Also when|Also \
 where|And where|Also|And] \
 {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}]
 
-NarrowIntent (What if|What about|How about|And if|And when|Also if|Also when|Also \
+RefineIntent (What if|What about|How about|And if|And when|Also if|Also when|Also \
 where|And where|Also|And|Instead|Actually) {GroupBy} {GroupByColumn}
 
 #-------------------------------------------------------------------------------
-# ClarifyAmbiguousTableIntent: Clarify what you meant.
+# ClarifyIntent: Clarify what you meant.
 #-------------------------------------------------------------------------------
 
-ClarifyAmbiguousTableIntent (I meant|I'm referring to|How about) {TableName}
-ClarifyAmbiguousTableIntent (I meant|I'm referring to|How about) {TableAndColumnName}
+ClarifyIntent (I meant|I'm referring to|How about) {TableName}
+ClarifyIntent (I meant|I'm referring to|How about) {TableAndColumnName}
 
 
 
