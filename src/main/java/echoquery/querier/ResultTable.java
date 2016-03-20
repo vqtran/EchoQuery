@@ -1,4 +1,4 @@
-package echoquery.sql;
+package echoquery.querier;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import com.amazon.speech.speechlet.Session;
 
-import echoquery.sql.ResultTable;
-import echoquery.sql.SingletonConnections;
+import echoquery.SingletonConnections;
+import echoquery.querier.ResultTable;
 
 public class VisualizationUtil {
   private static final Logger log =

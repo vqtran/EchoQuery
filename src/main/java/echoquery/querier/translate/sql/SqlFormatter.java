@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package echoquery.sql.formatter;
+package echoquery.querier.translate.sql;
 
 import com.facebook.presto.sql.tree.AddColumn;
 import com.facebook.presto.sql.tree.AliasedRelation;
@@ -69,13 +69,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static echoquery.sql.formatter.ExpressionFormatter.formatExpression;
-import static echoquery.sql.formatter.ExpressionFormatter.formatGroupBy;
-import static echoquery.sql.formatter.ExpressionFormatter.formatSortItems;
-import static echoquery.sql.formatter.ExpressionFormatter.formatStringLiteral;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static com.google.common.collect.Iterables.transform;
+import static echoquery.querier.translate.sql.ExpressionFormatter.formatExpression;
+import static echoquery.querier.translate.sql.ExpressionFormatter.formatGroupBy;
+import static echoquery.querier.translate.sql.ExpressionFormatter.formatSortItems;
+import static echoquery.querier.translate.sql.ExpressionFormatter.formatStringLiteral;
 
 public final class SqlFormatter
 {

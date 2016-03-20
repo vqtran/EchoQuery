@@ -1,4 +1,4 @@
-package echoquery.utils;
+package echoquery.querier.translate;
 
 import java.text.DecimalFormat;
 

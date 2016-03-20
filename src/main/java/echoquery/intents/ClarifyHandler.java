@@ -9,10 +9,10 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
-import echoquery.sql.QueryRequest;
-import echoquery.sql.SchemaInferrer;
-import echoquery.sql.joins.InferredContext;
-import echoquery.sql.joins.JoinRecipe;
+import echoquery.querier.QueryRequest;
+import echoquery.querier.infer.InferredContext;
+import echoquery.querier.infer.JoinRecipe;
+import echoquery.querier.infer.SchemaInferrer;
 import echoquery.utils.Response;
 import echoquery.utils.Serializer;
 import echoquery.utils.SessionUtil;
@@ -23,12 +23,12 @@ import echoquery.utils.SlotUtil;
  * previous request with what the user clarified, then re-runs it through
  * AggregationIntent.
  */
-public class ClarifyAmbiguousTableHandler implements IntentHandler {
+public class ClarifyHandler implements IntentHandler {
 
   private final QueryHandler aggregationHandler;
   private final SchemaInferrer inferrer;
 
-  public ClarifyAmbiguousTableHandler(
+  public ClarifyHandler(
       Connection conn, QueryHandler aggregationHandler) {
     this.aggregationHandler = aggregationHandler;
     this.inferrer = new SchemaInferrer(conn);

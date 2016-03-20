@@ -1,4 +1,4 @@
-package echoquery.sql;
+package echoquery.querier;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,24 +9,31 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import echoquery.sql.QueryResult.Status;
-import echoquery.sql.formatter.SqlFormatter;
+import com.facebook.presto.sql.tree.Query;
+
+import echoquery.querier.QueryResult.Status;
+import echoquery.querier.infer.SchemaInferrer;
+import echoquery.querier.translate.RequestTranslator;
+import echoquery.querier.translate.ResultTranslator;
 import echoquery.utils.SlotUtil;
 
 /**
  * The Querier class takes in an unbuilt QueryRequest object, validates that its
  * contents are well-formed, builds, then executes the query.
  */
-
 public class Querier {
 
   private static final Logger log = LoggerFactory.getLogger(Querier.class);
   private Connection conn;
   private SchemaInferrer inferrer;
+  private RequestTranslator queryTranslator;
+  private ResultTranslator resultTranslator;
 
   public Querier(Connection conn) {
     this.conn = conn;
     this.inferrer = new SchemaInferrer(conn);
+    this.queryTranslator = new RequestTranslator(inferrer);
+    this.resultTranslator = new ResultTranslator(inferrer);
   }
 
   /**
@@ -41,17 +48,23 @@ public class Querier {
       return invalidation.get();
     }
     // If it gets here the request had all necessary fields, so now try to
-    // execute the SQL translation.
+    // form a translation into SQL, adding inferred joins if necessary.
+    Query ast;
     String sql;
     try {
-      sql = SqlFormatter.formatSql(request.buildQuery(inferrer).getQuery());
+      ast = queryTranslator.buildAST(request);
+      sql = queryTranslator.translate(request);
     } catch (QueryBuildException e) {
       return e.getResult();
     }
+    // Finally, execute the SQL query.
     try {
       Statement statement = conn.createStatement();
-      ResultSet result = statement.executeQuery(sql);
-      return QueryResult.of(inferrer, request, result);
+      ResultTable result = new ResultTable(statement.executeQuery(sql));
+      return new QueryResult(
+          QueryResult.Status.SUCCESS,
+          resultTranslator.translate(result, request, ast),
+          result.json());
     } catch (SQLException e) {
       log.error(e.getMessage());
       return new QueryResult(Status.FAILURE,
