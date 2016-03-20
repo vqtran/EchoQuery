@@ -23,5 +23,9 @@ public class Main {
         new FetchHandler(request, response).respond());
 
     Spark.get("/fetch/", (request, response) -> "Enter a valid User ID");
+    Spark.get("/login/:id", (request, response) -> 
+        new LoginHandler(request, response).respond());
+    Spark.post("/submit/:id", (request, response) -> 
+        new SubmitHandler(request, response).respond());
   }
 }

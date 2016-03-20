@@ -1,5 +1,6 @@
 import React from 'react';
 
+import AudioInput from '../components/AudioInput.js';
 import DisplayActions from '../actions/DisplayActions';
 import SessionStore from '../stores/SessionStore';
 import SessionUtils from '../utils/SessionUtils';
@@ -13,6 +14,7 @@ class App extends React.Component {
         <UserIdInput />
         <div className="text-center">
           <h1>{this.state.displayText}</h1>
+          <AudioInput />
         </div>
       </div>
     );
@@ -22,7 +24,7 @@ class App extends React.Component {
     SessionStore.listen(this.onChange);
     this.timer = setInterval(() => {
       SessionUtils.giveSessionDisplayText(DisplayActions.setDisplayText);
-    }, 50);
+    }, 1000);
   }
 
   componentWillUnmount() {
