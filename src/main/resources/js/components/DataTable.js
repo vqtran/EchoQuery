@@ -19,14 +19,16 @@ class DataTable extends React.Component {
 
   render() {
     return (
-      <Table
-        headerHeight={50}
-        rowsCount={this.getRowsCount()}
-        rowHeight={50}
-        width={this.state.vizWidth}
-        height={this.state.height}>
-        {this.generateColumns()}
-      </Table>
+      <div className="data-table">
+        <Table
+          headerHeight={50}
+          rowsCount={this.getRowsCount()}
+          rowHeight={50}
+          width={this.state.vizWidth}
+          height={this.state.height-80}>
+          {this.generateColumns()}
+        </Table>
+      </div>
     );
   }
 
