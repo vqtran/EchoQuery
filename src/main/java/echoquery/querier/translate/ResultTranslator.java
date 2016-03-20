@@ -1,6 +1,5 @@
 package echoquery.querier.translate;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 
@@ -49,6 +48,10 @@ public class ResultTranslator {
    */
   public String translate(ResultTable result, QueryRequest request, Query query)
       throws JSONException, SQLException {
+    /**
+     * First Recompute the join and more importantly the inferred context to
+     * figure out the correct tables for each column.
+     */
     JoinRecipe from = inferrer.infer(
         request.getFromTable().get(),
         request.getAggregationColumn(),
@@ -57,19 +60,22 @@ public class ResultTranslator {
     InferredContext ctx = from.getContext();
 
     /**
-     * First compute the column names that we'll use to look up things in
+     * Compute the column names that we'll use to look up things in
      * the result table in the table_name.column_name format that ResultTable
      * uses.
      */
     String groupByTable = "";
     String groupByCol = "";
-    String groupColName = "";
-    String aggregateColName;
+    String aggregateColName = "";
 
+    // Paying special attention to how to convert result columns that correspond
+    // to aggregations.
     if (request.getAggregationFunc().isPresent()) {
+      // Count is simply count(*).
       if (request.getAggregationFunc().get().equals("COUNT")) {
         aggregateColName = "count(*)";
       } else {
+        // Otherwise its e.g. avg(table_name.column_name).
         aggregateColName = request.getAggregationFunc().get().toLowerCase()
             + "("
             + String.join(".",
@@ -77,16 +83,73 @@ public class ResultTranslator {
                 request.getAggregationColumn().getColumn().get())
             + ")";
       }
-    } else {
-      aggregateColName = "";
     }
-
+    // Also capture the information for the column used for the group by.
     if (request.getGroupByColumn().getColumn().isPresent()) {
       groupByTable = ctx.getGroupByPrefix().get();
       groupByCol = request.getGroupByColumn().getColumn().get();
-      groupColName = String.join(".", groupByTable, groupByCol);
     }
 
+    /**
+     * Start building the translation.
+     */
+    StringBuilder translation = new StringBuilder();
+
+    /**
+     * First translate the query AST into natural language first. This is to
+     * reiterate to the user the system's interpretation of what they said.
+     *
+     * e.g. "The average of quantity in the orders table where customer name is
+     *       Sally"
+     */
+    translation.append(
+        translateQuery(query, request, result, aggregateColName));
+
+    /**
+     * At this point the body of the query has been translated, but if there was
+     * aggregation with a group by, we need to append one or more results to the
+     * end now.
+     *
+     * e.g. "is fifty.", "is fifty for the supplier name Amazon, and thirty for
+     *      Apple."
+     */
+    translation.append(
+        translateResult(
+            request, ctx, result, aggregateColName, groupByTable, groupByCol));
+
+    return translation.toString();
+  }
+
+  /**
+   * Translate the query AST into a natural language form, leaving off most if
+   * not all of the results information. For example,
+   *
+   * "The average of quantity in the orders table where customer name is Sally"
+   *
+   * COUNT queries are special cased here, and will include the first entry of
+   * their results. For example:
+   *
+   * "There are seven hundred rows in the orders table where customer name is
+   *  Sally."
+   *
+   * If the aggregate is not a COUNT, or if there is a group by in the query,
+   * translateResults should be called after this to make sure that:
+   *
+   *  1) If the query was a not-COUNT then the result is added at the end.
+   *  2) If the query had a group by all of the results are added to the end,
+   *    in a listed manner.
+   *
+   * @param query
+   * @param request
+   * @param result
+   * @param aggregateColName
+   * @return
+   */
+  private StringBuilder translateQuery(
+      Query query,
+      QueryRequest request,
+      ResultTable result,
+      String aggregateColName) {
     /**
      * Visit each node in the tree and convert it to natural language. Results
      * in a sentence form of the query.
@@ -94,17 +157,26 @@ public class ResultTranslator {
     StringBuilder translation = new StringBuilder();
 
     /**
-     * The boolean here signifies when to include the contents. Right now
-     * is included except for QualifiedNameReferences in select
+     * Create a new instance of a DefaultTraversalVistor - a class that
+     * visits the AST nodes in DFO, and here we override any types of nodes that
+     * we want to process in a custom way.
+     *
+     * The "capture" boolean here signifies when to include the contents.
+     * Right now is included except for QualifiedNameReferences in select
      * clauses (as they correspond to our internal book-keeping of group-bys).
      */
     AstVisitor<Void, Boolean> translator =
         new DefaultTraversalVisitor<Void, Boolean>() {
 
+      /**
+       * Query specification is one of the higher level entry points, giving
+       * access to all basic components of the query, SELECT, FROM, WHERE, GROUP
+       * BY, etc.
+       */
       @Override
       protected Void visitQuerySpecification(
           QuerySpecification node, Boolean capture) {
-        // If its SELECT * then we give a special message.
+        // SELECT: If its SELECT * then we give a special message.
         if (request.getSelectAll().isPresent()) {
           if (result.numRows() == 0) {
             translation.append("There are zero rows ");
@@ -121,6 +193,7 @@ public class ResultTranslator {
           process(node.getSelect(), false);
         }
 
+        // FROM
         if (node.getFrom().isPresent()) {
           // Use what the user referenced, ignoring any complicated join
           // inference we did to get it to work.
@@ -129,11 +202,13 @@ public class ResultTranslator {
               .append(" table");
         }
 
+        // WHERE
         if (node.getWhere().isPresent()) {
             translation.append(" where ");
             process(node.getWhere().get(), true);
         }
 
+        // GROUP BY
         for (GroupingElement groupingElement : node.getGroupBy()) {
             if (request.getSelectAll().isPresent() &&
                 groupingElement instanceof SimpleGroupBy) {
@@ -144,19 +219,26 @@ public class ResultTranslator {
             }
         }
 
+        // HAVING and ORDER BY not yet supported.
         if (node.getHaving().isPresent()) {
             process(node.getHaving().get(), true);
         }
-
         for (SortItem sortItem : node.getOrderBy()) {
             process(sortItem, true);
         }
         return null;
       }
 
+      /**
+       * Function call applies to all functions, but in our context this is only
+       * visited if there is an aggregation function.
+       */
       @Override
       public Void visitFunctionCall(FunctionCall node, Boolean capture) {
+        // Get what aggregation function was actually used.
         String aggregation = request.getAggregationFunc().get();
+
+        // If it was a count then do the "There is/are .."
         if (aggregation.equals("COUNT")) {
           double value = result.getDouble(aggregateColName, 0);
           if (value == 1) {
@@ -169,17 +251,22 @@ public class ResultTranslator {
               .append(" rows ");
           }
         } else {
+          // Otherwise do the e.g. "The average of the ..."
           translation.append("The ")
               .append(SlotUtil.aggregationFunctionToEnglish(aggregation))
               .append(" of the ");
-          // Only accept qualified names in select clauses that belong to a
-          // aggregation function.
+          // We have to then process the argument to the aggregate (there should
+          // only be one).
           process(node.getArguments().get(0), true);
           translation.append(" column ");
         }
         return null;
       }
 
+      /**
+       * Applies to any logical binary expression between clauses like, AND
+       * and OR. In this case this will only take place in the WHERE clause.
+       */
       @Override
       public Void visitLogicalBinaryExpression(
           LogicalBinaryExpression node, Boolean capture) {
@@ -196,6 +283,10 @@ public class ResultTranslator {
         return null;
       }
 
+      /**
+       * Applies to a single clause in a WHERE. Process the left hand side,
+       * the comparator, then the right hand side.
+       */
       @Override
       public Void visitComparisonExpression(
           ComparisonExpression node, Boolean capture) {
@@ -206,6 +297,13 @@ public class ResultTranslator {
         return null;
       }
 
+      /**
+       * This is basically called for every identifier. Capture is by default
+       * false, except when we tell it to be true (which is in the case of when
+       * we call process from within these overrides.) This is so then we do not
+       * translate identifiers which are apart of joins, or other under-the-hood
+       * things we insert.
+       */
       @Override
       public Void visitQualifiedNameReference(
           QualifiedNameReference node, Boolean capture) {
@@ -230,25 +328,73 @@ public class ResultTranslator {
         return null;
       }
 
+      /**
+       * Visited for every string literal.
+       */
       @Override
       public Void visitStringLiteral(StringLiteral node, Boolean capture) {
         translation.append(node.getValue());
         return null;
       }
 
+      /**
+       * Visited for every long literal, we use our own technique for converting
+       * numbers to natural language.
+       */
       @Override
       public Void visitLongLiteral(LongLiteral node, Boolean capture) {
         translation.append(TranslationUtils.convert(node.getValue()));
         return null;
       }
     };
-    translator.process(query, true);
 
-    /**
-     * At this point the body of the query has been translated, but if there was
-     * aggregation with a group by, we need to append one or more results to the
-     * end now.
-     */
+    // Finally run our special translation traverser, and return the results.
+    translator.process(query, true);
+    return translation;
+  }
+
+  /**
+   * Translate the results of the query, relying on facts about the QueryRequest
+   * and InferredContext to figure out how to read and present ResultTable in
+   * natural language. Constructs for example the part that says,
+   *
+   * "is fifty."
+   *
+   * Special cases:
+   *
+   * If the aggregation was COUNT and there is no group by, the one data point
+   * was already translated by translateQuery, so this returns "."
+   *
+   * If the aggregation was COUNT and there is a group by, then the output is
+   * of the form, for example "for the suppler name Amazon, ten for Apple, and
+   * twenty for Google."
+   *
+   * If the aggregation was not COUNT and there is a group by an example would
+   * be, "is fifty for the supplier name Amazon, ten for Apple, and twenty for
+   * Google."
+   *
+   * @param request
+   * @param ctx
+   * @param result
+   * @param aggregateColName
+   * @param groupByTable
+   * @param groupByCol
+   * @return
+   */
+  private StringBuilder translateResult(
+      QueryRequest request,
+      InferredContext ctx,
+      ResultTable result,
+      String aggregateColName,
+      String groupByTable,
+      String groupByCol) {
+
+    StringBuilder translation = new StringBuilder();
+
+    // Join group by table and column name to get the form used in ResultTable
+    String groupColName = String.join(".", groupByTable, groupByCol);
+
+    // Only do anything if there is an aggregation function.
     if (request.getAggregationFunc().isPresent()) {
       // If it's count and it only had a single value, we're all set.
       if (request.getAggregationFunc().get().equals("COUNT")) {
@@ -260,8 +406,7 @@ public class ResultTranslator {
           if (isAmbiguousWithoutTable(groupByCol, inferrer)) {
             translation.append(groupByTable).append(" ");
           }
-          translation
-              .append(groupByCol).append(" ")
+          translation.append(groupByCol).append(" ")
               .append(result.getString(groupColName, 0));
 
           for (int i = 1; i < result.numRows(); i++) {
@@ -319,7 +464,7 @@ public class ResultTranslator {
       }
     }
     translation.append(".");
-    return translation.toString();
+    return translation;
   }
 
   /**
