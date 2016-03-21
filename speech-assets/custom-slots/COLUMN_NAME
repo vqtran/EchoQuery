@@ -194,3 +194,24 @@ suppliers city
 suppliers nation
 suppliers region
 suppliers phone
+
+admission insurance
+admission language
+admission religion
+admission ethnicity
+admission diagnosis
+admissions insurance
+admissions language
+admissions religion
+admissions ethnicity
+admissions diagnosis
+
+patient name
+patient age
+patient gender
+patients name
+patients age
+patients gender
+
+doctor name
+doctors name
