@@ -9,8 +9,8 @@ import javax.annotation.Nullable;
 import com.facebook.presto.sql.tree.ComparisonExpression;
 import com.facebook.presto.sql.tree.LogicalBinaryExpression;
 
-import echoquery.sql.model.ColumnName;
-import echoquery.sql.model.ColumnType;
+import echoquery.querier.schema.ColumnName;
+import echoquery.querier.schema.ColumnType;
 
 public final class SlotUtil {
   public final static String TABLE_NAME = "TableName";

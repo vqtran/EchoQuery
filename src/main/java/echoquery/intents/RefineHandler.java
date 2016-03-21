@@ -11,23 +11,22 @@ import com.amazon.speech.slu.Intent;
 import com.amazon.speech.speechlet.Session;
 import com.amazon.speech.speechlet.SpeechletResponse;
 
-import echoquery.sql.Querier;
-import echoquery.sql.QueryRequest;
-import echoquery.sql.QueryResult;
-import echoquery.sql.model.ColumnType;
+import echoquery.querier.Querier;
+import echoquery.querier.QueryRequest;
+import echoquery.querier.schema.ColumnType;
 import echoquery.utils.Response;
 import echoquery.utils.Serializer;
 import echoquery.utils.SessionUtil;
 import echoquery.utils.SlotUtil;
 
-public class NarrowHandler implements IntentHandler {
+public class RefineHandler implements IntentHandler {
 
   private static final Logger log =
-      LoggerFactory.getLogger(NarrowHandler.class);
+      LoggerFactory.getLogger(RefineHandler.class);
   private final Querier querier;
   private final QueryHandler aggregationHandler;
 
-  public NarrowHandler(Connection conn, QueryHandler aggregationHandler) {
+  public RefineHandler(Connection conn, QueryHandler aggregationHandler) {
     this.querier = new Querier(conn);
     this.aggregationHandler = aggregationHandler;
   }

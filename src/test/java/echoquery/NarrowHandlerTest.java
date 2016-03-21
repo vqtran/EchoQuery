@@ -12,14 +12,14 @@ import com.amazon.speech.speechlet.Session;
 
 import static org.junit.Assert.assertEquals;
 import echoquery.intents.QueryHandler;
-import echoquery.intents.NarrowHandler;
-import echoquery.sql.QueryRequest;
+import echoquery.querier.QueryRequest;
+import echoquery.intents.RefineHandler;
 import echoquery.utils.Serializer;
 import echoquery.utils.SessionUtil;
 import echoquery.utils.SlotUtil;
 
 public class NarrowHandlerTest {
-  private NarrowHandler handler = new NarrowHandler(
+  private RefineHandler handler = new RefineHandler(
       TestConnection.getInstance(),
       new QueryHandler(TestConnection.getInstance()));
 

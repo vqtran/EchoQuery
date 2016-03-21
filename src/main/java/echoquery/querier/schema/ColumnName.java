@@ -1,4 +1,4 @@
-package echoquery.sql.model;
+package echoquery.querier.schema;
 
 import java.io.Serializable;
 

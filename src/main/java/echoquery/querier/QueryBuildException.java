@@ -1,4 +1,4 @@
-package echoquery.sql;
+package echoquery.querier;
 
 public class QueryBuildException extends Exception {
 

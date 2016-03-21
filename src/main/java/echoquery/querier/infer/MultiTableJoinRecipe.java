@@ -1,4 +1,4 @@
-package echoquery.sql.joins;
+package echoquery.querier.infer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import com.facebook.presto.sql.tree.QualifiedName;
 import com.facebook.presto.sql.tree.QualifiedNameReference;
 import com.facebook.presto.sql.tree.Relation;
 
-import echoquery.sql.model.ForeignKey;
+import echoquery.querier.schema.ForeignKey;
 
 public class MultiTableJoinRecipe implements JoinRecipe {
   private String baseTable;

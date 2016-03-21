@@ -86,7 +86,7 @@
       ]
     },
     {
-      "intent": "NarrowIntent",
+      "intent": "RefineIntent",
       "slots": [
         {
           "name": "ComparisonColumnOne",
@@ -115,7 +115,7 @@
       ]
     },
     {
-      "intent": "ClarifyAmbiguousTableIntent",
+      "intent": "ClarifyIntent",
       "slots": [
         {
           "name": "TableName",
@@ -126,6 +126,18 @@
           "type": "COLUMN_NAME"
         }
       ]
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.NoIntent"
     }
   ]
 }
