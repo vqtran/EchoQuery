@@ -14,7 +14,7 @@ public final class SingletonConnections {
       LoggerFactory.getLogger(SingletonConnections.class);
 
   private static final String URI =
-      "jdbc:mysql://speechql.cutq0x5qwogl.us-east-1.rds.amazonaws.com:3306/";
+      "jdbc:mysql://speechql.cq9gw5urb6jc.us-east-1.rds.amazonaws.com:3306/";
   private static final String dataDB = "ssb";
   private static final String stateDB = "sessions";
 
