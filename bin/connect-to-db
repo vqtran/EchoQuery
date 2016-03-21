@@ -1,3 +1,3 @@
 #!/bin/bash 
 
- mysql -h speechql.cutq0x5qwogl.us-east-1.rds.amazonaws.com -P 3306 -u gabe -p --local-infile=1
+ mysql -h speechql.cq9gw5urb6jc.us-east-1.rds.amazonaws.com -P 3306 -u gabe -p --local-infile=1
