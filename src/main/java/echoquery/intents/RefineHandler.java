@@ -24,17 +24,17 @@ public class RefineHandler implements IntentHandler {
   private static final Logger log =
       LoggerFactory.getLogger(RefineHandler.class);
   private final Querier querier;
-  private final QueryHandler aggregationHandler;
+  private final QueryHandler queryHandler;
 
   public RefineHandler(Connection conn, QueryHandler aggregationHandler) {
     this.querier = new Querier(conn);
-    this.aggregationHandler = aggregationHandler;
+    this.queryHandler = aggregationHandler;
   }
 
   @Override
   public SpeechletResponse respond(Intent intent, Session session) {
     try {
-      return aggregationHandler.respond(
+      return queryHandler.respond(
           updateRequest(intent, (QueryRequest) Serializer.deserialize(
               (String) session.getAttribute(SessionUtil.REQUEST_ATTRIBUTE))),
           session);
@@ -62,8 +62,9 @@ public class RefineHandler implements IntentHandler {
 
   private QueryRequest updateRequest(
       Intent intent, QueryRequest previousRequest) {
-    return previousRequest
-        .addWhereClause(
+    if (intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue() == null) {
+      previousRequest
+          .addWhereClause(
             previousRequest.getComparisonColumns().size() > 0 ? "and" : null,
             SlotUtil.parseColumnSlot(
             intent.getSlot(SlotUtil.COMPARISON_COLUMN_1).getValue())
@@ -73,8 +74,12 @@ public class RefineHandler implements IntentHandler {
             intent.getSlot(SlotUtil.COMPARATOR_1).getValue(),
             ObjectUtils.defaultIfNull(
                 intent.getSlot(SlotUtil.COLUMN_VALUE_1).getValue(),
-                intent.getSlot(SlotUtil.COLUMN_NUMBER_1).getValue()))
-        .setGroupByColumn(SlotUtil.parseColumnSlot(
-            intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue()));
+                intent.getSlot(SlotUtil.COLUMN_NUMBER_1).getValue()));
+    } else {
+      previousRequest
+          .setGroupByColumn(SlotUtil.parseColumnSlot(
+              intent.getSlot(SlotUtil.GROUP_BY_COLUMN).getValue()));
+    }
+    return previousRequest;
   }
 }

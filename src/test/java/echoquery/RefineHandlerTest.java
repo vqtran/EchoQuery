@@ -18,12 +18,12 @@ import echoquery.utils.Serializer;
 import echoquery.utils.SessionUtil;
 import echoquery.utils.SlotUtil;
 
-public class NarrowHandlerTest {
+public class RefineHandlerTest {
   private RefineHandler handler = new RefineHandler(
       TestConnection.getInstance(),
       new QueryHandler(TestConnection.getInstance()));
 
-  private Map<String, Slot> newNarrowEmptySlots() {
+  private static Map<String, Slot> newRefineEmptySlots() {
     Map<String, Slot> slots = new HashMap<>();
     addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, null);
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, null);
@@ -34,13 +34,13 @@ public class NarrowHandlerTest {
     return slots;
   }
 
-  private void addSlotValue(
+  private static void addSlotValue(
       Map<String, Slot> slots, String slotName, String slotValue) {
     slots.put(slotName,
         Slot.builder().withName(slotName).withValue(slotValue).build());
   }
 
-  private Session newSimpleSession() {
+  private static Session newSimpleSession() {
     Session session = Session.builder().withSessionId("1").build();
     Map<String, Slot> slots = QueryHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
@@ -57,7 +57,7 @@ public class NarrowHandlerTest {
     return session;
   }
 
-  private Session newWhereSession() {
+  private static Session newWhereSession() {
     Session session = Session.builder().withSessionId("1").build();
     Map<String, Slot> slots = QueryHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
@@ -77,7 +77,7 @@ public class NarrowHandlerTest {
     return session;
   }
 
-  private Session newGroupedBySession() {
+  private static Session newGroupedBySession() {
     Session session = Session.builder().withSessionId("1").build();
     Map<String, Slot> slots = QueryHandlerTest.newEmptySlots();
     addSlotValue(slots, SlotUtil.TABLE_NAME, "sales");
@@ -104,9 +104,8 @@ public class NarrowHandlerTest {
 
   @Test
   public void testWhere() {
-    Session session = this.newSimpleSession();
-
-    Map<String, Slot> slots = newNarrowEmptySlots();
+    Session session = newSimpleSession();
+    Map<String, Slot> slots = newRefineEmptySlots();
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
@@ -116,33 +115,52 @@ public class NarrowHandlerTest {
 
   @Test
   public void testGroupBy() {
-    Session session = this.newSimpleSession();
-
-    Map<String, Slot> slots = newNarrowEmptySlots();
+    Session session = newSimpleSession();
+    Map<String, Slot> slots = newRefineEmptySlots();
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
     assertResponse(slots, session, "There is one row in the sales table for "
         + "the product camera, two rows for speakers, and one row for tv.");
   }
 
   @Test
-  public void testOverwriteGroupBy() {
-    Session session = this.newGroupedBySession();
-
-    Map<String, Slot> slots = newNarrowEmptySlots();
-    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
-    assertResponse(slots, session, "There is one row in the sales table for "
-        + "the product camera, two rows for speakers, and one row for tv.");
-  }
-
-  @Test
-  public void testWithWhere() {
-    Session session = this.newWhereSession();
-
-    Map<String, Slot> slots = newNarrowEmptySlots();
+  public void testAddWhere() {
+    Session session = newWhereSession();
+    Map<String, Slot> slots = newRefineEmptySlots();
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
     assertResponse(slots, session, "There is one row in the sales table where "
         + "store is not equal to Warwick and product is equal to speakers.");
+  }
+
+  @Test
+  public void testOverwriteGroupBy() {
+    Session session = newGroupedBySession();
+    Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
+    assertResponse(slots, session, "There is one row in the sales table for "
+        + "the product camera, two rows for speakers, and one row for tv.");
+  }
+
+  @Test
+  public void testWhereThenGroupBy() {
+    Session session = newWhereSession();
+    Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
+    assertResponse(slots, session, "There is one row in the sales table where "
+        + "store is not equal to Warwick for the product camera, one row for "
+        + "speakers, and one row for tv.");
+  }
+
+  @Test
+  public void testGroupByThenWhere() {
+    Session session = newGroupedBySession();
+    Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
+    assertResponse(slots, session, "There is one row in the sales table where "
+        + "product is equal to speakers for the store providence, and one row "
+        + "for warwick.");
   }
 }
