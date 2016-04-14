@@ -159,12 +159,20 @@ QueryIntent {Func} (entries in|rows in) {TableName} \
 # RefineIntent: Add more where or group-by after the fact.
 #-------------------------------------------------------------------------------
 
-RefineIntent [What if|What about|How about|And if|And when|Also if|Also when|Also \
-where|And where|Also|And] \
-{ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}]
+RefineIntent {Refine} \
+  {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}]
+RefineIntent {Refine} \
+  {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+  {BinaryLogicOpOne} \
+  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}]
+RefineIntent {Refine} \
+  {ComparisonColumnOne} {ComparatorOne} [{ColumnValueOne}|{ColumnNumberOne}] \
+  {BinaryLogicOpOne} \
+  {ComparisonColumnTwo} {ComparatorTwo} [{ColumnValueTwo}|{ColumnNumberTwo}] \
+  {BinaryLogicOpTwo} \
+  {ComparisonColumnThree} {ComparatorThree} [{ColumnValueThree}|{ColumnNumberThree}]
 
-RefineIntent (What if|What about|How about|And if|And when|Also if|Also when|Also \
-where|And where|Also|And|Instead|Actually) {GroupBy} {GroupByColumn}
+RefineIntent ({Refine}) {GroupBy} {GroupByColumn}
 
 #-------------------------------------------------------------------------------
 # ClarifyIntent: Clarify what you meant.
