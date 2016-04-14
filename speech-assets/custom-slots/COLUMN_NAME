@@ -195,6 +195,15 @@ suppliers nation
 suppliers region
 suppliers phone
 
+insurance
+language
+religion
+ethnicity
+diagnosis
+name
+age
+gender
+
 admission insurance
 admission language
 admission religion
