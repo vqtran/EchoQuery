@@ -6,6 +6,12 @@ class SessionUtils {
       {return response.text();})
       .then((text) => {callback(text);});
   }
+
+  static giveSessionDisplayData(callback) {
+    fetch('/data/' + SessionStore.getSessionId()).then((response) => 
+      {return response.text();})
+      .then((text) => {callback(text);});
+  }
 }
 
 export default SessionUtils;
