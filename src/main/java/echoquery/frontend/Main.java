@@ -22,9 +22,6 @@ public class Main {
     Spark.get("/fetch/:id", (request, response) -> 
         new FetchHandler(request, response).respond());
 
-    Spark.get("/data/:id", (request, response) -> 
-        new FetchHandler(request, response).respond());
-
     Spark.get("/fetch/", (request, response) -> "Enter a valid User ID");
   }
 }
