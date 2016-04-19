@@ -25,9 +25,8 @@ class App extends React.Component {
     window.addEventListener("resize", this.updateDimensions);
     SessionStore.listen(this.onChange);
     this.timer = setInterval(() => {
-      SessionUtils.giveSessionDisplayText(DisplayActions.setDisplayText);
-      SessionUtils.giveSessionData(DisplayActions.setData);
-    }, 50);
+      SessionUtils.giveSessionDisplayData(DisplayActions.setDisplayData);
+    }, 250);
   }
 
   componentWillUnmount() {

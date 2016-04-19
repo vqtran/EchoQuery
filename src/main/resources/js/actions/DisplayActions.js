@@ -1,8 +1,8 @@
 import alt from '../alt';
 
 class DisplayActions {
-  setDisplayText(message) {
-    return message;
+  setDisplayData(data) {
+    return JSON.parse(data);
   }
 }
 

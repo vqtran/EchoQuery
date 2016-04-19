@@ -7,7 +7,7 @@ class SessionStore {
 
   constructor() {
     this.bindListeners({
-      updateDisplayText: DisplayActions.setDisplayText,
+      updateDisplayData: DisplayActions.setDisplayData,
       updateSessionId: SessionActions.setSessionId,
     });
 
@@ -21,9 +21,10 @@ class SessionStore {
     });
   }
 
-  updateDisplayText(data) {
+  updateDisplayData(data) {
     this.setState({
-      displayText: data,
+      displayText: data["sessions.display"],
+      displayData: JSON.parse(data["sessions.result"]),
     });
   }
 
