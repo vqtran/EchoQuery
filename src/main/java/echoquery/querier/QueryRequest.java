@@ -256,6 +256,17 @@ public class QueryRequest implements Serializable {
     }
   }
 
+  /**
+   * Removes all where clauses - all associated columns, values, and operators.
+   */
+  public QueryRequest removeAllWhereClauses() {
+    comparisonBinaryOperators.clear();
+    comparisonColumns.clear();
+    comparators.clear();
+    comparisonValues.clear();
+    return this;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
