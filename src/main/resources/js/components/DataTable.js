@@ -30,7 +30,7 @@ class DataTable extends React.Component {
         headerHeight={50}
         rowsCount={this.getRowsCount()}
         rowHeight={50}
-        width={this.state.width}
+        width={this.state.width-100}
         height={this.state.height-200}>
         {this.generateColumns()}
       </Table>
