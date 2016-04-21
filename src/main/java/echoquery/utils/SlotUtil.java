@@ -201,6 +201,7 @@ public final class SlotUtil {
         "also when",
         "also where",
         "add",
+        "add where",
         "also add",
         "also add where"
     }));

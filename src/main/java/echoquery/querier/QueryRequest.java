@@ -9,27 +9,11 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.amazon.speech.slu.Intent;
-import com.facebook.presto.sql.QueryUtil;
-import com.facebook.presto.sql.tree.AllColumns;
 import com.facebook.presto.sql.tree.ComparisonExpression;
-import com.facebook.presto.sql.tree.Expression;
-import com.facebook.presto.sql.tree.GroupingElement;
 import com.facebook.presto.sql.tree.LogicalBinaryExpression;
-import com.facebook.presto.sql.tree.LongLiteral;
-import com.facebook.presto.sql.tree.QualifiedName;
-import com.facebook.presto.sql.tree.QualifiedNameReference;
-import com.facebook.presto.sql.tree.Query;
-import com.facebook.presto.sql.tree.Select;
-import com.facebook.presto.sql.tree.SelectItem;
-import com.facebook.presto.sql.tree.SimpleGroupBy;
-import com.facebook.presto.sql.tree.SingleColumn;
-import com.facebook.presto.sql.tree.StringLiteral;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
-import echoquery.querier.infer.InferredContext;
-import echoquery.querier.infer.JoinRecipe;
-import echoquery.querier.infer.SchemaInferrer;
 import echoquery.querier.schema.ColumnName;
 import echoquery.querier.schema.ColumnType;
 import echoquery.utils.SlotUtil;
@@ -158,20 +142,20 @@ public class QueryRequest implements Serializable {
   }
 
   public List<ColumnName> getComparisonColumns() {
-    return comparisonColumns;
+    return ImmutableList.copyOf(comparisonColumns);
   }
 
   public List<Optional<ComparisonExpression.Type>> getComparators() {
-    return comparators;
+    return ImmutableList.copyOf(comparators);
   }
 
   public List<Optional<String>> getComparisonValues() {
-    return comparisonValues;
+    return ImmutableList.copyOf(comparisonValues);
   }
 
   public List<Optional<LogicalBinaryExpression.Type>>
       getComparisonBinaryOperators() {
-    return comparisonBinaryOperators;
+    return ImmutableList.copyOf(comparisonBinaryOperators);
   }
 
   public ColumnName getGroupByColumn() {
@@ -254,6 +238,49 @@ public class QueryRequest implements Serializable {
     } else {
       return addWhereClause(comparisonColumn, comparator, comparisonValue);
     }
+  }
+
+  /**
+   * Modify an existing where clause referenced by an existing column name with
+   * new comparator and new comparison value.
+   * @param existingColumn
+   * @param newComparator
+   * @param newComparisonValue
+   * @return
+   */
+  public QueryRequest modifyWhereClause(
+      ColumnName existingColumn,
+      @Nullable String newComparator,
+      @Nullable String newComparisonValue) {
+    for (int i = 0; i < comparisonColumns.size(); i++) {
+      if (existingColumn.equals(comparisonColumns.get(i))) {
+        comparators.set(i,
+            Optional.fromNullable(SlotUtil.getComparisonType(newComparator)));
+        comparisonValues.set(i, Optional.fromNullable(newComparisonValue));
+        break;
+      }
+    }
+    return this;
+  }
+
+  /**
+   * Remove an existing where clause referenced by an existing column name.
+   * @param existingColumn
+   * @return
+   */
+  public QueryRequest removeWhereClause(ColumnName existingColumn) {
+    for (int i = 0; i < comparisonColumns.size(); i++) {
+      if (existingColumn.equals(comparisonColumns.get(i))) {
+        comparisonColumns.remove(i);
+        comparators.remove(i);
+        comparisonValues.remove(i);
+        if (!comparisonBinaryOperators.isEmpty()) {
+          comparisonBinaryOperators.remove(Math.max(0, i-1));
+        }
+        break;
+      }
+    }
+    return this;
   }
 
   /**
