@@ -1,30 +1,13 @@
 package echoquery.querier;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 import org.json.JSONObject;
 
-import com.facebook.presto.sql.tree.AstVisitor;
 import com.facebook.presto.sql.tree.ComparisonExpression;
-import com.facebook.presto.sql.tree.DefaultTraversalVisitor;
-import com.facebook.presto.sql.tree.FunctionCall;
-import com.facebook.presto.sql.tree.GroupingElement;
-import com.facebook.presto.sql.tree.LogicalBinaryExpression;
-import com.facebook.presto.sql.tree.LongLiteral;
-import com.facebook.presto.sql.tree.QualifiedNameReference;
-import com.facebook.presto.sql.tree.QuerySpecification;
-import com.facebook.presto.sql.tree.SimpleGroupBy;
-import com.facebook.presto.sql.tree.SortItem;
-import com.facebook.presto.sql.tree.StringLiteral;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
 
 import echoquery.querier.infer.JoinRecipe;
-import echoquery.querier.infer.SchemaInferrer;
-import echoquery.querier.translate.TranslationUtils;
 import echoquery.utils.SlotUtil;
 
 /**
@@ -35,21 +18,29 @@ import echoquery.utils.SlotUtil;
 public class QueryResult {
   public enum Status {
     SUCCESS,
-    REPAIR_REQUEST,
-    FAILURE
+    FAILURE,
+    CLARIFICATION_NEEDED,
   }
+
+  public enum Clarification {
+    COLUMN_WITH_AMBIGUOUS_TABLE,
+  }
+
   private final Status status;
+  private final Clarification clarificationNeeded;
   private final String message;
   private final JSONObject data;
 
   public QueryResult(Status status, String message) {
     this.status = status;
+    this.clarificationNeeded = null;
     this.message = message;
     this.data = null;
   }
 
   public QueryResult(Status status, String message, JSONObject data) {
     this.status = status;
+    this.clarificationNeeded = null;
     this.message = message;
     this.data = data;
   }
