@@ -1,6 +1,7 @@
 package echoquery.utils;
 
 import java.util.Arrays;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +12,10 @@ import com.facebook.presto.sql.tree.LogicalBinaryExpression;
 
 import echoquery.querier.schema.ColumnName;
 import echoquery.querier.schema.ColumnType;
+
+/**
+ * TODO(vqtran): Refactor this class, it's a kitchen sink!
+ */
 
 public final class SlotUtil {
   public final static String TABLE_NAME = "TableName";
@@ -41,6 +46,8 @@ public final class SlotUtil {
 
   public final static String TABLE_AND_COLUMN = "TableAndColumnName";
 
+  public final static String REFINE_TYPE = "RefineType";
+
   private static Set<String> getExpr = new HashSet<>();
   private static Set<String> countExpr = new HashSet<>();
   private static Set<String> averageExpr = new HashSet<>();
@@ -54,6 +61,10 @@ public final class SlotUtil {
   private static Set<String> lessExpr = new HashSet<>();
   private static Set<String> greaterEqualExpr = new HashSet<>();
   private static Set<String> lessEqualExpr = new HashSet<>();
+
+  private static Set<String> refineAddExpr = new HashSet<>();
+  private static Set<String> refineReplaceExpr = new HashSet<>();
+  private static Set<String> refineDropExpr = new HashSet<>();
 
   static {
     getExpr.addAll(Arrays.asList(new String[] {
@@ -178,6 +189,61 @@ public final class SlotUtil {
         "below or equal",
         "is below or equal"
     }));
+    refineAddExpr.addAll(Arrays.asList(new String[]{
+        "and",
+        "and if",
+        "and when",
+        "and where",
+        "and also",
+        "and also where",
+        "also",
+        "also if",
+        "also when",
+        "also where",
+        "add",
+        "add where",
+        "also add",
+        "also add where"
+    }));
+    refineReplaceExpr.addAll(Arrays.asList(new String[]{
+        "what if",
+        "what if we",
+        "what if where",
+        "how about",
+        "how about where",
+        "how about if",
+        "instead",
+        "instead how about",
+        "instead where",
+        "instead how about where",
+        "actually",
+        "actually how about where"
+    }));
+    refineDropExpr.addAll(Arrays.asList(new String[]{
+        "drop",
+        "drop where",
+        "drop the",
+        "drop the part",
+        "drop the part where",
+        "drop the clause",
+        "drop the clause where",
+        "forget",
+        "forget the",
+        "forget about",
+        "forget where",
+        "forget about where",
+        "forget the part",
+        "forget the part where",
+        "forget the clause",
+        "forget the clause where",
+        "remove",
+        "remove the",
+        "remove where",
+        "remove the part",
+        "remove the part where",
+        "remove the clause",
+        "remove the clause where"
+    }));
   }
 
   public static String getFunction(String expression) {
@@ -285,6 +351,22 @@ public final class SlotUtil {
           parts[1],
           ColumnType.UNKNOWN);
     }
+  }
+
+  public static RefineType getRefineType(@Nullable String expression) {
+    if (expression == null) {
+      return RefineType.REPLACE;
+    }
+    if (refineAddExpr.contains(expression)) {
+      return RefineType.ADD;
+    }
+    if (refineReplaceExpr.contains(expression)) {
+      return RefineType.REPLACE;
+    }
+    if (refineDropExpr.contains(expression)) {
+      return RefineType.DROP;
+    }
+    return null;
   }
 
   private SlotUtil() {}
