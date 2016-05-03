@@ -6,11 +6,13 @@ class WindowStore {
   constructor() {
     this.bindListeners({
       updateWindow: WindowActions.setWindow,
+      updateVizWidth: WindowActions.setVizWidth,
     });
 
     this.state = {
       width: 1000,
       height: 1000,
+      vizWidth: 0,
     };
 
     this.exportPublicMethods({
@@ -22,6 +24,12 @@ class WindowStore {
     this.setState({
       width: data.width,
       height: data.height,
+    });
+  }
+
+  updateVizWidth(data) {
+    this.setState({
+      vizWidth: data,
     });
   }
 
