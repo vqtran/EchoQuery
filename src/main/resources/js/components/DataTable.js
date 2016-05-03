@@ -8,20 +8,13 @@ const Cell = FixedDataTable.Cell
 import WindowStore from '../stores/WindowStore';
 import SessionStore from '../stores/SessionStore';
 
-const TextCell = ({rowIndex, data, col, ...props}) => (
-  <Cell {...props}>
-    {data.getObjectAt(rowIndex)[col]}
-  </Cell>
-);
-
 class DataTable extends React.Component {
 
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
     this.generateColumns = this.generateColumns.bind(this);
-    this.state = WindowStore.getState();
-    this.setState(SessionStore.getState());
+    this.state = {...WindowStore.getState(), ...SessionStore.getState()}
   }
 
   render() {
@@ -30,8 +23,8 @@ class DataTable extends React.Component {
         headerHeight={50}
         rowsCount={this.getRowsCount()}
         rowHeight={50}
-        width={this.state.width}
-        height={this.state.height-200}>
+        width={this.state.vizWidth}
+        height={this.state.height}>
         {this.generateColumns()}
       </Table>
     );
@@ -47,7 +40,6 @@ class DataTable extends React.Component {
 
   generateColumns() {
     const ret = [];
-    console.log(this.state.displayData);
     for (const propt in this.state.displayData) {
       ret.push(<Column 
           key={propt}
