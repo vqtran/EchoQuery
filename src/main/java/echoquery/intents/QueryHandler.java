@@ -62,8 +62,13 @@ public class QueryHandler implements IntentHandler {
       VisualizationUtil.updateResultData(result.getData(), session);
     }
 
-    if (result.getStatus() == QueryResult.Status.REPAIR_REQUEST) {
-      return Response.ask(result.getMessage(), result.getMessage(), session);
+    if (result.getStatus() == QueryResult.Status.CLARIFICATION_NEEDED) {
+      switch (result.getProblem()) {
+        case AMBIGUOUS_TABLE_FOR_COLUMN:
+          return Response.ask(result.getMessage(), result.getMessage(), session);
+        default:
+          return Response.unexpectedError(session);
+      }
     } else {
       return Response.say(result.getMessage(), session);
     }
