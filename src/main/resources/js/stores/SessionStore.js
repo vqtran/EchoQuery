@@ -1,4 +1,6 @@
 import alt from '../alt';
+import hash from 'object-hash';
+ 
 
 import DisplayActions from '../actions/DisplayActions';
 import SessionActions from '../actions/SessionActions';
@@ -8,16 +10,14 @@ class SessionStore {
   constructor() {
     this.bindListeners({
       updateDisplayData: DisplayActions.setDisplayData,
-      updateMode: DisplayActions.setMode,
-      chooseColumns: DisplayActions.setColumns,
     });
 
     this.state = {
+      currentDigest: "",
       userId: window.location.pathname.split("/")[2],
       displayData: {},
       responseHistory: ["What do you want?"],
-      mode: "heatmap",
-      chosenColumns: ["patients.age", "patients.gender"],
+      chosenColumns: [""],
       buckets: [["none"], ["none"]],
       bucketizedCounts: [],
       bucketCount: 10,
@@ -76,7 +76,11 @@ class SessionStore {
         const localmin = Math.min(...this.state.displayData[col]);
         const localmax = Math.max(...this.state.displayData[col]);
         const localdiff = localmax - localmin;
-        return this.range(localmin, localmax, localdiff / this.state.bucketCount);
+        const range = this.range(localmin, localmax, localdiff / this.state.bucketCount);
+        for (const idx in range) {
+          range[idx] = range[idx].toFixed(2);
+        }
+        return range
       default:
         return ["none"];
     }
@@ -100,17 +104,19 @@ class SessionStore {
   };
 
   updateDisplayData(data) {
-    this.setState({
-      displayData: JSON.parse(data["sessions.result"]),
-      responseHistory: this.possiblyAppend(data["sessions.display"][0], this.state.responseHistory),
-    });
-    this.calculateBuckets();
-  }
+    const digest = hash(data);
+    if (digest != this.state.currentDigest) {
+      this.setState({
+        currentDigest: digest,
+        displayData: JSON.parse(data["sessions.result"]),
+        responseHistory: this.possiblyAppend(data["sessions.display"][0], this.state.responseHistory),
 
-  updateMode(data) {
-    this.setState({
-      mode: data,
-    });
+        chosenColumns: data["sessions.vis"][0].split(","),
+      });
+      this.calculateBuckets();
+      return true
+    }
+    return false
   }
   
   chooseColumns(data) {

@@ -16,6 +16,7 @@ class App extends React.Component {
         <div className="text-center container-fluid">
           <div className="col-md-3">
             <ResponseHistory />
+            <img src="http://localhost:4567/assets/logo.png" className="logo"/>
           </div>
           <div id="vizHolder" className="col-md-9">
             <DataView />

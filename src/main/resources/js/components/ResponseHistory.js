@@ -14,7 +14,7 @@ class ResponseHistory extends React.Component {
 
   render() {
     return (
-      <ul className="list-group">
+      <ul className="response-history list-group">
         {this.generateRows()}
       </ul>
     );

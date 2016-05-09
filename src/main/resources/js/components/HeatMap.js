@@ -45,11 +45,12 @@ class HeatMap extends React.Component {
     const data = this.makeData(this.state.bucketizedCounts);
 
     const el = ReactDOM.findDOMNode(this);
-    const margin = { top: 50, right: 0, bottom: 100, left: 30 },
+    const margin = { top: 40, right: 0, bottom: 50, left: 90 },
           width = this.state.vizWidth - margin.left - margin.right,
           height = this.state.height - margin.top - margin.bottom,
           gridWidth = width / bucketsX.length,
           gridHeight = height / bucketsY.length,
+          legendElementWidth = Math.min(gridWidth*2, 80),
           buckets = 9,
           colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"]; // alternatively colorbrewer.YlGnBu[9]
     d3.select("#heatmap-svg").remove();
@@ -81,8 +82,8 @@ class HeatMap extends React.Component {
             .attr("class", "timeLabel mono axis");
 
     const colorScale = d3.scale.linear()
-            .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
-            .range(colors); 
+            .domain([d3.min(data, function (d) { return d.value; }), d3.max(data, function (d) { return d.value; })])
+            .range(['#fde0dd', '#c51b8a']); 
     const cards = svg.selectAll(".hour")
             .data(data, function(d) {return d.varX+':'+d.varY;});
 
@@ -101,13 +102,36 @@ class HeatMap extends React.Component {
     cards.select("title").text(function(d) { return d.value; });
 
     cards.exit().remove();
+
+    
+    var legend = svg.selectAll(".legend")
+        .data([d3.min(data, function (d) { return d.value; }), d3.max(data, function (d) { return d.value; })])
+
+    legend.enter().append("g")
+        .attr("class", "legend");
+
+    legend.append("rect")
+      .attr("x", function(d, i) { return (width / 2) * i; })
+      .attr("y", height + 20)
+      .attr("width", (width / 2))
+      .attr("height", 20)
+      .style("fill", function(d, i) { return ['#fde0dd', '#c51b8a'][i]; });
+
+    legend.append("text")
+      .attr("class", "mono")
+      .text(function(d) { return d; })
+      .attr("x", function(d, i) { return (width / 2) * i; })
+      .attr("y", height + 15);
+
+    legend.exit().remove();
+
   }
 
   makeData(bucketizedCounts) {
     const output = [];
     for (const key in bucketizedCounts) {
       const varX = key.split(",")[0];
-      const varY = +key.split(",")[1];
+      const varY = key.split(",")[1];
       const value = bucketizedCounts[key];
       output.push({
         'varX': varX, 

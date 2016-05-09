@@ -13,9 +13,9 @@ class DataView extends React.Component {
   }
 
   render() {
-    if (this.state.mode == "table") {
+    if (this.state.chosenColumns == [""]) {
       return <DataTable />;
-    } else if (this.state.mode == "heatmap") {
+    } else {
       return <HeatMap />;
     }
   }

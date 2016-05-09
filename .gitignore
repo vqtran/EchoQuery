@@ -18,3 +18,7 @@ airportdata/
 *.swo
 
 public/assets/bundle.js
+
+MIMIC/
+
+screenshot.png
