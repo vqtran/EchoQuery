@@ -6,7 +6,6 @@ class SessionUtils {
       {return response.text();})
       .then((text) => {callback(text);});
   }
-
 }
 
 export default SessionUtils;
