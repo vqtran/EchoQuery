@@ -16,8 +16,9 @@ import com.amazon.speech.speechlet.SpeechletResponse;
 import echoquery.intents.ClarifyHandler;
 import echoquery.intents.HelpHandler;
 import echoquery.intents.IntentHandler;
-import echoquery.intents.RefineHandler;
+import echoquery.intents.PlotHandler;
 import echoquery.intents.QueryHandler;
+import echoquery.intents.RefineHandler;
 import echoquery.utils.Response;
 
 /**
@@ -35,6 +36,7 @@ public class EchoQuerySpeechlet implements Speechlet {
   private IntentHandler helpHandler;
   private IntentHandler clarifyHandler;
   private IntentHandler refineHandler;
+  private IntentHandler plotHandler;
 
   public EchoQuerySpeechlet() {
     super();
@@ -44,6 +46,7 @@ public class EchoQuerySpeechlet implements Speechlet {
         SingletonConnections.getDataInstance(), queryHandler);
     clarifyHandler = new ClarifyHandler(
         SingletonConnections.getDataInstance(), queryHandler);
+    plotHandler = new PlotHandler();
   }
 
   @Override
@@ -82,6 +85,8 @@ public class EchoQuerySpeechlet implements Speechlet {
         return refineHandler.respond(intent, session);
       case "ClarifyIntent":
         return clarifyHandler.respond(intent, session);
+      case "PlotIntent":
+        return plotHandler.respond(intent, session);
       case "AMAZON.HelpIntent":
         return helpHandler.respond(intent, session);
       case "AMAZON.StopIntent":
