@@ -803,3 +803,27 @@ ClarifyIntent {TableAndColumnName}
 ClarifyIntent I meant {TableAndColumnName}
 ClarifyIntent I'm referring to {TableAndColumnName}
 ClarifyIntent How about {TableAndColumnName}
+PlotIntent {Plot} {PlotColumnOne}
+PlotIntent {Plot} a histogram of {PlotColumnOne}
+PlotIntent {Plot} a heatmap of {PlotColumnOne}
+PlotIntent {Plot} the distribution of {PlotColumnOne}
+PlotIntent {Plot} {PlotColumnOne} {PlotColumnTwo}
+PlotIntent {Plot} a histogram of {PlotColumnOne} {PlotColumnTwo}
+PlotIntent {Plot} a heatmap of {PlotColumnOne} {PlotColumnTwo}
+PlotIntent {Plot} the distribution of {PlotColumnOne} {PlotColumnTwo}
+PlotIntent {Plot} {PlotColumnOne} and {PlotColumnTwo}
+PlotIntent {Plot} {PlotColumnOne} versus {PlotColumnTwo}
+PlotIntent {Plot} {PlotColumnOne} against {PlotColumnTwo}
+PlotIntent {Plot} {PlotColumnOne} with {PlotColumnTwo}
+PlotIntent {Plot} a histogram of {PlotColumnOne} and {PlotColumnTwo}
+PlotIntent {Plot} a histogram of {PlotColumnOne} versus {PlotColumnTwo}
+PlotIntent {Plot} a histogram of {PlotColumnOne} against {PlotColumnTwo}
+PlotIntent {Plot} a histogram of {PlotColumnOne} with {PlotColumnTwo}
+PlotIntent {Plot} a heatmap of {PlotColumnOne} and {PlotColumnTwo}
+PlotIntent {Plot} a heatmap of {PlotColumnOne} versus {PlotColumnTwo}
+PlotIntent {Plot} a heatmap of {PlotColumnOne} against {PlotColumnTwo}
+PlotIntent {Plot} a heatmap of {PlotColumnOne} with {PlotColumnTwo}
+PlotIntent {Plot} the distribution of {PlotColumnOne} and {PlotColumnTwo}
+PlotIntent {Plot} the distribution of {PlotColumnOne} versus {PlotColumnTwo}
+PlotIntent {Plot} the distribution of {PlotColumnOne} against {PlotColumnTwo}
+PlotIntent {Plot} the distribution of {PlotColumnOne} with {PlotColumnTwo}

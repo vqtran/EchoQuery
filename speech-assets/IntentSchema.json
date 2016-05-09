@@ -172,6 +172,23 @@
       ]
     },
     {
+      "intent": "PlotIntent",
+      "slots": [
+        {
+          "name": "Plot",
+          "type": "PLOT"
+        },
+        {
+          "name": "PlotColumnOne",
+          "type": "COLUMN_NAME"
+        },
+        {
+          "name": "PlotColumnTwo",
+          "type": "COLUMN_NAME"
+        }
+      ]
+    },
+    {
       "intent": "AMAZON.StopIntent"
     },
     {
