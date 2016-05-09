@@ -779,42 +779,22 @@ QueryIntent {Func} rows in {TableName} do we have where {ComparisonColumnOne} {C
 QueryIntent {Func} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree} {GroupBy} {GroupByColumn}
 QueryIntent {Func} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnValueThree} {GroupBy} {GroupByColumn}
 QueryIntent {Func} rows in {TableName} do we have where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree} {GroupBy} {GroupByColumn}
-RefineIntent What if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent What if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-RefineIntent What about {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent What about {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-RefineIntent How about {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent How about {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-RefineIntent And if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent And if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-RefineIntent And when {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent And when {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-RefineIntent Also if {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent Also if {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-RefineIntent Also when {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent Also when {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-RefineIntent Also where {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent Also where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-RefineIntent And where {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent And where {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-RefineIntent Also {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent Also {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
-RefineIntent And {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
-RefineIntent And {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnValueThree}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnValueThree}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnValueOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnValueThree}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnValueTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnValueThree}
+RefineIntent {RefineType} {ComparisonColumnOne} {ComparatorOne} {ColumnNumberOne} {BinaryLogicOpOne} {ComparisonColumnTwo} {ComparatorTwo} {ColumnNumberTwo} {BinaryLogicOpTwo} {ComparisonColumnThree} {ComparatorThree} {ColumnNumberThree}
 RefineIntent {GroupBy} {GroupByColumn}
-RefineIntent What if {GroupBy} {GroupByColumn}
-RefineIntent What about {GroupBy} {GroupByColumn}
-RefineIntent How about {GroupBy} {GroupByColumn}
-RefineIntent And if {GroupBy} {GroupByColumn}
-RefineIntent And when {GroupBy} {GroupByColumn}
-RefineIntent Also if {GroupBy} {GroupByColumn}
-RefineIntent Also when {GroupBy} {GroupByColumn}
-RefineIntent Also where {GroupBy} {GroupByColumn}
-RefineIntent And where {GroupBy} {GroupByColumn}
-RefineIntent Also {GroupBy} {GroupByColumn}
-RefineIntent And {GroupBy} {GroupByColumn}
-RefineIntent Instead {GroupBy} {GroupByColumn}
-RefineIntent Actually {GroupBy} {GroupByColumn}
+RefineIntent {RefineType} {GroupBy} {GroupByColumn}
 ClarifyIntent {TableName}
 ClarifyIntent I meant {TableName}
 ClarifyIntent I'm referring to {TableName}
@@ -823,3 +803,27 @@ ClarifyIntent {TableAndColumnName}
 ClarifyIntent I meant {TableAndColumnName}
 ClarifyIntent I'm referring to {TableAndColumnName}
 ClarifyIntent How about {TableAndColumnName}
+PlotIntent {Plot} {PlotColumnOne}
+PlotIntent {Plot} a histogram of {PlotColumnOne}
+PlotIntent {Plot} a heatmap of {PlotColumnOne}
+PlotIntent {Plot} the distribution of {PlotColumnOne}
+PlotIntent {Plot} {PlotColumnOne} {PlotColumnTwo}
+PlotIntent {Plot} a histogram of {PlotColumnOne} {PlotColumnTwo}
+PlotIntent {Plot} a heatmap of {PlotColumnOne} {PlotColumnTwo}
+PlotIntent {Plot} the distribution of {PlotColumnOne} {PlotColumnTwo}
+PlotIntent {Plot} {PlotColumnOne} and {PlotColumnTwo}
+PlotIntent {Plot} {PlotColumnOne} versus {PlotColumnTwo}
+PlotIntent {Plot} {PlotColumnOne} against {PlotColumnTwo}
+PlotIntent {Plot} {PlotColumnOne} with {PlotColumnTwo}
+PlotIntent {Plot} a histogram of {PlotColumnOne} and {PlotColumnTwo}
+PlotIntent {Plot} a histogram of {PlotColumnOne} versus {PlotColumnTwo}
+PlotIntent {Plot} a histogram of {PlotColumnOne} against {PlotColumnTwo}
+PlotIntent {Plot} a histogram of {PlotColumnOne} with {PlotColumnTwo}
+PlotIntent {Plot} a heatmap of {PlotColumnOne} and {PlotColumnTwo}
+PlotIntent {Plot} a heatmap of {PlotColumnOne} versus {PlotColumnTwo}
+PlotIntent {Plot} a heatmap of {PlotColumnOne} against {PlotColumnTwo}
+PlotIntent {Plot} a heatmap of {PlotColumnOne} with {PlotColumnTwo}
+PlotIntent {Plot} the distribution of {PlotColumnOne} and {PlotColumnTwo}
+PlotIntent {Plot} the distribution of {PlotColumnOne} versus {PlotColumnTwo}
+PlotIntent {Plot} the distribution of {PlotColumnOne} against {PlotColumnTwo}
+PlotIntent {Plot} the distribution of {PlotColumnOne} with {PlotColumnTwo}

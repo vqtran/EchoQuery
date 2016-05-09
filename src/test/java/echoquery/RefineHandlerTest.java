@@ -25,11 +25,21 @@ public class RefineHandlerTest {
 
   private static Map<String, Slot> newRefineEmptySlots() {
     Map<String, Slot> slots = new HashMap<>();
-    addSlotValue(slots, SlotUtil.AGGREGATION_COLUMN, null);
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, null);
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, null);
     addSlotValue(slots, SlotUtil.COMPARATOR_1, null);
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, null);
     addSlotValue(slots, SlotUtil.COLUMN_NUMBER_1, null);
+    addSlotValue(slots, SlotUtil.BINARY_LOGIC_OP_1, null);
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_2, null);
+    addSlotValue(slots, SlotUtil.COMPARATOR_2, null);
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_2, null);
+    addSlotValue(slots, SlotUtil.COLUMN_NUMBER_2, null);
+    addSlotValue(slots, SlotUtil.BINARY_LOGIC_OP_2, null);
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_3, null);
+    addSlotValue(slots, SlotUtil.COMPARATOR_3, null);
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_3, null);
+    addSlotValue(slots, SlotUtil.COLUMN_NUMBER_3, null);
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, null);
     return slots;
   }
@@ -103,9 +113,10 @@ public class RefineHandlerTest {
   }
 
   @Test
-  public void testWhere() {
+  public void testFirstWhere() {
     Session session = newSimpleSession();
     Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, "and where");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
@@ -114,18 +125,10 @@ public class RefineHandlerTest {
   }
 
   @Test
-  public void testGroupBy() {
-    Session session = newSimpleSession();
-    Map<String, Slot> slots = newRefineEmptySlots();
-    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
-    assertResponse(slots, session, "There is one row in the sales table for "
-        + "the product camera, two rows for speakers, and one row for tv.");
-  }
-
-  @Test
   public void testAddWhere() {
     Session session = newWhereSession();
     Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, "and where");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
@@ -134,18 +137,74 @@ public class RefineHandlerTest {
   }
 
   @Test
-  public void testOverwriteGroupBy() {
-    Session session = newGroupedBySession();
+  public void testReplaceWhereMatch() {
+    Session session = newWhereSession();
     Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, "instead where");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "store");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "providence");
+    assertResponse(slots, session, "There are two rows in the sales table "
+        + "where store is equal to providence.");
+  }
+
+  @Test
+  public void testReplaceWhereNoMatch() {
+    Session session = newWhereSession();
+    Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, "instead where");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");
+    assertResponse(slots, session, "There are two rows in the sales table "
+        + "where product is equal to speakers.");
+  }
+
+  @Test
+  public void testDropWhere() {
+    Session session = newWhereSession();
+    Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, "remove where");
+    addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "store");
+    addSlotValue(slots, SlotUtil.COMPARATOR_1, "is not");
+    addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "warwick");
+    assertResponse(slots, session, "There are four rows in the sales table.");
+  }
+
+  @Test
+  public void testAddGroupBy() {
+    Session session = newSimpleSession();
+    Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, "and");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
     assertResponse(slots, session, "There is one row in the sales table for "
         + "the product camera, two rows for speakers, and one row for tv.");
   }
 
   @Test
+  public void testReplaceGroupBy() {
+    Session session = newGroupedBySession();
+    Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, "instead");
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
+    assertResponse(slots, session, "There is one row in the sales table for "
+        + "the product camera, two rows for speakers, and one row for tv.");
+  }
+
+  @Test
+  public void testDropGroupBy() {
+    Session session = newSimpleSession();
+    Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, "drop");
+    addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "store");
+    assertResponse(slots, session, "There are four rows in the sales table.");
+  }
+
+  @Test
   public void testWhereThenGroupBy() {
     Session session = newWhereSession();
     Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, "and");
     addSlotValue(slots, SlotUtil.GROUP_BY_COLUMN, "product");
     assertResponse(slots, session, "There is one row in the sales table where "
         + "store is not equal to Warwick for the product camera, one row for "
@@ -156,6 +215,7 @@ public class RefineHandlerTest {
   public void testGroupByThenWhere() {
     Session session = newGroupedBySession();
     Map<String, Slot> slots = newRefineEmptySlots();
+    addSlotValue(slots, SlotUtil.REFINE_TYPE, "and where");
     addSlotValue(slots, SlotUtil.COMPARISON_COLUMN_1, "product");
     addSlotValue(slots, SlotUtil.COMPARATOR_1, "is");
     addSlotValue(slots, SlotUtil.COLUMN_VALUE_1, "speakers");

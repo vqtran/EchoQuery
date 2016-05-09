@@ -89,6 +89,10 @@
       "intent": "RefineIntent",
       "slots": [
         {
+          "name": "RefineType",
+          "type": "REFINE_TYPE"
+        },
+        {
           "name": "ComparisonColumnOne",
           "type": "COLUMN_NAME"
         },
@@ -102,6 +106,46 @@
         },
         {
           "name": "ColumnNumberOne",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "BinaryLogicOpOne",
+          "type": "BINARY_LOGIC_OPERATOR"
+        },
+        {
+          "name": "ComparisonColumnTwo",
+          "type": "COLUMN_NAME"
+        },
+        {
+          "name": "ComparatorTwo",
+          "type": "COMPARATORS"
+        },
+        {
+          "name": "ColumnValueTwo",
+          "type": "COLUMN_VALUE"
+        },
+        {
+          "name": "ColumnNumberTwo",
+          "type": "AMAZON.NUMBER"
+        },
+        {
+          "name": "BinaryLogicOpTwo",
+          "type": "BINARY_LOGIC_OPERATOR"
+        },
+        {
+          "name": "ComparisonColumnThree",
+          "type": "COLUMN_NAME"
+        },
+        {
+          "name": "ComparatorThree",
+          "type": "COMPARATORS"
+        },
+        {
+          "name": "ColumnValueThree",
+          "type": "COLUMN_VALUE"
+        },
+        {
+          "name": "ColumnNumberThree",
           "type": "AMAZON.NUMBER"
         },
         {
@@ -123,6 +167,23 @@
         },
         {
           "name": "TableAndColumnName",
+          "type": "COLUMN_NAME"
+        }
+      ]
+    },
+    {
+      "intent": "PlotIntent",
+      "slots": [
+        {
+          "name": "Plot",
+          "type": "PLOT"
+        },
+        {
+          "name": "PlotColumnOne",
+          "type": "COLUMN_NAME"
+        },
+        {
+          "name": "PlotColumnTwo",
           "type": "COLUMN_NAME"
         }
       ]

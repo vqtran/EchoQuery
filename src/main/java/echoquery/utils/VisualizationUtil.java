@@ -3,6 +3,7 @@ package echoquery.utils;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazon.speech.speechlet.Session;
+import com.google.common.base.Joiner;
 
 import echoquery.SingletonConnections;
 import echoquery.querier.ResultTable;
@@ -38,6 +40,18 @@ public class VisualizationUtil {
       statement.executeUpdate("update sessions set result='" +
           StringEscapeUtils.escapeJava(data.toString()) + "'where id='" +
           cleanId(session.getUser().getUserId()) + "';");
+    } catch (SQLException e) {
+      log.error(e.getMessage());
+    }
+  }
+
+  public static void updatePlotColumns(List<String> plotCols, Session session) {
+    try {
+      makeSureSessionExistsInDB(session.getUser().getUserId());
+      Statement statement = conn.createStatement();
+      statement.executeUpdate("update sessions set vis='"
+          + StringEscapeUtils.escapeJava(Joiner.on(',').join(plotCols))
+          + "'where id='" + cleanId(session.getUser().getUserId()) + "';");
     } catch (SQLException e) {
       log.error(e.getMessage());
     }
