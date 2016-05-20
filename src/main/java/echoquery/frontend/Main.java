@@ -16,7 +16,7 @@ public class Main {
   private static void runSparkServer() {
     Spark.externalStaticFileLocation("public/");
 
-    Spark.get("/", (request, response) ->
+    Spark.get("/user/:id", (request, response) ->
         new ModelAndView(new HashMap<>(), "index.jade"),
         new JadeTemplateEngine());
 

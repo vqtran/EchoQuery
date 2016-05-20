@@ -63,7 +63,7 @@ public class VisualizationUtil {
       Statement statement = conn.createStatement();
       return new ResultTable(
           statement.executeQuery(
-              "select display,result from sessions where id='"
+              "select display,result,vis from sessions where id='"
                   + cleanId(userId) + "';")).json();
     } catch (SQLException e) {
       log.error(e.getMessage());
