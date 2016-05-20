@@ -48,6 +48,9 @@ public final class SlotUtil {
 
   public final static String REFINE_TYPE = "RefineType";
 
+  public final static String PLOT_COLUMN_1 = "PlotColumnOne";
+  public final static String PLOT_COLUMN_2 = "PlotColumnTwo";
+
   private static Set<String> getExpr = new HashSet<>();
   private static Set<String> countExpr = new HashSet<>();
   private static Set<String> averageExpr = new HashSet<>();
