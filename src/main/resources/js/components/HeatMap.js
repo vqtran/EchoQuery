@@ -130,7 +130,7 @@ class HeatMap extends React.Component {
 
       legend.append("text")
         .attr("class", "mono")
-        .text(function(d) { return d; })
+        .text(function(d, i) { return ['least frequent', 'most frequent'][i] + ": " + d; })
         .attr("x", function(d, i) { return (width / 2) * i; })
         .attr("y", height + 15);
 

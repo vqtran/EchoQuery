@@ -59,14 +59,14 @@ public class PlotHandler implements IntentHandler {
     String description = "";
     switch (matches.size()) {
       case 0:
-        description = "I'm not sure what columns to plot, please try again.";
+        description = "I am not sure what columns to plot, please try again.";
         break;
       case 1:
-        description = "Here's a histogram of "
+        description = "Here is a histogram of "
             + Joiner.on(" ").join(matches.get(0).split("\\.")) + ".";
         break;
       case 2:
-        description = "Here's a heatmap of "
+        description = "Here is a heatmap of "
             + Joiner.on(" ").join(matches.get(0).split("\\.")) + " versus "
             + Joiner.on(" ").join(matches.get(1).split("\\.")) + ".";
         break;

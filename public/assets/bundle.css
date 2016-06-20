@@ -291,10 +291,10 @@ body {
   line-height: 1.6; }
 
 .logo {
-  height: 150px;
+  height: 60px;
   position: absolute;
-  top: 560px;
-  left: 110px; }
+  top: 720px;
+  left: 10px; }
 
 rect.bordered {
   stroke: #E6E6E6;

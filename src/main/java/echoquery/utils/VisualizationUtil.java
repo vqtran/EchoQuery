@@ -26,7 +26,7 @@ public class VisualizationUtil {
       makeSureSessionExistsInDB(session.getUser().getUserId());
       Statement statement = conn.createStatement();
       statement.executeUpdate("update sessions set display='" +
-          StringEscapeUtils.escapeJava(message) + "'where id='" +
+          StringEscapeUtils.escapeJava(message) + "' where id='" +
           cleanId(session.getUser().getUserId()) + "';");
     } catch (SQLException e) {
       log.error(e.getMessage());

@@ -172,6 +172,9 @@
       ]
     },
     {
+      "intent": "ClearIntent"
+    },
+    {
       "intent": "PlotIntent",
       "slots": [
         {

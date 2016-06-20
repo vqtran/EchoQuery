@@ -182,6 +182,13 @@ ClarifyIntent (I meant|I'm referring to|How about) {TableName}
 ClarifyIntent (I meant|I'm referring to|How about) {TableAndColumnName}
 
 #-------------------------------------------------------------------------------
+# ClearIntent: Clear the vis field
+#-------------------------------------------------------------------------------
+ClearIntent clear
+ClearIntent clear the visualization
+ClearIntent reset the visualization
+
+#-------------------------------------------------------------------------------
 # PlotIntent: Plot selected columns.
 #-------------------------------------------------------------------------------
 PlotIntent {Plot} (a histogram of|a heatmap of|the distribution of) {PlotColumnOne}
