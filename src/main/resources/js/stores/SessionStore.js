@@ -29,10 +29,11 @@ class SessionStore {
   }
 
   calculateBuckets() {
+    console.log(this.state);
     if (this.state.chosenColumns.length == 1 && this.state.chosenColumns[0] == "") {
       return
     }
-    const newBuckets = this.state.buckets;
+    const newBuckets = {};
     for (const col in this.state.chosenColumns) {
       newBuckets[col] = this.calculateBucket(this.state.chosenColumns[col]);
     }
@@ -72,6 +73,7 @@ class SessionStore {
   }
 
   calculateBucket(col) {
+    console.log("COL", col);
     switch (typeof this.state.displayData[col][0]) {
       case 'string':
         return [...new Set(this.state.displayData[col])];
