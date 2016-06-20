@@ -33,7 +33,7 @@ class SessionStore {
     if (this.state.chosenColumns.length == 1 && this.state.chosenColumns[0] == "") {
       return
     }
-    const newBuckets = {};
+    const newBuckets = [];
     for (const col in this.state.chosenColumns) {
       newBuckets[col] = this.calculateBucket(this.state.chosenColumns[col]);
     }

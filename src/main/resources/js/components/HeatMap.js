@@ -45,6 +45,7 @@ class HeatMap extends React.Component {
     const histHeat = (function(isHist, hist, heat) { return isHist ? hist : heat; }).bind({}, isHist);
     const bucketsX = this.state.buckets[0];
     const bucketsY = histHeat([], this.state.buckets[1]);
+    console.log("IS HIST", isHist);
     const data = isHist ?
       this.makeHistData(this.state.bucketizedCounts) :
       this.makeData(this.state.bucketizedCounts);
