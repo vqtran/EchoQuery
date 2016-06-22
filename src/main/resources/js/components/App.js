@@ -2,6 +2,7 @@ import React from 'react';
 
 import DataView from '../components/DataView.js';
 import ResponseHistory from '../components/ResponseHistory.js';
+import AudioInput from '../components/AudioInput.js';
 import DisplayActions from '../actions/DisplayActions';
 import SessionStore from '../stores/SessionStore';
 import SessionUtils from '../utils/SessionUtils';
