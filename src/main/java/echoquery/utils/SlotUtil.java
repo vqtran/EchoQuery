@@ -50,6 +50,8 @@ public final class SlotUtil {
 
   public final static String PLOT_COLUMN_1 = "PlotColumnOne";
   public final static String PLOT_COLUMN_2 = "PlotColumnTwo";
+  public final static String PLOT_AGGREGATION_1 = "PlotAggregationOne";
+  public final static String PLOT_AGGREGATION_2 = "PlotAggregationTwo";
 
   private static Set<String> getExpr = new HashSet<>();
   private static Set<String> countExpr = new HashSet<>();

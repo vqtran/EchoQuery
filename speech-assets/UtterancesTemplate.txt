@@ -182,10 +182,13 @@ ClarifyIntent (I meant|I'm referring to|How about) {TableName}
 ClarifyIntent (I meant|I'm referring to|How about) {TableAndColumnName}
 
 #-------------------------------------------------------------------------------
-# PlotIntent: Plot selected columns.
+# PlotIntent: Plot selected result columns.
 #-------------------------------------------------------------------------------
-PlotIntent {Plot} (a histogram of|a heatmap of|the distribution of) {PlotColumnOne}
-PlotIntent {Plot} (a histogram of|a heatmap of|the distribution of) {PlotColumnOne} (and|versus|against|with) {PlotColumnTwo}
+PlotIntent {Plot} (a histogram of|a heatmap of|the distribution of) \
+  ({PlotAggregationOne}) {PlotColumnOne}
+PlotIntent {Plot} (a histogram of|a heatmap of|the distribution of) \
+  ({PlotAggregationOne}) {PlotColumnOne} (and|versus|against|with) \
+  ({PlotAggregationTwo}) {PlotColumnTwo}
 
 
 
