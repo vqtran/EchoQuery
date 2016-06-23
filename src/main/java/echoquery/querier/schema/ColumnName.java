@@ -22,6 +22,12 @@ public class ColumnName implements Serializable {
     this.type = ColumnType.UNKNOWN;
   }
 
+  public ColumnName(@Nullable String table, @Nullable String column) {
+    this.table = Optional.fromNullable(table);
+    this.column = Optional.fromNullable(column);
+    this.type = ColumnType.UNKNOWN;
+  }
+
   public ColumnName(
       @Nullable String table, @Nullable String column, ColumnType type) {
     this.table = Optional.fromNullable(table);

@@ -185,6 +185,14 @@
         {
           "name": "PlotColumnTwo",
           "type": "COLUMN_NAME"
+        },
+        {
+          "name": "PlotAggregationOne",
+          "type": "FUNC"
+        },
+        {
+          "name": "PlotAggregationTwo",
+          "type": "FUNC"
         }
       ]
     },
