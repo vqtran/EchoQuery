@@ -20,11 +20,26 @@ body {
 
 rect.bordered {
   stroke: #E6E6E6;
-  stroke-width:2px;   
+  stroke-width:2px;
+}
+
+#selenium-input {
+  margin-top: 40px;
+}
+
+.data-table {
+  margin-top: 40px;
+}
+
+.schema {
+  margin-top: 5px;
+  height: 300px;
 }
 
 .response-history {
-  margin-top: 40px;
+  margin-top: 5px;
+  height: 300px;
+  overflow: scroll;
 }
 
 text.mono {

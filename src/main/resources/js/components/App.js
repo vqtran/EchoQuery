@@ -1,11 +1,17 @@
 import React from 'react';
 
-import DataView from '../components/DataView.js';
-import ResponseHistory from '../components/ResponseHistory.js';
+<<<<<<< HEAD
+import DataView from '../components/DataView';
+import ResponseHistory from '../components/ResponseHistory';
+import AudioInput from '../components/AudioInput';
+=======
+import AudioInput from '../components/AudioInput.js';
+>>>>>>> 2009e5499fd00836ce5b8677d4d69a454d974086
 import DisplayActions from '../actions/DisplayActions';
 import SessionStore from '../stores/SessionStore';
 import SessionUtils from '../utils/SessionUtils';
-import WindowActions from '../actions/WindowActions.js';
+import SeleniumInput from '../components/SeleniumInput';
+import WindowActions from '../actions/WindowActions';
 import $ from "jquery";
 
 class App extends React.Component {
@@ -16,7 +22,9 @@ class App extends React.Component {
         <div className="text-center container-fluid">
           <div className="col-md-3">
             <img src="http://localhost:4567/assets/logo.png" className="logo"/>
+            <SeleniumInput />
             <ResponseHistory />
+            <img src="http://localhost:4567/assets/schema.png" className="schema"/>
           </div>
           <div id="vizHolder" className="col-md-9">
             <DataView />
