@@ -17,7 +17,7 @@ public class SeleniumController {
     WebElement emailField=driver.findElement(By.id("ap_email"));
     emailField.sendKeys("gabriel_lyons@brown.edu");
     WebElement passwordField=driver.findElement(By.id("ap_password"));
-    passwordField.sendKeys("vinhrocks");
+    passwordField.sendKeys("NOT_FOR_PUBLIC_CONSUMPTION");
     WebElement signinButton=driver.findElement(By.id("signInSubmit-input"));
     signinButton.click();
     driver.get("https://developer.amazon.com/edw/home.html#/skill/amzn1.echo-sdk-ams.app.f705b0c1-42a2-4c94-9e48-50aed83b2310/testing");
