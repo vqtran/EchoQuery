@@ -1,8 +1,12 @@
 import React from 'react';
 
+<<<<<<< HEAD
 import DataView from '../components/DataView';
 import ResponseHistory from '../components/ResponseHistory';
 import AudioInput from '../components/AudioInput';
+=======
+import AudioInput from '../components/AudioInput.js';
+>>>>>>> 2009e5499fd00836ce5b8677d4d69a454d974086
 import DisplayActions from '../actions/DisplayActions';
 import SessionStore from '../stores/SessionStore';
 import SessionUtils from '../utils/SessionUtils';
