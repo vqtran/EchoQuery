@@ -10,3 +10,48 @@ body {
   font-size: 16px;
   line-height: 1.6;
 }
+
+.logo {
+  height: 60px;
+  position: absolute;
+  top: 720px;
+  left: 10px;
+}
+
+rect.bordered {
+  stroke: #E6E6E6;
+  stroke-width:2px;
+}
+
+#selenium-input {
+  margin-top: 40px;
+}
+
+.data-table {
+  margin-top: 40px;
+}
+
+.schema {
+  margin-top: 5px;
+  height: 300px;
+}
+
+.response-history {
+  margin-top: 5px;
+  height: 300px;
+  overflow: scroll;
+}
+
+text.mono {
+  font-size: 9pt;
+  font-family: Consolas, courier;
+  fill: #aaa;
+}
+
+text.axis-workweek {
+  fill: #000;
+}
+
+text.axis-worktime {
+  fill: #000;
+}

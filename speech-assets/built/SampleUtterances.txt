@@ -803,6 +803,9 @@ ClarifyIntent {TableAndColumnName}
 ClarifyIntent I meant {TableAndColumnName}
 ClarifyIntent I'm referring to {TableAndColumnName}
 ClarifyIntent How about {TableAndColumnName}
+ClearIntent clear
+ClearIntent clear the visualization
+ClearIntent reset the visualization
 PlotIntent {Plot} {PlotColumnOne}
 PlotIntent {Plot} a histogram of {PlotColumnOne}
 PlotIntent {Plot} a heatmap of {PlotColumnOne}

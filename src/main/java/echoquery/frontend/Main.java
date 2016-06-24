@@ -16,7 +16,7 @@ public class Main {
   private static void runSparkServer() {
     Spark.externalStaticFileLocation("public/");
 
-    Spark.get("/", (request, response) ->
+    Spark.get("/user/:id", (request, response) ->
         new ModelAndView(new HashMap<>(), "index.jade"),
         new JadeTemplateEngine());
 
@@ -24,5 +24,9 @@ public class Main {
         VisualizationUtil.getUserData(request.params(":id")).toString());
 
     Spark.get("/fetch/", (request, response) -> "Enter a valid User ID");
+    Spark.get("/login/:id", (request, response) -> 
+        new LoginHandler(request, response).respond());
+    Spark.post("/submit/:id", (request, response) -> 
+        new SubmitHandler(request, response).respond());
   }
 }

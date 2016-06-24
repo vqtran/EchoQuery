@@ -1,14 +1,8 @@
 import SessionStore from '../stores/SessionStore';
 
 class SessionUtils {
-  static giveSessionDisplayText(callback) {
-    fetch('/fetch/' + SessionStore.getSessionId()).then((response) => 
-      {return response.text();})
-      .then((text) => {callback(text);});
-  }
-
   static giveSessionDisplayData(callback) {
-    fetch('/data/' + SessionStore.getSessionId()).then((response) => 
+    fetch('/fetch/' + SessionStore.getSessionId()).then((response) => 
       {return response.text();})
       .then((text) => {callback(text);});
   }

@@ -26,7 +26,7 @@ public class VisualizationUtil {
       makeSureSessionExistsInDB(session.getUser().getUserId());
       Statement statement = conn.createStatement();
       statement.executeUpdate("update sessions set display='" +
-          StringEscapeUtils.escapeJava(message) + "'where id='" +
+          StringEscapeUtils.escapeJava(message) + "' where id='" +
           cleanId(session.getUser().getUserId()) + "';");
     } catch (SQLException e) {
       log.error(e.getMessage());
@@ -63,7 +63,7 @@ public class VisualizationUtil {
       Statement statement = conn.createStatement();
       return new ResultTable(
           statement.executeQuery(
-              "select display,result from sessions where id='"
+              "select display,result,vis from sessions where id='"
                   + cleanId(userId) + "';")).json();
     } catch (SQLException e) {
       log.error(e.getMessage());
